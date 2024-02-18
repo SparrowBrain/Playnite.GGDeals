@@ -24,7 +24,7 @@ namespace GGDeals
 
     public class GGDealsSettingsViewModel : ObservableObject, ISettings
     {
-        private readonly GGDeals plugin;
+        private readonly GgDeals plugin;
         private GGDealsSettings editingClone { get; set; }
 
         private GGDealsSettings settings;
@@ -38,7 +38,7 @@ namespace GGDeals
             }
         }
 
-        public GGDealsSettingsViewModel(GGDeals plugin)
+        public GGDealsSettingsViewModel(GgDeals plugin)
         {
             // Injecting your plugin instance is required for Save/Load method because Playnite saves data to a location based on what plugin requested the operation.
             this.plugin = plugin;

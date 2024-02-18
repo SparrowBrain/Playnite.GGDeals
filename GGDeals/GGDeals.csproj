@@ -48,6 +48,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AwaitableWebView.cs" />
     <Compile Include="GGDeals.cs" />
     <Compile Include="GGDealsSettings.cs" />
     <Compile Include="GGDealsSettingsView.xaml.cs">
