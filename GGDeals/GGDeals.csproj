@@ -55,6 +55,9 @@
       <DependentUpon>GGDealsSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AddAGameService.cs" />
+    <Compile Include="Website\IGamePage.cs" />
+    <Compile Include="Website\IGGWebsite.cs" />
     <Compile Include="Website\Url\GamePageUrlGuesser.cs" />
     <Compile Include="Website\Url\IGamePageUrlGuesser.cs" />
     <Compile Include="Website\Url\IHomePageResolver.cs" />

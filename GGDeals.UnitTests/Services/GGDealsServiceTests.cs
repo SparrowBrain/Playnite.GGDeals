@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace GGDeals.UnitTests
+namespace GGDeals.UnitTests.Services
 {
     public class GGDealsServiceTests
     {
