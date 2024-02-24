@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GGDeals", "GGDeals\GGDeals.csproj", "{4FDF1E89-5BC3-4C72-8FDA-0D580E7A5D5F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GGDeals.UnitTests", "GGDeals.UnitTests\GGDeals.UnitTests.csproj", "{6D7A45D8-7FFA-40A0-A665-E8FDD2DCC823}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{4FDF1E89-5BC3-4C72-8FDA-0D580E7A5D5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FDF1E89-5BC3-4C72-8FDA-0D580E7A5D5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FDF1E89-5BC3-4C72-8FDA-0D580E7A5D5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D7A45D8-7FFA-40A0-A665-E8FDD2DCC823}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D7A45D8-7FFA-40A0-A665-E8FDD2DCC823}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D7A45D8-7FFA-40A0-A665-E8FDD2DCC823}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D7A45D8-7FFA-40A0-A665-E8FDD2DCC823}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -55,6 +55,9 @@
       <DependentUpon>GGDealsSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Website\Url\GamePageUrlGuesser.cs" />
+    <Compile Include="Website\Url\IGamePageUrlGuesser.cs" />
+    <Compile Include="Website\Url\IHomePageResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="extension.yaml">
@@ -82,5 +85,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
