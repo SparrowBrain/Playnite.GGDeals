@@ -59,6 +59,7 @@
     <Compile Include="Website\IGamePage.cs" />
     <Compile Include="Website\IGGWebsite.cs" />
     <Compile Include="Website\Url\GamePageUrlGuesser.cs" />
+    <Compile Include="Website\Url\HomePageResolver.cs" />
     <Compile Include="Website\Url\IGamePageUrlGuesser.cs" />
     <Compile Include="Website\Url\IHomePageResolver.cs" />
   </ItemGroup>

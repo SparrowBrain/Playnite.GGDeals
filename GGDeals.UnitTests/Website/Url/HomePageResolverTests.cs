@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using GGDeals.Website.Url;
+using Xunit;
 
 namespace GGDeals.UnitTests.Website.Url
 {
@@ -13,14 +14,6 @@ namespace GGDeals.UnitTests.Website.Url
 
             // Assert
             Assert.Equal("https://gg.deals/", actual);
-        }
-    }
-
-    public class HomePageResolver
-    {
-        public string Resolve()
-        {
-            return "https://gg.deals/";
         }
     }
 }
