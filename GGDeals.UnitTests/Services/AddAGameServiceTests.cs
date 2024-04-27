@@ -31,7 +31,7 @@ namespace GGDeals.UnitTests.Services
 
         [Theory]
         [AutoMoqData]
-        public async Task TryAddToCollection_NavigateToGamePage_ThrowsException_WhenFailedToClickOwnItButton(
+        public async Task TryAddToCollection_ThrowsException_WhenFailedToClickOwnItButton(
             [Frozen] Mock<IGamePage> gamePageMock,
             [Frozen] Mock<IGGWebsite> ggWebsiteMock,
             Game game,
@@ -52,7 +52,7 @@ namespace GGDeals.UnitTests.Services
 
         [Theory]
         [AutoMoqData]
-        public async Task TryAddToCollection_NavigateToGamePage_ThrowsException_WhenExpandingDrmDropDownFails(
+        public async Task TryAddToCollection_ThrowsException_WhenExpandingDrmDropDownFails(
             [Frozen] Mock<IGamePage> gamePageMock,
             [Frozen] Mock<IGGWebsite> ggWebsiteMock,
             Game game,
@@ -73,7 +73,7 @@ namespace GGDeals.UnitTests.Services
 
         [Theory]
         [AutoMoqData]
-        public async Task TryAddToCollection_NavigateToGamePage_ThrowsException_ClickingDrmPlatformCheckBoxFailed(
+        public async Task TryAddToCollection_ThrowsException_ClickingDrmPlatformCheckBoxFailed(
             [Frozen] Mock<IGamePage> gamePageMock,
             [Frozen] Mock<IGGWebsite> ggWebsiteMock,
             Game game,
@@ -94,7 +94,7 @@ namespace GGDeals.UnitTests.Services
 
         [Theory]
         [AutoMoqData]
-        public async Task TryAddToCollection_NavigateToGamePage_ThrowsException_ClickingSubmitOwnItFormFails(
+        public async Task TryAddToCollection_ThrowsException_ClickingSubmitOwnItFormFails(
             [Frozen] Mock<IGamePage> gamePageMock,
             [Frozen] Mock<IGGWebsite> ggWebsiteMock,
             Game game,
@@ -111,6 +111,25 @@ namespace GGDeals.UnitTests.Services
             // Assert
             Assert.NotNull(exception);
             Assert.Equal("Clicking Submit \"Own It\" form failed.", exception.Message);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task TryAddToCollection_ReturnsTrue_WhenGameIsAdded(
+            [Frozen] Mock<IGamePage> gamePageMock,
+            [Frozen] Mock<IGGWebsite> ggWebsiteMock,
+            Game game,
+            AddAGameService sut)
+        {
+            // Arrange
+            var gamePage = gamePageMock.Object;
+            ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game.Name, out gamePage)).ReturnsAsync(true);
+
+            // Act
+            var actual = await sut.TryAddToCollection(game);
+
+            // Assert
+            Assert.True(actual);
         }
     }
 }
