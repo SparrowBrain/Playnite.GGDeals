@@ -1,6 +1,6 @@
 ﻿namespace GGDeals.Website.Url
 {
-    public class HomePageResolver
+    public class HomePageResolver : IHomePageResolver
     {
         public string Resolve()
         {
