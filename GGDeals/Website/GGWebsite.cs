@@ -7,15 +7,34 @@ namespace GGDeals.Website
 {
     public class GGWebsite : IGGWebsite
     {
+        private readonly IHomePageResolver _homePageResolver;
         private readonly IGamePageUrlGuesser _gamePageUrlGuesser;
         private readonly IAwaitableWebView _awaitableWebView;
 
         public GGWebsite(
+            IHomePageResolver homePageResolver,
             IGamePageUrlGuesser gamePageUrlGuesser,
             IAwaitableWebView awaitableWebView)
         {
+            _homePageResolver = homePageResolver;
             _gamePageUrlGuesser = gamePageUrlGuesser;
             _awaitableWebView = awaitableWebView;
+        }
+
+        public async Task CheckLoggedIn()
+        {
+            var homePage = _homePageResolver.Resolve();
+            await _awaitableWebView.Navigate(homePage);
+            var loginCheck = await _awaitableWebView.EvaluateScriptAsync(@"$("".login"").children(""a"").length");
+            if (!loginCheck.Success)
+            {
+                throw new Exception("Failed to check for login button.");
+            }
+
+            if ((int)loginCheck.Result > 0)
+            {
+                throw new Exception("User not logged in!");
+            }
         }
 
         public async Task<bool> TryNavigateToGamePage(Game game)

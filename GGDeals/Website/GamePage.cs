@@ -28,6 +28,7 @@ namespace GGDeals.Website
         {
             var ggLibraryName = _libraryNameMap.GetGGLibraryName(game);
             await _awaitableWebView.Click($@"$(""#drm-collapse"").find("".filter-switch"").filter(""[data-name='{ggLibraryName}']"")");
+            await Task.Delay(1000);
         }
 
         public async Task ClickSubmitOwnItForm()
