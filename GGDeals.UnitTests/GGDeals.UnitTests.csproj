@@ -112,6 +112,7 @@
     <Compile Include="AutoMoqDataAttribute.cs" />
     <Compile Include="Website\GamePageTests.cs" />
     <Compile Include="Website\GGWebsiteTests.cs" />
+    <Compile Include="Website\LibraryNameMapTests.cs" />
     <Compile Include="Website\Url\GamePageUrlGuesserTests.cs" />
     <Compile Include="Services\GGDealsServiceTests.cs" />
     <Compile Include="InlineAutoMoqDataAttribute.cs" />

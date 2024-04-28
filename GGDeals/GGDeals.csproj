@@ -62,6 +62,7 @@
     <Compile Include="Website\IGamePage.cs" />
     <Compile Include="Website\IGGWebsite.cs" />
     <Compile Include="Website\ILibraryNameMap.cs" />
+    <Compile Include="Website\LibraryNameMap.cs" />
     <Compile Include="Website\Url\GamePageUrlGuesser.cs" />
     <Compile Include="Website\Url\HomePageResolver.cs" />
     <Compile Include="Website\Url\IGamePageUrlGuesser.cs" />
