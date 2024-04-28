@@ -46,6 +46,8 @@ namespace GGDeals.Services
                         string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationGamePageNotFoundFormat"), gamesWithoutPage.Count),
                         NotificationType.Info);
                 }
+
+                Logger.Info($"Added {games.Count - gamesWithoutPage.Count} games to GG.deals collection.");
             }
             catch (AuthenticationException authEx)
             {

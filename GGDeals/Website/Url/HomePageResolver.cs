@@ -4,7 +4,7 @@
     {
         public string Resolve()
         {
-            return "https://gg.deals/";
+            return "https://gg.deals";
         }
     }
 }

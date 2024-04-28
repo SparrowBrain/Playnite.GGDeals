@@ -13,7 +13,7 @@ namespace GGDeals.UnitTests.Website.Url
             var actual = sut.Resolve();
 
             // Assert
-            Assert.Equal("https://gg.deals/", actual);
+            Assert.Equal("https://gg.deals", actual);
         }
     }
 }

@@ -14,7 +14,6 @@ namespace GGDeals
     public class GgDeals : GenericPlugin
     {
         private static readonly ILogger Logger = LogManager.GetLogger();
-        private readonly GGDealsService _ggDealsService;
 
         private GGDealsSettingsViewModel Settings { get; set; }
 
@@ -27,15 +26,6 @@ namespace GGDeals
             {
                 HasSettings = false
             };
-
-            var awaitableWebView = new AwaitableWebView(PlayniteApi.WebViews.CreateOffscreenView());
-            var homePageResolver = new HomePageResolver();
-            var gamePageUrlGuesser = new GamePageUrlGuesser(homePageResolver);
-            var libraryNameMap = new LibraryNameMap(PlayniteApi);
-            var ggWebsite = new GGWebsite(homePageResolver, gamePageUrlGuesser, awaitableWebView);
-            var gamePage = new GamePage(awaitableWebView, libraryNameMap);
-            var addAGameService = new AddAGameService(ggWebsite, gamePage);
-            _ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, addAGameService);
         }
 
         public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
@@ -49,7 +39,17 @@ namespace GGDeals
                     {
                         Task.Run(async () =>
                         {
-                           await _ggDealsService.AddGamesToLibrary(actionArgs.Games);
+                            using (var awaitableWebView = new AwaitableWebView(PlayniteApi.WebViews.CreateOffscreenView()))
+                            {
+                                var homePageResolver = new HomePageResolver();
+                                var gamePageUrlGuesser = new GamePageUrlGuesser(homePageResolver);
+                                var libraryNameMap = new LibraryNameMap(PlayniteApi);
+                                var ggWebsite = new GGWebsite(homePageResolver, gamePageUrlGuesser, awaitableWebView);
+                                var gamePage = new GamePage(awaitableWebView, libraryNameMap);
+                                var addAGameService = new AddAGameService(ggWebsite, gamePage);
+                                var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, addAGameService);
+                                await ggDealsService.AddGamesToLibrary(actionArgs.Games);
+                            }
                         });
                     }
                 }

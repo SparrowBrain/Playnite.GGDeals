@@ -10,5 +10,7 @@ namespace GGDeals
         Task Click(string jquerySelector);
 
         Task<JavaScriptEvaluationResult> EvaluateScriptAsync(string script);
+
+        Task WaitForElement(string jquerySelector);
     }
 }

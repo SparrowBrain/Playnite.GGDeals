@@ -1,10 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Playnite.SDK;
 using Playnite.SDK.Models;
 
 namespace GGDeals.Website
 {
     public class GamePage : IGamePage
     {
+        private ILogger Logger = LogManager.GetLogger();
+
         private readonly IAwaitableWebView _awaitableWebView;
         private readonly ILibraryNameMap _libraryNameMap;
 
@@ -27,7 +31,23 @@ namespace GGDeals.Website
         public async Task ClickDrmPlatformCheckBox(Game game)
         {
             var ggLibraryName = _libraryNameMap.GetGGLibraryName(game);
-            await _awaitableWebView.Click($@"$(""#drm-collapse"").find("".filter-switch"").filter(""[data-name='{ggLibraryName}']"")");
+            var drmCheckboxSelector = $@"$(""#drm-collapse"").find("".filter-switch"").filter(""[data-name='{ggLibraryName}']"")";
+            var activeDrmCheckboxLengthSelector = $@"{drmCheckboxSelector}.filter("".active"").length";
+
+            await _awaitableWebView.WaitForElement(drmCheckboxSelector);
+            var activeDrmCheckboxResult = await _awaitableWebView.EvaluateScriptAsync(activeDrmCheckboxLengthSelector);
+            if (!activeDrmCheckboxResult.Success)
+            {
+                throw new Exception("Active DRM checkbox check failed.");
+            }
+
+            if ((int)activeDrmCheckboxResult.Result > 0)
+            {
+                Logger.Debug($"Game {{ Id: {game.Id}, Name: {game.Name} }} already checked as owned with library {ggLibraryName}. Skipping.");
+                return;
+            }
+
+            await _awaitableWebView.Click(drmCheckboxSelector);
             await Task.Delay(1000);
         }
 

@@ -39,7 +39,7 @@ namespace GGDeals
             _logger.Trace($"Clicked {jquerySelector}");
         }
 
-        private async Task WaitForElement(string jquerySelector)
+        public async Task WaitForElement(string jquerySelector)
         {
             var timeout = DateTime.Now.AddSeconds(5);
             while (true)

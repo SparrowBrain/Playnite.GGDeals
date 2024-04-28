@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using GGDeals.Website;
 using Moq;
+using Playnite.SDK;
 using Playnite.SDK.Models;
 using Xunit;
 
@@ -82,12 +83,18 @@ namespace GGDeals.UnitTests.Website
         [AutoMoqData]
         public async Task ClickDrmPlatformCheckBox_ThrowsException_IfClickingElementThrowsException(
             [Frozen] Mock<IAwaitableWebView> awaitableWebViewMock,
+            [Frozen] Mock<ILibraryNameMap> libraryNameMapMock,
             Game game,
+            string ggLibraryName,
             Exception expected,
             GamePage sut)
         {
             // Arrange
             awaitableWebViewMock.Setup(x => x.Click(It.IsAny<string>())).ThrowsAsync(expected);
+            awaitableWebViewMock
+                .Setup(x => x.EvaluateScriptAsync(It.Is<string>(s => s == GetActiveDrmCheckboxCountSelector(ggLibraryName))))
+                .ReturnsAsync(new JavaScriptEvaluationResult() { Success = true, Result = 0 });
+            libraryNameMapMock.Setup(x => x.GetGGLibraryName(game)).Returns(ggLibraryName);
 
             // Act
             var actual = await Record.ExceptionAsync(() => sut.ClickDrmPlatformCheckBox(game));
@@ -107,7 +114,10 @@ namespace GGDeals.UnitTests.Website
             GamePage sut)
         {
             // Arrange
-            awaitableWebViewMock.Setup(x => x.Click(It.Is<string>(s => s != $@"$(""#drm-collapse"").find("".filter-switch"").filter(""[data-name='{ggLibraryName}']"")"))).ThrowsAsync(exception);
+            awaitableWebViewMock.Setup(x => x.Click(It.Is<string>(s => s != GetDrmCheckboxSelector(ggLibraryName)))).ThrowsAsync(exception);
+            awaitableWebViewMock
+                .Setup(x => x.EvaluateScriptAsync(It.Is<string>(s => s == GetActiveDrmCheckboxCountSelector(ggLibraryName))))
+                .ReturnsAsync(new JavaScriptEvaluationResult() { Success = true, Result = 0 });
             libraryNameMapMock.Setup(x => x.GetGGLibraryName(game)).Returns(ggLibraryName);
 
             // Act
@@ -115,6 +125,28 @@ namespace GGDeals.UnitTests.Website
 
             // Assert
             Assert.Null(actual);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task ClickDrmPlatformCheckBox_DoesNotClick_IfDrmCheckboxIsAlreadyActive(
+            [Frozen] Mock<IAwaitableWebView> awaitableWebViewMock,
+            [Frozen] Mock<ILibraryNameMap> libraryNameMapMock,
+            Game game,
+            string ggLibraryName,
+            GamePage sut)
+        {
+            // Arrange
+            awaitableWebViewMock
+                .Setup(x => x.EvaluateScriptAsync(It.Is<string>(s => s == GetActiveDrmCheckboxCountSelector(ggLibraryName))))
+                .ReturnsAsync(new JavaScriptEvaluationResult() { Success = true, Result = 1 });
+            libraryNameMapMock.Setup(x => x.GetGGLibraryName(game)).Returns(ggLibraryName);
+
+            // Act
+            await sut.ClickDrmPlatformCheckBox(game);
+
+            // Assert
+            awaitableWebViewMock.Verify(x => x.Click(It.IsAny<string>()), Times.Never);
         }
 
         [Theory]
@@ -149,6 +181,16 @@ namespace GGDeals.UnitTests.Website
 
             // Assert
             Assert.Null(actual);
+        }
+
+        private static string GetDrmCheckboxSelector(string ggLibraryName)
+        {
+            return $@"$(""#drm-collapse"").find("".filter-switch"").filter(""[data-name='{ggLibraryName}']"")";
+        }
+
+        private static string GetActiveDrmCheckboxCountSelector(string ggLibraryName)
+        {
+            return $@"{GetDrmCheckboxSelector(ggLibraryName)}.filter("".active"").length";
         }
     }
 }
