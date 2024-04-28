@@ -1,6 +1,7 @@
 ﻿using AutoFixture.Xunit2;
 using GGDeals.Website.Url;
 using Moq;
+using Playnite.SDK.Models;
 using Xunit;
 
 namespace GGDeals.UnitTests.Website.Url
@@ -16,13 +17,15 @@ namespace GGDeals.UnitTests.Website.Url
             string gameName,
             string expectedUrl,
             [Frozen] Mock<IHomePageResolver> homePageResolverMock,
+            Game game,
             GamePageUrlGuesser sut)
         {
             // Arrange
+            game.Name = gameName;
             homePageResolverMock.Setup(x => x.Resolve()).Returns("https://abc.xyz");
 
             // Act
-            var actualUrl = sut.Resolve(gameName);
+            var actualUrl = sut.Resolve(game);
 
             // Assert
             Assert.Equal(expectedUrl, actualUrl);

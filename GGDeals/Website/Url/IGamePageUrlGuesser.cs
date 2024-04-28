@@ -1,7 +1,9 @@
-﻿namespace GGDeals.Website.Url
+﻿using Playnite.SDK.Models;
+
+namespace GGDeals.Website.Url
 {
     public interface IGamePageUrlGuesser
     {
-        string Resolve(string gameName);
+        string Resolve(Game game);
     }
 }

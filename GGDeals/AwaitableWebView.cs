@@ -6,7 +6,7 @@ using Playnite.SDK.Events;
 
 namespace GGDeals
 {
-    public class AwaitableWebView : IDisposable
+    public class AwaitableWebView : IDisposable, IAwaitableWebView
     {
         private ILogger _logger = LogManager.GetLogger();
         private readonly IWebView _webView;

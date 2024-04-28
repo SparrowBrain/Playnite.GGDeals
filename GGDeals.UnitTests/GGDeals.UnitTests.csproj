@@ -110,6 +110,7 @@
   <ItemGroup>
     <Compile Include="Services\AddAGameServiceTests.cs" />
     <Compile Include="AutoMoqDataAttribute.cs" />
+    <Compile Include="Website\GGWebsiteTests.cs" />
     <Compile Include="Website\Url\GamePageUrlGuesserTests.cs" />
     <Compile Include="Services\GGDealsServiceTests.cs" />
     <Compile Include="InlineAutoMoqDataAttribute.cs" />

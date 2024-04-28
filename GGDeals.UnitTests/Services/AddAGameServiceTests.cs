@@ -19,8 +19,7 @@ namespace GGDeals.UnitTests.Services
             AddAGameService sut)
         {
             // Arrange
-            IGamePage gamePage = null;
-            ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game.Name, out gamePage)).ReturnsAsync(false);
+            ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game)).ReturnsAsync(false);
 
             // Act
             var success = await sut.TryAddToCollection(game);
@@ -38,8 +37,7 @@ namespace GGDeals.UnitTests.Services
             AddAGameService sut)
         {
             // Arrange
-            var gamePage = gamePageMock.Object;
-            ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game.Name, out gamePage)).ReturnsAsync(true);
+            ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game)).ReturnsAsync(true);
             gamePageMock.Setup(x => x.ClickOwnItButton()).Throws(() => new Exception("Clicking own it button failed."));
 
             // Act
@@ -59,8 +57,7 @@ namespace GGDeals.UnitTests.Services
             AddAGameService sut)
         {
             // Arrange
-            var gamePage = gamePageMock.Object;
-            ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game.Name, out gamePage)).ReturnsAsync(true);
+            ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game)).ReturnsAsync(true);
             gamePageMock.Setup(x => x.ExpandDrmDropDown()).Throws(() => new Exception("Expanding DRM dropdown failed."));
 
             // Act
@@ -80,8 +77,7 @@ namespace GGDeals.UnitTests.Services
             AddAGameService sut)
         {
             // Arrange
-            var gamePage = gamePageMock.Object;
-            ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game.Name, out gamePage)).ReturnsAsync(true);
+            ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game)).ReturnsAsync(true);
             gamePageMock.Setup(x => x.ClickDrmPlatformCheckBox(game)).Throws(() => new Exception("Clicking DRM platform checkbox failed."));
 
             // Act
@@ -101,8 +97,7 @@ namespace GGDeals.UnitTests.Services
             AddAGameService sut)
         {
             // Arrange
-            var gamePage = gamePageMock.Object;
-            ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game.Name, out gamePage)).ReturnsAsync(true);
+            ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game)).ReturnsAsync(true);
             gamePageMock.Setup(x => x.ClickSubmitOwnItForm()).Throws(() => new Exception("Clicking Submit \"Own It\" form failed."));
 
             // Act
@@ -116,14 +111,12 @@ namespace GGDeals.UnitTests.Services
         [Theory]
         [AutoMoqData]
         public async Task TryAddToCollection_ReturnsTrue_WhenGameIsAdded(
-            [Frozen] Mock<IGamePage> gamePageMock,
             [Frozen] Mock<IGGWebsite> ggWebsiteMock,
             Game game,
             AddAGameService sut)
         {
             // Arrange
-            var gamePage = gamePageMock.Object;
-            ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game.Name, out gamePage)).ReturnsAsync(true);
+            ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game)).ReturnsAsync(true);
 
             // Act
             var actual = await sut.TryAddToCollection(game);
