@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 using GGDeals.Website.Url;
 using Playnite.SDK.Models;
@@ -33,7 +34,7 @@ namespace GGDeals.Website
 
             if ((int)loginCheck.Result > 0)
             {
-                throw new Exception("User not logged in!");
+                throw new AuthenticationException("User not logged in!");
             }
         }
 

@@ -4,7 +4,7 @@ using Playnite.SDK.Models;
 
 namespace GGDeals.Services
 {
-    public class AddAGameService
+    public class AddAGameService : IAddAGameService
     {
         private readonly IGGWebsite _ggWebsite;
         private readonly IGamePage _gamePage;

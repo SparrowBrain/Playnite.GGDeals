@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using GGDeals.Website;
@@ -50,7 +51,7 @@ namespace GGDeals.UnitTests.Website
 
         [Theory]
         [AutoMoqData]
-        public async Task CheckLoggedIn_ThrowsException_WhenRunningLoginButtonFound(
+        public async Task CheckLoggedIn_ThrowsException_WhenLoginButtonFound(
             [Frozen] Mock<IAwaitableWebView> awaitableWebViewMock,
             GGWebsite sut)
         {
@@ -64,12 +65,12 @@ namespace GGDeals.UnitTests.Website
 
             // Assert
             Assert.NotNull(actual);
+            Assert.IsType<AuthenticationException>(actual);
         }
-
 
         [Theory]
         [AutoMoqData]
-        public async Task CheckLoggedIn_Returns_WhenRunningLoginButtonNotFound(
+        public async Task CheckLoggedIn_Returns_WhenLoginButtonNotFound(
             [Frozen] Mock<IAwaitableWebView> awaitableWebViewMock,
             GGWebsite sut)
         {
