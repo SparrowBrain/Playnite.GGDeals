@@ -5,6 +5,6 @@ namespace GGDeals.Services
 {
     public interface IAddAGameService
     {
-        Task<bool> TryAddToCollection(Game game);
+        Task<AddToCollectionResult> TryAddToCollection(Game game);
     }
 }

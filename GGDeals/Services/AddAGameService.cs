@@ -18,20 +18,28 @@ namespace GGDeals.Services
             _gamePage = gamePage;
         }
 
-        public async Task<bool> TryAddToCollection(Game game)
+        public async Task<AddToCollectionResult> TryAddToCollection(Game game)
         {
             if (!await _ggWebsite.TryNavigateToGamePage(game))
             {
-                return false;
+                Logger.Info($"Could not add game {{ Id: {game.Id}, Name: {game.Name} }}. Most likely failed to guess the game page url.");
+                return AddToCollectionResult.PageNotFound;
             }
 
             await _gamePage.ClickOwnItButton();
             await _gamePage.ExpandDrmDropDown();
+            var isActive = await _gamePage.IsDrmPlatformCheckboxActive(game);
+            if (isActive)
+            {
+                Logger.Debug($"Already owned: {{ Id: {game.Id}, Name: {game.Name} }}.");
+                return AddToCollectionResult.AlreadyOwned;
+            }
+
             await _gamePage.ClickDrmPlatformCheckBox(game);
             await _gamePage.ClickSubmitOwnItForm();
 
             Logger.Info($"Added to GG.deals collection: {{ Id: {game.Id}, Name: {game.Name} }}.");
-            return true;
+            return AddToCollectionResult.Added;
         }
     }
 }

@@ -29,13 +29,17 @@ namespace GGDeals.Services
             {
                 await _ggWebsite.CheckLoggedIn();
                 var gamesWithoutPage = new List<Game>();
+                var alreadyOwnedGames = new List<Game>();
                 foreach (var game in games)
                 {
-                    var added = await _addAGameService.TryAddToCollection(game);
-                    if (!added)
+                    var addedResult = await _addAGameService.TryAddToCollection(game);
+                    if (addedResult == AddToCollectionResult.PageNotFound)
                     {
-                        Logger.Info($"Could not add game {{ Id: {game.Id}, Name: {game.Name} }}. Most likely failed to guess the game page url.");
                         gamesWithoutPage.Add(game);
+                    }
+                    if (addedResult == AddToCollectionResult.AlreadyOwned)
+                    {
+                        alreadyOwnedGames.Add(game);
                     }
                 }
 
@@ -47,7 +51,7 @@ namespace GGDeals.Services
                         NotificationType.Info);
                 }
 
-                Logger.Info($"Added {games.Count - gamesWithoutPage.Count} games to GG.deals collection.");
+                Logger.Info($"Finished adding games to GG.deals collection: Total: {games.Count}, PageNotFound: {gamesWithoutPage.Count}, AlreadyOwned: {alreadyOwnedGames.Count}, Added: {games.Count - gamesWithoutPage.Count - alreadyOwnedGames.Count}");
             }
             catch (AuthenticationException authEx)
             {

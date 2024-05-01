@@ -57,6 +57,7 @@
     <Compile Include="IAwaitableWebView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AddAGameService.cs" />
+    <Compile Include="Services\AddToCollectionResult.cs" />
     <Compile Include="Services\GGDealsService.cs" />
     <Compile Include="Services\IAddAGameService.cs" />
     <Compile Include="Website\GamePage.cs" />

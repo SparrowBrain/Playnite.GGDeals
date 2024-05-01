@@ -13,7 +13,7 @@ namespace GGDeals.UnitTests.Services
     {
         [Theory]
         [AutoMoqData]
-        public async Task TryAddToCollection_NavigateToGamePage_ReturnsFalse_WhenNoSuchPageExists(
+        public async Task TryAddToCollection_NavigateToGamePage_ReturnsNoPageFound_WhenNoSuchPageExists(
             [Frozen] Mock<IGGWebsite> ggWebsiteMock,
             Game game,
             AddAGameService sut)
@@ -22,10 +22,10 @@ namespace GGDeals.UnitTests.Services
             ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game)).ReturnsAsync(false);
 
             // Act
-            var success = await sut.TryAddToCollection(game);
+            var result = await sut.TryAddToCollection(game);
 
             // Assert
-            Assert.False(success);
+            Assert.Equal(AddToCollectionResult.PageNotFound, result);
         }
 
         [Theory]
@@ -70,6 +70,46 @@ namespace GGDeals.UnitTests.Services
 
         [Theory]
         [AutoMoqData]
+        public async Task TryAddToCollection_ThrowsException_CheckingForActiveDrmCheckboxFailed(
+            [Frozen] Mock<IGamePage> gamePageMock,
+            [Frozen] Mock<IGGWebsite> ggWebsiteMock,
+            Game game,
+            Exception expected,
+            AddAGameService sut)
+        {
+            // Arrange
+            ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game)).ReturnsAsync(true);
+            gamePageMock.Setup(x => x.IsDrmPlatformCheckboxActive(game)).ThrowsAsync(expected);
+
+            // Act
+            var actual = await Record.ExceptionAsync(() => sut.TryAddToCollection(game));
+
+            // Assert
+            Assert.Same(expected, actual);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task TryAddToCollection_ReturnsGameAlreadyOwned_WhenCheckingDrmCheckboxIsActiveReturnsTrue(
+            [Frozen] Mock<IGamePage> gamePageMock,
+            [Frozen] Mock<IGGWebsite> ggWebsiteMock,
+            Game game,
+            Exception expected,
+            AddAGameService sut)
+        {
+            // Arrange
+            ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game)).ReturnsAsync(true);
+            gamePageMock.Setup(x => x.IsDrmPlatformCheckboxActive(game)).ReturnsAsync(true);
+
+            // Act
+            var result = await sut.TryAddToCollection(game);
+
+            // Assert
+            Assert.Equal(AddToCollectionResult.AlreadyOwned, result);
+        }
+
+        [Theory]
+        [AutoMoqData]
         public async Task TryAddToCollection_ThrowsException_ClickingDrmPlatformCheckBoxFailed(
             [Frozen] Mock<IGamePage> gamePageMock,
             [Frozen] Mock<IGGWebsite> ggWebsiteMock,
@@ -78,6 +118,7 @@ namespace GGDeals.UnitTests.Services
         {
             // Arrange
             ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game)).ReturnsAsync(true);
+            gamePageMock.Setup(x => x.IsDrmPlatformCheckboxActive(game)).ReturnsAsync(false);
             gamePageMock.Setup(x => x.ClickDrmPlatformCheckBox(game)).Throws(() => new Exception("Clicking DRM platform checkbox failed."));
 
             // Act
@@ -98,6 +139,7 @@ namespace GGDeals.UnitTests.Services
         {
             // Arrange
             ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game)).ReturnsAsync(true);
+            gamePageMock.Setup(x => x.IsDrmPlatformCheckboxActive(game)).ReturnsAsync(false);
             gamePageMock.Setup(x => x.ClickSubmitOwnItForm()).Throws(() => new Exception("Clicking Submit \"Own It\" form failed."));
 
             // Act
@@ -110,19 +152,21 @@ namespace GGDeals.UnitTests.Services
 
         [Theory]
         [AutoMoqData]
-        public async Task TryAddToCollection_ReturnsTrue_WhenGameIsAdded(
+        public async Task TryAddToCollection_ReturnsAdded_WhenGameIsAdded(
+            [Frozen] Mock<IGamePage> gamePageMock,
             [Frozen] Mock<IGGWebsite> ggWebsiteMock,
             Game game,
             AddAGameService sut)
         {
             // Arrange
             ggWebsiteMock.Setup(x => x.TryNavigateToGamePage(game)).ReturnsAsync(true);
+            gamePageMock.Setup(x => x.IsDrmPlatformCheckboxActive(game)).ReturnsAsync(false);
 
             // Act
             var actual = await sut.TryAddToCollection(game);
 
             // Assert
-            Assert.True(actual);
+            Assert.Equal(AddToCollectionResult.Added, actual);
         }
     }
 }

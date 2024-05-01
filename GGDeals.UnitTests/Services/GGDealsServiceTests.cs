@@ -70,7 +70,7 @@ namespace GGDeals.UnitTests.Services
             GGDealsService sut)
         {
             // Arrange
-            addAGameServiceMock.Setup(x => x.TryAddToCollection(It.IsAny<Game>())).ReturnsAsync(false);
+            addAGameServiceMock.Setup(x => x.TryAddToCollection(It.IsAny<Game>())).ReturnsAsync(AddToCollectionResult.PageNotFound);
             playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
 
             // Act

@@ -81,6 +81,93 @@ namespace GGDeals.UnitTests.Website
 
         [Theory]
         [AutoMoqData]
+        public async Task IsDrmPlatformCheckboxActive_ThrowsException_IfEvaluateScriptThrowsException(
+            [Frozen] Mock<IAwaitableWebView> awaitableWebViewMock,
+            [Frozen] Mock<ILibraryNameMap> libraryNameMapMock,
+            Game game,
+            string ggLibraryName,
+            Exception expected,
+            GamePage sut)
+        {
+            // Arrange
+            libraryNameMapMock.Setup(x => x.GetGGLibraryName(game)).Returns(ggLibraryName);
+            awaitableWebViewMock.Setup(x => x.EvaluateScriptAsync(It.IsAny<string>())).ThrowsAsync(expected);
+
+            // Act
+            var actual = await Record.ExceptionAsync(() => sut.IsDrmPlatformCheckboxActive(game));
+
+            // Assert
+            Assert.Same(expected, actual);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task IsDrmPlatformCheckboxActive_ThrowsException_IfEvaluateScriptIsNotSuccess(
+            [Frozen] Mock<IAwaitableWebView> awaitableWebViewMock,
+            [Frozen] Mock<ILibraryNameMap> libraryNameMapMock,
+            Game game,
+            string ggLibraryName,
+            GamePage sut)
+        {
+            // Arrange
+            libraryNameMapMock.Setup(x => x.GetGGLibraryName(game)).Returns(ggLibraryName);
+            awaitableWebViewMock
+                .Setup(x => x.EvaluateScriptAsync(It.Is<string>(s => s == GetActiveDrmCheckboxCountSelector(ggLibraryName))))
+                .ReturnsAsync(new JavaScriptEvaluationResult() { Success = false });
+
+            // Act
+            var exception = await Record.ExceptionAsync(() => sut.IsDrmPlatformCheckboxActive(game));
+
+            // Assert
+            Assert.NotNull(exception);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task IsDrmPlatformCheckboxActive_ReturnsFalse_IfCheckboxIsNotActive(
+            [Frozen] Mock<IAwaitableWebView> awaitableWebViewMock,
+            [Frozen] Mock<ILibraryNameMap> libraryNameMapMock,
+            Game game,
+            string ggLibraryName,
+            GamePage sut)
+        {
+            // Arrange
+            libraryNameMapMock.Setup(x => x.GetGGLibraryName(game)).Returns(ggLibraryName);
+            awaitableWebViewMock
+                .Setup(x => x.EvaluateScriptAsync(It.Is<string>(s => s == GetActiveDrmCheckboxCountSelector(ggLibraryName))))
+                .ReturnsAsync(new JavaScriptEvaluationResult() { Success = true, Result = 0 });
+
+            // Act
+            var result = await sut.IsDrmPlatformCheckboxActive(game);
+
+            // Assert
+            Assert.False(result);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task IsDrmPlatformCheckboxActive_ReturnsTrue_IfCheckboxIsActive(
+            [Frozen] Mock<IAwaitableWebView> awaitableWebViewMock,
+            [Frozen] Mock<ILibraryNameMap> libraryNameMapMock,
+            Game game,
+            string ggLibraryName,
+            GamePage sut)
+        {
+            // Arrange
+            libraryNameMapMock.Setup(x => x.GetGGLibraryName(game)).Returns(ggLibraryName);
+            awaitableWebViewMock
+                .Setup(x => x.EvaluateScriptAsync(It.Is<string>(s => s == GetActiveDrmCheckboxCountSelector(ggLibraryName))))
+                .ReturnsAsync(new JavaScriptEvaluationResult() { Success = true, Result = 1 });
+
+            // Act
+            var result = await sut.IsDrmPlatformCheckboxActive(game);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Theory]
+        [AutoMoqData]
         public async Task ClickDrmPlatformCheckBox_ThrowsException_IfClickingElementThrowsException(
             [Frozen] Mock<IAwaitableWebView> awaitableWebViewMock,
             [Frozen] Mock<ILibraryNameMap> libraryNameMapMock,
@@ -125,28 +212,6 @@ namespace GGDeals.UnitTests.Website
 
             // Assert
             Assert.Null(actual);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public async Task ClickDrmPlatformCheckBox_DoesNotClick_IfDrmCheckboxIsAlreadyActive(
-            [Frozen] Mock<IAwaitableWebView> awaitableWebViewMock,
-            [Frozen] Mock<ILibraryNameMap> libraryNameMapMock,
-            Game game,
-            string ggLibraryName,
-            GamePage sut)
-        {
-            // Arrange
-            awaitableWebViewMock
-                .Setup(x => x.EvaluateScriptAsync(It.Is<string>(s => s == GetActiveDrmCheckboxCountSelector(ggLibraryName))))
-                .ReturnsAsync(new JavaScriptEvaluationResult() { Success = true, Result = 1 });
-            libraryNameMapMock.Setup(x => x.GetGGLibraryName(game)).Returns(ggLibraryName);
-
-            // Act
-            await sut.ClickDrmPlatformCheckBox(game);
-
-            // Assert
-            awaitableWebViewMock.Verify(x => x.Click(It.IsAny<string>()), Times.Never);
         }
 
         [Theory]
