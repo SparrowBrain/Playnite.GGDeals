@@ -68,15 +68,13 @@ namespace GGDeals
         {
             if (_webView.CanExecuteJavascriptInMainFrame)
             {
-                _logger.Trace($"Executing {script}");
-                return await _webView.EvaluateScriptAsync(script);
+                return await EvaluateWithTraceLogging(script);
             }
 
             _logger.Trace($"Waiting for page load");
             await _semaphore.WaitAsync();
 
-            _logger.Trace($"Executing {script}");
-            return await _webView.EvaluateScriptAsync(script);
+            return await EvaluateWithTraceLogging(script);
         }
 
         private void OnWebViewLoadingChanged(object sender, WebViewLoadingChangedEventArgs e)
@@ -85,6 +83,14 @@ namespace GGDeals
             {
                 _semaphore.Release();
             }
+        }
+
+        private async Task<JavaScriptEvaluationResult> EvaluateWithTraceLogging(string script)
+        {
+            _logger.Trace($"Executing {script}");
+            var result = await _webView.EvaluateScriptAsync(script);
+            _logger.Trace($"Result: {{Success: {result.Success}, Result: {result.Result}, Message: {result.Message}}}");
+            return result;
         }
 
         public void Dispose()
