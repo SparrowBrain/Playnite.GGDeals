@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using GGDeals.Services;
+using GGDeals.Settings;
 using GGDeals.Website;
 using GGDeals.Website.Url;
 using Playnite.SDK;
 using Playnite.SDK.Events;
+using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 
 namespace GGDeals
@@ -24,7 +26,12 @@ namespace GGDeals
             Settings = new GGDealsSettingsViewModel(this);
             Properties = new GenericPluginProperties
             {
-                HasSettings = false
+                HasSettings = true
+            };
+
+            PlayniteApi.Database.Games.ItemCollectionChanged += (_, gamesAddedArgs) =>
+            {
+                AddGamesToGGCollection(gamesAddedArgs.AddedItems);
             };
         }
 
@@ -35,30 +42,13 @@ namespace GGDeals
                 new GameMenuItem
                 {
                     Description = ResourceProvider.GetString("LOC_GGDeals_GameMenuItemAddToGGDealsCollection"),
-                    Action = actionArgs =>
-                    {
-                        Task.Run(async () =>
-                        {
-                            using (var awaitableWebView = new AwaitableWebView(PlayniteApi.WebViews.CreateOffscreenView()))
-                            {
-                                var homePageResolver = new HomePageResolver();
-                                var gamePageUrlGuesser = new GamePageUrlGuesser(homePageResolver);
-                                var libraryNameMap = new LibraryNameMap(PlayniteApi);
-                                var ggWebsite = new GGWebsite(homePageResolver, gamePageUrlGuesser, awaitableWebView);
-                                var gamePage = new GamePage(awaitableWebView, libraryNameMap);
-                                var addAGameService = new AddAGameService(ggWebsite, gamePage);
-                                var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, addAGameService);
-                                await ggDealsService.AddGamesToLibrary(actionArgs.Games);
-                            }
-                        });
-                    }
+                    Action = actionArgs => { AddGamesToGGCollection(actionArgs.Games); }
                 }
             };
         }
 
         public override void OnLibraryUpdated(OnLibraryUpdatedEventArgs args)
         {
-            // Add code to be executed when library is updated.
         }
 
         public override ISettings GetSettings(bool firstRunSettings)
@@ -69,6 +59,24 @@ namespace GGDeals
         public override UserControl GetSettingsView(bool firstRunSettings)
         {
             return new GGDealsSettingsView(PlayniteApi);
+        }
+
+        private void AddGamesToGGCollection(IReadOnlyCollection<Game> games)
+        {
+            Task.Run(async () =>
+            {
+                using (var awaitableWebView = new AwaitableWebView(PlayniteApi.WebViews.CreateOffscreenView()))
+                {
+                    var homePageResolver = new HomePageResolver();
+                    var gamePageUrlGuesser = new GamePageUrlGuesser(homePageResolver);
+                    var libraryNameMap = new LibraryNameMap(PlayniteApi);
+                    var ggWebsite = new GGWebsite(homePageResolver, gamePageUrlGuesser, awaitableWebView);
+                    var gamePage = new GamePage(awaitableWebView, libraryNameMap);
+                    var addAGameService = new AddAGameService(ggWebsite, gamePage);
+                    var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, addAGameService);
+                    await ggDealsService.AddGamesToLibrary(games);
+                }
+            });
         }
     }
 }

@@ -7,6 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GGDeals", "GGDeals\GGDeals.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GGDeals.UnitTests", "GGDeals.UnitTests\GGDeals.UnitTests.csproj", "{6D7A45D8-7FFA-40A0-A665-E8FDD2DCC823}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{085C4782-3247-4717-A3FE-24BDDF5A6B36}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		GGDeals.sln.DotSettings = GGDeals.sln.DotSettings
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

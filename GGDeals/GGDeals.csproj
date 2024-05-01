@@ -50,8 +50,8 @@
   <ItemGroup>
     <Compile Include="AwaitableWebView.cs" />
     <Compile Include="GGDeals.cs" />
-    <Compile Include="GGDealsSettings.cs" />
-    <Compile Include="GGDealsSettingsView.xaml.cs">
+    <Compile Include="Settings\GGDealsSettings.cs" />
+    <Compile Include="Settings\GGDealsSettingsView.xaml.cs">
       <DependentUpon>GGDealsSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="IAwaitableWebView.cs" />
@@ -60,6 +60,7 @@
     <Compile Include="Services\AddToCollectionResult.cs" />
     <Compile Include="Services\GGDealsService.cs" />
     <Compile Include="Services\IAddAGameService.cs" />
+    <Compile Include="Settings\GGDealsSettingsViewModel.cs" />
     <Compile Include="Website\GamePage.cs" />
     <Compile Include="Website\GGWebsite.cs" />
     <Compile Include="Website\IGamePage.cs" />
@@ -87,7 +88,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="GGDealsSettingsView.xaml">
+    <Page Include="Settings\GGDealsSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
