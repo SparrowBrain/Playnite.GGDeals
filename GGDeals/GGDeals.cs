@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using GGDeals.Services;
-using GGDeals.Settings;
+using GGDeals.Settings.MVVM;
 using GGDeals.Website;
 using GGDeals.Website.Url;
 using Playnite.SDK;
@@ -13,17 +13,16 @@ using Playnite.SDK.Plugins;
 
 namespace GGDeals
 {
-    public class GgDeals : GenericPlugin
+    public class GGDeals : GenericPlugin
     {
         private static readonly ILogger Logger = LogManager.GetLogger();
 
-        private GGDealsSettingsViewModel Settings { get; set; }
+        private GGDealsSettingsViewModel _settings;
 
         public override Guid Id { get; } = Guid.Parse("2af05ded-085c-426b-a10e-8e03185092bf");
 
-        public GgDeals(IPlayniteAPI api) : base(api)
+        public GGDeals(IPlayniteAPI api) : base(api)
         {
-            Settings = new GGDealsSettingsViewModel(this);
             Properties = new GenericPluginProperties
             {
                 HasSettings = true
@@ -53,7 +52,7 @@ namespace GGDeals
 
         public override ISettings GetSettings(bool firstRunSettings)
         {
-            return Settings;
+            return _settings ?? (_settings = new GGDealsSettingsViewModel(this));
         }
 
         public override UserControl GetSettingsView(bool firstRunSettings)

@@ -25,11 +25,12 @@ namespace GGDeals.Services
 
         public async Task AddGamesToLibrary(IReadOnlyCollection<Game> games)
         {
+            var gamesWithoutPage = new List<Game>();
+            var alreadyOwnedGames = new List<Game>();
+
             try
             {
                 await _ggWebsite.CheckLoggedIn();
-                var gamesWithoutPage = new List<Game>();
-                var alreadyOwnedGames = new List<Game>();
                 foreach (var game in games)
                 {
                     var addedResult = await _addAGameService.TryAddToCollection(game);
@@ -50,8 +51,6 @@ namespace GGDeals.Services
                         string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationGamePageNotFoundFormat"), gamesWithoutPage.Count),
                         NotificationType.Info);
                 }
-
-                Logger.Info($"Finished adding games to GG.deals collection: Total: {games.Count}, PageNotFound: {gamesWithoutPage.Count}, AlreadyOwned: {alreadyOwnedGames.Count}, Added: {games.Count - gamesWithoutPage.Count - alreadyOwnedGames.Count}");
             }
             catch (AuthenticationException authEx)
             {
@@ -69,6 +68,8 @@ namespace GGDeals.Services
                     ResourceProvider.GetString("LOC_GGDeals_NotificationFailedAddingGamesToLibrary"),
                     NotificationType.Error);
             }
+
+            Logger.Info($"Finished adding games to GG.deals collection: Total: {games.Count}, PageNotFound: {gamesWithoutPage.Count}, AlreadyOwned: {alreadyOwnedGames.Count}, Added: {games.Count - gamesWithoutPage.Count - alreadyOwnedGames.Count}");
         }
     }
 }

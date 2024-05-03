@@ -10,6 +10,6 @@
         <TextBox Text="{Binding Settings.Option1}"/>
         <TextBlock Text="Description for Option2:"/>
         <CheckBox IsChecked="{Binding Settings.Option2}"/>
-        <Button Click="ButtonBase_OnClick">AAAAAAAAA</Button>
+        <Button Command="{Binding Authenticate}">AAAAAAAAA</Button>
     </StackPanel>
 </UserControl>

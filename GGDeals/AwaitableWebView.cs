@@ -8,7 +8,8 @@ namespace GGDeals
 {
     public class AwaitableWebView : IDisposable, IAwaitableWebView
     {
-        private ILogger _logger = LogManager.GetLogger();
+        private const double SecondsToPageLoadTimeout = 30;
+        private readonly ILogger _logger = LogManager.GetLogger();
         private readonly IWebView _webView;
         private readonly SemaphoreSlim _semaphore;
 
@@ -21,9 +22,10 @@ namespace GGDeals
 
         public async Task Navigate(string url)
         {
+            await ResetSemaphoreToZero();
             _logger.Trace($"Navigating to {url}");
             _webView.Navigate(url);
-            await _semaphore.WaitAsync();
+            await _semaphore.WaitAsync(TimeSpan.FromSeconds(SecondsToPageLoadTimeout));
         }
 
         public async Task Click(string jquerySelector)
@@ -66,36 +68,35 @@ namespace GGDeals
 
         public async Task<JavaScriptEvaluationResult> EvaluateScriptAsync(string script)
         {
-            if (_webView.CanExecuteJavascriptInMainFrame)
-            {
-                return await EvaluateWithTraceLogging(script);
-            }
-
-            _logger.Trace($"Waiting for page load");
-            await _semaphore.WaitAsync();
-
-            return await EvaluateWithTraceLogging(script);
-        }
-
-        private void OnWebViewLoadingChanged(object sender, WebViewLoadingChangedEventArgs e)
-        {
-            if (!e.IsLoading)
-            {
-                _semaphore.Release();
-            }
-        }
-
-        private async Task<JavaScriptEvaluationResult> EvaluateWithTraceLogging(string script)
-        {
             _logger.Trace($"Executing {script}");
             var result = await _webView.EvaluateScriptAsync(script);
             _logger.Trace($"Result: {{Success: {result.Success}, Result: {result.Result}, Message: {result.Message}}}");
             return result;
         }
 
+        private void OnWebViewLoadingChanged(object sender, WebViewLoadingChangedEventArgs e)
+        {
+            _logger.Trace($"Loading changed: {{IsLoading: {e.IsLoading}}}");
+            if (!e.IsLoading)
+            {
+                _semaphore.Release();
+            }
+        }
+
+        private async Task ResetSemaphoreToZero()
+        {
+            while (_semaphore.CurrentCount > 0)
+            {
+                _logger.Trace($"Semaphore count: {_semaphore.CurrentCount}");
+                await _semaphore.WaitAsync();
+            }
+            _logger.Trace($"Semaphore count: {_semaphore.CurrentCount}");
+        }
+
         public void Dispose()
         {
             _webView.Dispose();
+            _semaphore.Dispose();
         }
     }
 }

@@ -1,16 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Input;
+using GGDeals.Website.Url;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 
-namespace GGDeals.Settings
+namespace GGDeals.Settings.MVVM
 {
     public class GGDealsSettingsViewModel : ObservableObject, ISettings
     {
-        private readonly GgDeals _plugin;
+        private readonly ILogger _logger = LogManager.GetLogger();
+        private readonly GGDeals _plugin;
         private GGDealsSettings _settings;
         private GGDealsSettings _editingClone;
 
-        public GGDealsSettingsViewModel(GgDeals plugin)
+        public GGDealsSettingsViewModel(GGDeals plugin)
         {
             _plugin = plugin;
 
@@ -51,5 +56,25 @@ namespace GGDeals.Settings
             errors = new List<string>();
             return true;
         }
+
+        public ICommand Authenticate => new RelayCommand(() =>
+        {
+            Application.Current.Dispatcher.BeginInvoke((Action)(() =>
+            {
+                var homePageResolver = new HomePageResolver();
+                var homePage = homePageResolver.Resolve();
+                using (var webView = _plugin.PlayniteApi.WebViews.CreateView(520, 670))
+                {
+                    webView.LoadingChanged += (s, e) =>
+                    {
+                        if (e.IsLoading == false)
+                        {
+                        }
+                    };
+                    webView.Navigate(homePage);
+                    webView.OpenDialog();
+                }
+            }));
+        });
     }
 }
