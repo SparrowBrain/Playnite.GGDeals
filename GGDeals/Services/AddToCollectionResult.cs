@@ -5,5 +5,6 @@
         Added,
         PageNotFound,
         AlreadyOwned,
+        SkippedDueToLibrary
     }
 }

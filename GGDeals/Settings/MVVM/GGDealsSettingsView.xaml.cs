@@ -1,20 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using Playnite.SDK;
 
-namespace GGDeals
+namespace GGDeals.Settings.MVVM
 {
     public partial class GGDealsSettingsView : UserControl
     {
         public GGDealsSettingsView(IPlayniteAPI api)
         {
             InitializeComponent();
-        }
-
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-        {
         }
     }
 }

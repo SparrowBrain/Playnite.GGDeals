@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -8,6 +9,7 @@ using GGDeals.Website;
 using GGDeals.Website.Url;
 using Playnite.SDK;
 using Playnite.SDK.Data;
+using Playnite.SDK.Plugins;
 
 namespace GGDeals.Settings.MVVM
 {
@@ -18,14 +20,16 @@ namespace GGDeals.Settings.MVVM
         private GGDealsSettings _settings;
         private GGDealsSettings _editingClone;
         private string _authenticationStatus;
+        private List<LibraryItem> _libraryItems;
 
         public GGDealsSettingsViewModel(GGDeals plugin)
         {
             _plugin = plugin;
 
             var savedSettings = plugin.LoadPluginSettings<GGDealsSettings>();
-            Settings = savedSettings ?? new GGDealsSettings();
+            Settings = savedSettings ?? GGDealsSettings.Default;
             UpdateAuthenticationStatus();
+            InitializeLibraryItems();
         }
 
         public GGDealsSettings Settings
@@ -66,6 +70,12 @@ namespace GGDeals.Settings.MVVM
         {
             get => _authenticationStatus;
             set => SetValue(ref _authenticationStatus, value);
+        }
+
+        public List<LibraryItem> LibraryItems
+        {
+            get => _libraryItems;
+            set => SetValue(ref _libraryItems, value);
         }
 
         // ReSharper disable once UnusedMember.Global
@@ -113,6 +123,21 @@ namespace GGDeals.Settings.MVVM
                     AuthenticationStatus = ResourceProvider.GetString("LOC_GGDeals_SettingsAuthenticationStatusError");
                 }
             });
+        }
+
+        private void InitializeLibraryItems()
+        {
+            var items = new List<LibraryItem>();
+            foreach (var plugin in _plugin.PlayniteApi.Addons.Plugins.Where(x => x is LibraryPlugin))
+            {
+                var library = (LibraryPlugin)plugin;
+                var isOffByDefault = GGDealsSettings.Default.LibrariesToSkip.Contains(library.Id);
+                var isChecked = Settings.LibrariesToSkip.Contains(library.Id) == false;
+                var item = new LibraryItem(library.Id, library.Name, isOffByDefault, this, isChecked);
+                items.Add(item);
+            }
+
+            LibraryItems = items;
         }
     }
 }

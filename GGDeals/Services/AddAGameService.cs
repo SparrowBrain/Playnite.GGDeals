@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using GGDeals.Settings;
 using GGDeals.Website;
 using Playnite.SDK;
 using Playnite.SDK.Models;
@@ -9,17 +10,25 @@ namespace GGDeals.Services
     {
         private static readonly ILogger Logger = LogManager.GetLogger();
 
+        private readonly GGDealsSettings _settings;
         private readonly IGGWebsite _ggWebsite;
         private readonly IGamePage _gamePage;
 
-        public AddAGameService(IGGWebsite ggWebsite, IGamePage gamePage)
+        public AddAGameService(GGDealsSettings settings, IGGWebsite ggWebsite, IGamePage gamePage)
         {
+            _settings = settings;
             _ggWebsite = ggWebsite;
             _gamePage = gamePage;
         }
 
         public async Task<AddToCollectionResult> TryAddToCollection(Game game)
         {
+            if (_settings.LibrariesToSkip.Contains(game.PluginId))
+            {
+                Logger.Debug($"Skipped due to library: {{ Id: {game.Id}, Name: {game.Name} }}.");
+                return AddToCollectionResult.SkippedDueToLibrary;
+            }
+
             if (!await _ggWebsite.TryNavigateToGamePage(game))
             {
                 Logger.Info($"Could not add game {{ Id: {game.Id}, Name: {game.Name} }}. Most likely failed to guess the game page url.");

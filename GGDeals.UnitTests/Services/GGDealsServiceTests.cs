@@ -129,5 +129,49 @@ namespace GGDeals.UnitTests.Services
                 x => x.Add("gg-deals-gamepagenotfound", It.IsAny<string>(),
                     It.Is<NotificationType>(n => n == NotificationType.Info)), Times.Once);
         }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task AddGamesToLibrary_ShowsNoNotification_WhenGameIsAdded(
+            [Frozen] Mock<IHomePage> homePageMock,
+            [Frozen] Mock<IAddAGameService> addAGameServiceMock,
+            [Frozen] Mock<INotificationsAPI> notificationsApiMock,
+            [Frozen] Mock<IPlayniteAPI> playniteApiMock,
+            List<Game> games,
+            GGDealsService sut)
+        {
+            // Arrange
+            homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
+            addAGameServiceMock.Setup(x => x.TryAddToCollection(It.IsAny<Game>())).ReturnsAsync(AddToCollectionResult.Added);
+            playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
+
+            // Act
+            await sut.AddGamesToLibrary(games);
+
+            // Assert
+            notificationsApiMock.Verify(x => x.Add(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<NotificationType>()), Times.Never);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task AddGamesToLibrary_ShowsNoNotification_WhenLibraryIsIgnored(
+            [Frozen] Mock<IHomePage> homePageMock,
+            [Frozen] Mock<IAddAGameService> addAGameServiceMock,
+            [Frozen] Mock<INotificationsAPI> notificationsApiMock,
+            [Frozen] Mock<IPlayniteAPI> playniteApiMock,
+            List<Game> games,
+            GGDealsService sut)
+        {
+            // Arrange
+            homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
+            addAGameServiceMock.Setup(x => x.TryAddToCollection(It.IsAny<Game>())).ReturnsAsync(AddToCollectionResult.SkippedDueToLibrary);
+            playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
+
+            // Act
+            await sut.AddGamesToLibrary(games);
+
+            // Assert
+            notificationsApiMock.Verify(x => x.Add(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<NotificationType>()), Times.Never);
+        }
     }
 }

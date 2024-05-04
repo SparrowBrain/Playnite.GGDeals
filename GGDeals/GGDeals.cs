@@ -72,7 +72,7 @@ namespace GGDeals
                     var ggWebsite = new GGWebsite(awaitableWebView, homePageResolver, gamePageUrlGuesser);
                     var homePage = new HomePage(awaitableWebView);
                     var gamePage = new GamePage(awaitableWebView, libraryNameMap);
-                    var addAGameService = new AddAGameService(ggWebsite, gamePage);
+                    var addAGameService = new AddAGameService(_settings.Settings, ggWebsite, gamePage);
                     var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, homePage, addAGameService);
                     await ggDealsService.AddGamesToLibrary(games);
                 }

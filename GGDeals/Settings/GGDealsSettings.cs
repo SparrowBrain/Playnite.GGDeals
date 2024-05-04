@@ -1,19 +1,20 @@
-﻿using System.Collections.Generic;
-using Playnite.SDK.Data;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GGDeals.Settings
 {
     public class GGDealsSettings : ObservableObject
     {
-        private string option1 = string.Empty;
-        private bool option2 = false;
-        private bool optionThatWontBeSaved = false;
+        public List<Guid> LibrariesToSkip { get; set; }
 
-        public string Option1 { get => option1; set => SetValue(ref option1, value); }
-        public bool Option2 { get => option2; set => SetValue(ref option2, value); }
-        // Playnite serializes settings object to a JSON object and saves it as text file.
-        // If you want to exclude some property from being saved then use `JsonDontSerialize` ignore attribute.
-        [DontSerialize]
-        public bool OptionThatWontBeSaved { get => optionThatWontBeSaved; set => SetValue(ref optionThatWontBeSaved, value); }
+        public static GGDealsSettings Default =>
+            new GGDealsSettings
+            {
+                LibrariesToSkip = new List<Guid>()
+                {
+                    Guid.Parse("CB91DFC9-B977-43BF-8E70-55F46E410FAB"), // Steam
+                    Guid.Parse("AEBE8B7C-6DC3-4A66-AF31-E7375C6B5E9E"), // GOG
+                }
+            };
     }
 }

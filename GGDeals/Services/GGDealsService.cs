@@ -19,7 +19,7 @@ namespace GGDeals.Services
 
         public GGDealsService(
             IPlayniteAPI playniteApi,
-            IGGWebsite ggWebsite, 
+            IGGWebsite ggWebsite,
             IHomePage homePage,
             IAddAGameService addAGameService)
         {
@@ -31,8 +31,10 @@ namespace GGDeals.Services
 
         public async Task AddGamesToLibrary(IReadOnlyCollection<Game> games)
         {
+            var addedCount = 0;
             var gamesWithoutPage = new List<Game>();
             var alreadyOwnedGames = new List<Game>();
+            var skippedDueToLibrary = new List<Game>();
 
             try
             {
@@ -45,13 +47,26 @@ namespace GGDeals.Services
                 foreach (var game in games)
                 {
                     var addedResult = await _addAGameService.TryAddToCollection(game);
-                    if (addedResult == AddToCollectionResult.PageNotFound)
+                    switch (addedResult)
                     {
-                        gamesWithoutPage.Add(game);
-                    }
-                    if (addedResult == AddToCollectionResult.AlreadyOwned)
-                    {
-                        alreadyOwnedGames.Add(game);
+                        case AddToCollectionResult.Added:
+                            addedCount++;
+                            break;
+
+                        case AddToCollectionResult.PageNotFound:
+                            gamesWithoutPage.Add(game);
+                            break;
+
+                        case AddToCollectionResult.AlreadyOwned:
+                            alreadyOwnedGames.Add(game);
+                            break;
+
+                        case AddToCollectionResult.SkippedDueToLibrary:
+                            skippedDueToLibrary.Add(game);
+                            break;
+
+                        default:
+                            throw new NotImplementedException("Unimplemented add to collection result processing!");
                     }
                 }
 
@@ -80,7 +95,7 @@ namespace GGDeals.Services
                     NotificationType.Error);
             }
 
-            Logger.Info($"Finished adding games to GG.deals collection: Total: {games.Count}, PageNotFound: {gamesWithoutPage.Count}, AlreadyOwned: {alreadyOwnedGames.Count}, Added: {games.Count - gamesWithoutPage.Count - alreadyOwnedGames.Count}");
+            Logger.Info($"Finished adding games to GG.deals collection: Total: {games.Count}, PageNotFound: {gamesWithoutPage.Count}, AlreadyOwned: {alreadyOwnedGames.Count}, SkippedDueToLibrary: {skippedDueToLibrary.Count}, Added: {addedCount}");
         }
     }
 }

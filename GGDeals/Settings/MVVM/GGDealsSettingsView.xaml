@@ -1,8 +1,9 @@
-﻿<UserControl x:Class="GGDeals.GGDealsSettingsView"
+﻿<UserControl x:Class="GGDeals.Settings.MVVM.GGDealsSettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:GGDeals.Infrastructure.Converters"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="600">
     <UserControl.Resources>
@@ -21,13 +22,27 @@
         </Style>
     </UserControl.Resources>
     <StackPanel>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="{DynamicResource LOC_GGDeals_SettingsAuthenticate}"  Command="{Binding Authenticate}"></Button>
-            <TextBlock Grid.Column="1" Text="{Binding AuthenticationStatus}"></TextBlock>
-        </Grid>
+        <GroupBox Header="{DynamicResource LOC_GGDeals_SettingsAuthenticationGroupTitle}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="{DynamicResource LOC_GGDeals_SettingsAuthenticate}"  Command="{Binding Authenticate}"></Button>
+                <TextBlock Grid.Column="1" Text="{Binding AuthenticationStatus}"></TextBlock>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="{DynamicResource LOC_GGDeals_SettingsLibrariesGroupTitle}">
+            <ListBox ItemsSource="{Binding LibraryItems}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding Name}" />
+                            <TextBlock Margin="5,0" Text="ℹ" Visibility="{Binding IsOffByDefault,  Converter={converters:BooleanToCollapsedVisibilityConverter}}" ToolTip="{DynamicResource LOC_GGDeals_SettingsLibraryDisabledByDefault}"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </GroupBox>
     </StackPanel>
 </UserControl>

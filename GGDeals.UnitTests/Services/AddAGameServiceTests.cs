@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using GGDeals.Services;
+using GGDeals.Settings;
 using GGDeals.Website;
 using Moq;
 using Playnite.SDK.Models;
@@ -13,7 +15,24 @@ namespace GGDeals.UnitTests.Services
     {
         [Theory]
         [AutoMoqData]
-        public async Task TryAddToCollection_NavigateToGamePage_ReturnsNoPageFound_WhenNoSuchPageExists(
+        public async Task TryAddToCollection_ReturnsSkippedDueToLibrary_WhenLibraryIsSkippedInSettings(
+            [Frozen] GGDealsSettings settings,
+            Game game,
+            AddAGameService sut)
+        {
+            // Arrange
+            game.PluginId = settings.LibrariesToSkip.Last();
+
+            // Act
+            var result = await sut.TryAddToCollection(game);
+
+            // Assert
+            Assert.Equal(AddToCollectionResult.SkippedDueToLibrary, result);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task TryAddToCollection_ReturnsNoPageFound_WhenNoSuchPageExists(
             [Frozen] Mock<IGGWebsite> ggWebsiteMock,
             Game game,
             AddAGameService sut)

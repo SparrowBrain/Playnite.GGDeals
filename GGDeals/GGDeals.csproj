@@ -50,6 +50,8 @@
   <ItemGroup>
     <Compile Include="AwaitableWebView.cs" />
     <Compile Include="GGDeals.cs" />
+    <Compile Include="Infrastructure\Converters\BaseConverter.cs" />
+    <Compile Include="Infrastructure\Converters\BooleanToCollapsedVisibilityConverter.cs" />
     <Compile Include="Services\AuthenticationStatusService.cs" />
     <Compile Include="Settings\GGDealsSettings.cs" />
     <Compile Include="Settings\MVVM\GGDealsSettingsView.xaml.cs">
@@ -62,6 +64,7 @@
     <Compile Include="Services\GGDealsService.cs" />
     <Compile Include="Services\IAddAGameService.cs" />
     <Compile Include="Settings\MVVM\GGDealsSettingsViewModel.cs" />
+    <Compile Include="Settings\MVVM\LibraryItem.cs" />
     <Compile Include="Website\GamePage.cs" />
     <Compile Include="Website\GGWebsite.cs" />
     <Compile Include="Website\HomePage.cs" />
