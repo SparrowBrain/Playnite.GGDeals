@@ -8,4 +8,5 @@
     <sys:String x:Key="LOC_GGDeals_SettingsAuthenticate">Authenticate</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsAuthenticatedAs_Format">Authenticated as {0}</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsNotAuthenticated">Not authenticated</sys:String>
+    <sys:String x:Key="LOC_GGDeals_SettingsAuthenticationStatusError">Error while fetching authentication status</sys:String>
 </ResourceDictionary>

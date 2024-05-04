@@ -85,8 +85,7 @@ namespace GGDeals.Settings.MVVM
                     };
                     webView.Navigate(homePage);
                     webView.OpenDialog();
-
-                    //$(".menu-profile-label").contents().not($(".menu-profile-label").children()).text()
+                    UpdateAuthenticationStatus();
                 }
             }));
         });
@@ -95,15 +94,23 @@ namespace GGDeals.Settings.MVVM
         {
             Task.Run(async () =>
             {
-                using (var awaitableWebView = new AwaitableWebView(_plugin.PlayniteApi.WebViews.CreateOffscreenView()))
+                try
                 {
-                    var homePageResolver = new HomePageResolver();
-                    var ggWebsite = new GGWebsite(awaitableWebView, homePageResolver, null);
-                    var homePage = new HomePage(awaitableWebView);
-                    var authenticationStatusService = new AuthenticationStatusService(ggWebsite, homePage);
-                    var status = await authenticationStatusService.GetAuthenticationStatus();
+                    using (var awaitableWebView = new AwaitableWebView(_plugin.PlayniteApi.WebViews.CreateOffscreenView()))
+                    {
+                        var homePageResolver = new HomePageResolver();
+                        var ggWebsite = new GGWebsite(awaitableWebView, homePageResolver, null);
+                        var homePage = new HomePage(awaitableWebView);
+                        var authenticationStatusService = new AuthenticationStatusService(ggWebsite, homePage);
+                        var status = await authenticationStatusService.GetAuthenticationStatus();
 
-                    AuthenticationStatus = status;
+                        AuthenticationStatus = status;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "Failed to update authentication status.");
+                    AuthenticationStatus = ResourceProvider.GetString("LOC_GGDeals_SettingsAuthenticationStatusError");
                 }
             });
         }
