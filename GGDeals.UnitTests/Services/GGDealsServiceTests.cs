@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Authentication;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using GGDeals.Services;
@@ -16,16 +15,61 @@ namespace GGDeals.UnitTests.Services
     {
         [Theory]
         [AutoMoqData]
-        public async Task AddGamesToLibrary_ShowsInfoNotification_WhenCheckLoginThrowsException(
+        public async Task AddGamesToLibrary_ShowsErrorNotification_WhenNavigateToHomePageThrowsException(
             [Frozen] Mock<IGGWebsite> ggWebsiteMock,
             [Frozen] Mock<INotificationsAPI> notificationsApiMock,
             [Frozen] Mock<IPlayniteAPI> playniteApiMock,
-            AuthenticationException exception,
+            Exception exception,
             List<Game> games,
             GGDealsService sut)
         {
             // Arrange
-            ggWebsiteMock.Setup(x => x.CheckLoggedIn()).ThrowsAsync(exception);
+            ggWebsiteMock.Setup(x => x.NavigateToHomePage()).ThrowsAsync(exception);
+            playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
+
+            // Act
+            await sut.AddGamesToLibrary(games);
+
+            // Assert
+            notificationsApiMock.Verify(
+                x => x.Add("gg-deals-generic-error", It.IsAny<string>(),
+                    It.Is<NotificationType>(n => n == NotificationType.Error)), Times.Once);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task AddGamesToLibrary_ShowsErrorNotification_WhenCheckingIsUserLoggedInThrowsException(
+            [Frozen] Mock<IHomePage> homePageMock,
+            [Frozen] Mock<INotificationsAPI> notificationsApiMock,
+            [Frozen] Mock<IPlayniteAPI> playniteApiMock,
+            Exception exception,
+            List<Game> games,
+            GGDealsService sut)
+        {
+            // Arrange
+            homePageMock.Setup(x => x.IsUserLoggedIn()).ThrowsAsync(exception);
+            playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
+
+            // Act
+            await sut.AddGamesToLibrary(games);
+
+            // Assert
+            notificationsApiMock.Verify(
+                x => x.Add("gg-deals-generic-error", It.IsAny<string>(),
+                    It.Is<NotificationType>(n => n == NotificationType.Error)), Times.Once);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task AddGamesToLibrary_ShowsInfoNotification_WhenIsUserLoggedInReturnsFalse(
+            [Frozen] Mock<IHomePage> homePageMock,
+            [Frozen] Mock<INotificationsAPI> notificationsApiMock,
+            [Frozen] Mock<IPlayniteAPI> playniteApiMock,
+            List<Game> games,
+            GGDealsService sut)
+        {
+            // Arrange
+            homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(false);
             playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
 
             // Act
@@ -40,6 +84,7 @@ namespace GGDeals.UnitTests.Services
         [Theory]
         [AutoMoqData]
         public async Task AddGamesToLibrary_ShowsErrorNotification_WhenTryAddToCollectionThrowsException(
+            [Frozen] Mock<IHomePage> homePageMock,
             [Frozen] Mock<IAddAGameService> addAGameServiceMock,
             [Frozen] Mock<INotificationsAPI> notificationsApiMock,
             [Frozen] Mock<IPlayniteAPI> playniteApiMock,
@@ -48,6 +93,7 @@ namespace GGDeals.UnitTests.Services
             GGDealsService sut)
         {
             // Arrange
+            homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
             addAGameServiceMock.Setup(x => x.TryAddToCollection(It.IsAny<Game>())).ThrowsAsync(exception);
             playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
 
@@ -63,6 +109,7 @@ namespace GGDeals.UnitTests.Services
         [Theory]
         [AutoMoqData]
         public async Task AddGamesToLibrary_ShowsInfoNotification_WhenGamePageCouldNotBeFound(
+            [Frozen] Mock<IHomePage> homePageMock,
             [Frozen] Mock<IAddAGameService> addAGameServiceMock,
             [Frozen] Mock<INotificationsAPI> notificationsApiMock,
             [Frozen] Mock<IPlayniteAPI> playniteApiMock,
@@ -70,6 +117,7 @@ namespace GGDeals.UnitTests.Services
             GGDealsService sut)
         {
             // Arrange
+            homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
             addAGameServiceMock.Setup(x => x.TryAddToCollection(It.IsAny<Game>())).ReturnsAsync(AddToCollectionResult.PageNotFound);
             playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
 

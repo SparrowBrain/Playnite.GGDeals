@@ -5,7 +5,7 @@ namespace GGDeals.Website
 {
     public interface IGGWebsite
     {
-        Task CheckLoggedIn();
+        Task NavigateToHomePage();
 
         Task<bool> TryNavigateToGamePage(Game game);
     }

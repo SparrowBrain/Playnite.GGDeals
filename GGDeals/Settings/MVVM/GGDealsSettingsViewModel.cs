@@ -14,6 +14,7 @@ namespace GGDeals.Settings.MVVM
         private readonly GGDeals _plugin;
         private GGDealsSettings _settings;
         private GGDealsSettings _editingClone;
+        private string _authenticationStatus;
 
         public GGDealsSettingsViewModel(GGDeals plugin)
         {
@@ -57,6 +58,21 @@ namespace GGDeals.Settings.MVVM
             return true;
         }
 
+        public string AuthenticationStatus
+        {
+            get => _authenticationStatus ?? GetAuthenticationStatus();
+            set => SetValue(ref _authenticationStatus, value);
+        }
+
+        private string GetAuthenticationStatus()
+        {
+            throw new NotImplementedException();
+            using (var awaitableWebView = new AwaitableWebView(_plugin.PlayniteApi.WebViews.CreateOffscreenView()))
+            {
+                //awaitableWebView.GetUserName();
+            }
+        }
+
         public ICommand Authenticate => new RelayCommand(() =>
         {
             Application.Current.Dispatcher.BeginInvoke((Action)(() =>
@@ -73,6 +89,8 @@ namespace GGDeals.Settings.MVVM
                     };
                     webView.Navigate(homePage);
                     webView.OpenDialog();
+
+                    //$(".menu-profile-label").contents().not($(".menu-profile-label").children()).text()
                 }
             }));
         });

@@ -14,12 +14,18 @@ namespace GGDeals.Services
 
         private readonly IPlayniteAPI _playniteApi;
         private readonly IGGWebsite _ggWebsite;
+        private readonly IHomePage _homePage;
         private readonly IAddAGameService _addAGameService;
 
-        public GGDealsService(IPlayniteAPI playniteApi, IGGWebsite ggWebsite, IAddAGameService addAGameService)
+        public GGDealsService(
+            IPlayniteAPI playniteApi,
+            IGGWebsite ggWebsite, 
+            IHomePage homePage,
+            IAddAGameService addAGameService)
         {
             _playniteApi = playniteApi;
             _ggWebsite = ggWebsite;
+            _homePage = homePage;
             _addAGameService = addAGameService;
         }
 
@@ -30,7 +36,12 @@ namespace GGDeals.Services
 
             try
             {
-                await _ggWebsite.CheckLoggedIn();
+                await _ggWebsite.NavigateToHomePage();
+                if (!await _homePage.IsUserLoggedIn())
+                {
+                    throw new AuthenticationException("User is not logged in!");
+                }
+
                 foreach (var game in games)
                 {
                     var addedResult = await _addAGameService.TryAddToCollection(game);
@@ -54,7 +65,7 @@ namespace GGDeals.Services
             }
             catch (AuthenticationException authEx)
             {
-                Logger.Info(authEx, "User not authenticated.");
+                Logger.Info(authEx, "User is not authenticated.");
                 _playniteApi.Notifications.Add(
                     "gg-deals-auth-error",
                     ResourceProvider.GetString("LOC_GGDeals_NotificationUserNotAuthenticatedLoginInAddonSettings"),

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Authentication;
 using System.Threading.Tasks;
 using GGDeals.Website.Url;
 using Playnite.SDK.Models;
@@ -8,34 +7,24 @@ namespace GGDeals.Website
 {
     public class GGWebsite : IGGWebsite
     {
+        private readonly IAwaitableWebView _awaitableWebView;
         private readonly IHomePageResolver _homePageResolver;
         private readonly IGamePageUrlGuesser _gamePageUrlGuesser;
-        private readonly IAwaitableWebView _awaitableWebView;
 
         public GGWebsite(
+            IAwaitableWebView awaitableWebView,
             IHomePageResolver homePageResolver,
-            IGamePageUrlGuesser gamePageUrlGuesser,
-            IAwaitableWebView awaitableWebView)
+            IGamePageUrlGuesser gamePageUrlGuesser)
         {
+            _awaitableWebView = awaitableWebView;
             _homePageResolver = homePageResolver;
             _gamePageUrlGuesser = gamePageUrlGuesser;
-            _awaitableWebView = awaitableWebView;
         }
 
-        public async Task CheckLoggedIn()
+        public async Task NavigateToHomePage()
         {
             var homePage = _homePageResolver.Resolve();
             await _awaitableWebView.Navigate(homePage);
-            var loginCheck = await _awaitableWebView.EvaluateScriptAsync(@"$("".login"").children(""a"").length");
-            if (!loginCheck.Success)
-            {
-                throw new Exception("Failed to check for login button.");
-            }
-
-            if ((int)loginCheck.Result > 0)
-            {
-                throw new AuthenticationException("User not logged in!");
-            }
         }
 
         public async Task<bool> TryNavigateToGamePage(Game game)

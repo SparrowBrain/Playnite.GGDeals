@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="AwaitableWebView.cs" />
     <Compile Include="GGDeals.cs" />
+    <Compile Include="Services\AuthenticationStatusService.cs" />
     <Compile Include="Settings\GGDealsSettings.cs" />
     <Compile Include="Settings\MVVM\GGDealsSettingsView.xaml.cs">
       <DependentUpon>GGDealsSettingsView.xaml</DependentUpon>
@@ -63,8 +64,10 @@
     <Compile Include="Settings\MVVM\GGDealsSettingsViewModel.cs" />
     <Compile Include="Website\GamePage.cs" />
     <Compile Include="Website\GGWebsite.cs" />
+    <Compile Include="Website\HomePage.cs" />
     <Compile Include="Website\IGamePage.cs" />
     <Compile Include="Website\IGGWebsite.cs" />
+    <Compile Include="Website\IHomePage.cs" />
     <Compile Include="Website\ILibraryNameMap.cs" />
     <Compile Include="Website\LibraryNameMap.cs" />
     <Compile Include="Website\Url\GamePageUrlGuesser.cs" />

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Authentication;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using GGDeals.Website;
@@ -15,7 +14,7 @@ namespace GGDeals.UnitTests.Website
     {
         [Theory]
         [AutoMoqData]
-        public async Task CheckLoggedIn_ThrowsException_WhenNavigatingToHomePageThrowsException(
+        public async Task NavigateToHomePage_ThrowsException_WhenNavigatingThrowsException(
             [Frozen] Mock<IAwaitableWebView> awaitableWebViewMock,
             Exception expected,
             GGWebsite sut)
@@ -24,7 +23,7 @@ namespace GGDeals.UnitTests.Website
             awaitableWebViewMock.Setup(x => x.Navigate(It.IsAny<string>())).Throws(expected);
 
             // Act
-            var actual = await Record.ExceptionAsync(sut.CheckLoggedIn);
+            var actual = await Record.ExceptionAsync(sut.NavigateToHomePage);
 
             // Assert
             Assert.NotNull(actual);
@@ -33,54 +32,11 @@ namespace GGDeals.UnitTests.Website
 
         [Theory]
         [AutoMoqData]
-        public async Task CheckLoggedIn_ThrowsException_WhenRunningScriptFails(
-            [Frozen] Mock<IAwaitableWebView> awaitableWebViewMock,
+        public async Task NavigateToHomePage_Returns_WhenNavigatingSucceeds(
             GGWebsite sut)
         {
-            // Arrange
-            awaitableWebViewMock
-                .Setup(x => x.EvaluateScriptAsync(It.Is<string>(s => s == @"$("".login"").children(""a"").length")))
-                .ReturnsAsync(new JavaScriptEvaluationResult() { Success = false });
-
             // Act
-            var actual = await Record.ExceptionAsync(sut.CheckLoggedIn);
-
-            // Assert
-            Assert.NotNull(actual);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public async Task CheckLoggedIn_ThrowsException_WhenLoginButtonFound(
-            [Frozen] Mock<IAwaitableWebView> awaitableWebViewMock,
-            GGWebsite sut)
-        {
-            // Arrange
-            awaitableWebViewMock
-                .Setup(x => x.EvaluateScriptAsync(It.Is<string>(s => s == @"$("".login"").children(""a"").length")))
-                .ReturnsAsync(new JavaScriptEvaluationResult() { Success = true, Result = 1 });
-
-            // Act
-            var actual = await Record.ExceptionAsync(sut.CheckLoggedIn);
-
-            // Assert
-            Assert.NotNull(actual);
-            Assert.IsType<AuthenticationException>(actual);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public async Task CheckLoggedIn_Returns_WhenLoginButtonNotFound(
-            [Frozen] Mock<IAwaitableWebView> awaitableWebViewMock,
-            GGWebsite sut)
-        {
-            // Arrange
-            awaitableWebViewMock
-                .Setup(x => x.EvaluateScriptAsync(It.Is<string>(s => s == @"$("".login"").children(""a"").length")))
-                .ReturnsAsync(new JavaScriptEvaluationResult() { Success = true, Result = 0 });
-
-            // Act
-            var actual = await Record.ExceptionAsync(sut.CheckLoggedIn);
+            var actual = await Record.ExceptionAsync(sut.NavigateToHomePage);
 
             // Assert
             Assert.Null(actual);

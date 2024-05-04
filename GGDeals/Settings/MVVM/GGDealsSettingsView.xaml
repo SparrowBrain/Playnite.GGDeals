@@ -6,10 +6,13 @@
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="600">
     <StackPanel>
-        <TextBlock Text="Description for Option1:"/>
-        <TextBox Text="{Binding Settings.Option1}"/>
-        <TextBlock Text="Description for Option2:"/>
-        <CheckBox IsChecked="{Binding Settings.Option2}"/>
-        <Button Command="{Binding Authenticate}">AAAAAAAAA</Button>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+        </Grid>
+        <Button Grid.Column="0" Content="{DynamicResource LOC_GGDeals_SettingsAuthenticate}"  Command="{Binding Authenticate}"></Button>
+        <TextBlock Grid.Column="1" Text="{Binding AuthenticationStatus}"></TextBlock>
     </StackPanel>
 </UserControl>

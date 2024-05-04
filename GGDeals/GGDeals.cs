@@ -69,10 +69,11 @@ namespace GGDeals
                     var homePageResolver = new HomePageResolver();
                     var gamePageUrlGuesser = new GamePageUrlGuesser(homePageResolver);
                     var libraryNameMap = new LibraryNameMap(PlayniteApi);
-                    var ggWebsite = new GGWebsite(homePageResolver, gamePageUrlGuesser, awaitableWebView);
+                    var ggWebsite = new GGWebsite(awaitableWebView, homePageResolver, gamePageUrlGuesser);
+                    var homePage = new HomePage(awaitableWebView);
                     var gamePage = new GamePage(awaitableWebView, libraryNameMap);
                     var addAGameService = new AddAGameService(ggWebsite, gamePage);
-                    var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, addAGameService);
+                    var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, homePage, addAGameService);
                     await ggDealsService.AddGamesToLibrary(games);
                 }
             });

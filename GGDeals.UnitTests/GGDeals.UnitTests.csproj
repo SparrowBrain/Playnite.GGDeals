@@ -110,8 +110,10 @@
   <ItemGroup>
     <Compile Include="Services\AddAGameServiceTests.cs" />
     <Compile Include="AutoMoqDataAttribute.cs" />
+    <Compile Include="Services\AuthenticationStatusServiceTests.cs" />
     <Compile Include="Website\GamePageTests.cs" />
     <Compile Include="Website\GGWebsiteTests.cs" />
+    <Compile Include="Website\HomePageTests.cs" />
     <Compile Include="Website\LibraryNameMapTests.cs" />
     <Compile Include="Website\Url\GamePageUrlGuesserTests.cs" />
     <Compile Include="Services\GGDealsServiceTests.cs" />
