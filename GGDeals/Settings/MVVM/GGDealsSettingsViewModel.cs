@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using GGDeals.Services;
+using GGDeals.Website;
 using GGDeals.Website.Url;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -22,6 +25,7 @@ namespace GGDeals.Settings.MVVM
 
             var savedSettings = plugin.LoadPluginSettings<GGDealsSettings>();
             Settings = savedSettings ?? new GGDealsSettings();
+            UpdateAuthenticationStatus();
         }
 
         public GGDealsSettings Settings
@@ -60,19 +64,11 @@ namespace GGDeals.Settings.MVVM
 
         public string AuthenticationStatus
         {
-            get => _authenticationStatus ?? GetAuthenticationStatus();
+            get => _authenticationStatus;
             set => SetValue(ref _authenticationStatus, value);
         }
 
-        private string GetAuthenticationStatus()
-        {
-            throw new NotImplementedException();
-            using (var awaitableWebView = new AwaitableWebView(_plugin.PlayniteApi.WebViews.CreateOffscreenView()))
-            {
-                //awaitableWebView.GetUserName();
-            }
-        }
-
+        // ReSharper disable once UnusedMember.Global
         public ICommand Authenticate => new RelayCommand(() =>
         {
             Application.Current.Dispatcher.BeginInvoke((Action)(() =>
@@ -94,5 +90,22 @@ namespace GGDeals.Settings.MVVM
                 }
             }));
         });
+
+        private void UpdateAuthenticationStatus()
+        {
+            Task.Run(async () =>
+            {
+                using (var awaitableWebView = new AwaitableWebView(_plugin.PlayniteApi.WebViews.CreateOffscreenView()))
+                {
+                    var homePageResolver = new HomePageResolver();
+                    var ggWebsite = new GGWebsite(awaitableWebView, homePageResolver, null);
+                    var homePage = new HomePage(awaitableWebView);
+                    var authenticationStatusService = new AuthenticationStatusService(ggWebsite, homePage);
+                    var status = await authenticationStatusService.GetAuthenticationStatus();
+
+                    AuthenticationStatus = status;
+                }
+            });
+        }
     }
 }
