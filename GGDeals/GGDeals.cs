@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using GGDeals.AddFailures.MVVM;
 using GGDeals.Services;
 using GGDeals.Settings.MVVM;
 using GGDeals.Website;
 using GGDeals.Website.Url;
 using Playnite.SDK;
-using Playnite.SDK.Events;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 
@@ -15,6 +17,7 @@ namespace GGDeals
 {
     public class GGDeals : GenericPlugin
     {
+        private readonly IPlayniteAPI _api;
         private static readonly ILogger Logger = LogManager.GetLogger();
 
         private GGDealsSettingsViewModel _settings;
@@ -23,6 +26,7 @@ namespace GGDeals
 
         public GGDeals(IPlayniteAPI api) : base(api)
         {
+            _api = api;
             Properties = new GenericPluginProperties
             {
                 HasSettings = true
@@ -36,18 +40,48 @@ namespace GGDeals
 
         public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
         {
-            return new List<GameMenuItem>
+            yield return new GameMenuItem
             {
-                new GameMenuItem
-                {
-                    Description = ResourceProvider.GetString("LOC_GGDeals_GameMenuItemAddToGGDealsCollection"),
-                    Action = actionArgs => { AddGamesToGGCollection(actionArgs.Games); }
-                }
+                Description = ResourceProvider.GetString("LOC_GGDeals_GameMenuItemAddToGGDealsCollection"),
+                Action = actionArgs => { AddGamesToGGCollection(actionArgs.Games); }
             };
         }
 
-        public override void OnLibraryUpdated(OnLibraryUpdatedEventArgs args)
+        public override IEnumerable<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs args)
         {
+            yield return new MainMenuItem
+            {
+                Description = ResourceProvider.GetString("LOC_GGDeals_MainMenuItemAddAllToGGDealsCollection"),
+                MenuSection = "@GG.deals",
+                Action = actionArgs => { AddGamesToGGCollection(_api.Database.Games.ToList()); }
+            };
+
+            yield return new MainMenuItem
+            {
+                Description = ResourceProvider.GetString("LOC_GGDeals_MainMenuItemShowAddFailures"),
+                MenuSection = "@GG.deals",
+                Action = actionArgs =>
+                {
+                    var window = _api.Dialogs.CreateWindow(new WindowCreationOptions()
+                    {
+                        ShowCloseButton = true,
+                        ShowMaximizeButton = true,
+                        ShowMinimizeButton = false,
+                    });
+
+                    window.Height = 768;
+                    window.Width = 768;
+                    window.Title = ResourceProvider.GetString("LOC_GGDeals_ShowAddFailuresTitle");
+
+                    window.Content = new ShowAddFailuresView();
+                    window.DataContext = new ShowAddFailuresViewModel();
+
+                    window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
+                    window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+                    window.ShowDialog();
+                }
+            };
         }
 
         public override ISettings GetSettings(bool firstRunSettings)

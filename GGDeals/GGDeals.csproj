@@ -48,6 +48,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddFailures\AddFailuresManager.cs" />
+    <Compile Include="AddFailures\IAddFailuresFileService.cs" />
+    <Compile Include="AddFailures\MVVM\ShowAddFailuresView.xaml.cs">
+      <DependentUpon>ShowAddFailuresView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddFailures\MVVM\ShowAddFailuresViewModel.cs" />
     <Compile Include="AwaitableWebView.cs" />
     <Compile Include="GGDeals.cs" />
     <Compile Include="Infrastructure\Converters\BaseConverter.cs" />
@@ -90,6 +96,10 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Include="AddFailures\MVVM\ShowAddFailuresView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -108,6 +108,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddFailures\AddFailuresManagerTests.cs" />
     <Compile Include="Services\AddAGameServiceTests.cs" />
     <Compile Include="AutoMoqDataAttribute.cs" />
     <Compile Include="Services\AuthenticationStatusServiceTests.cs" />
