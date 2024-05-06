@@ -79,7 +79,7 @@ namespace GGDeals.Services
                 {
                     _playniteApi.Notifications.Add(
                         "gg-deals-gamepagenotfound",
-                        string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationGamePageNotFoundFormat"), gamesWithoutPage.Count),
+                        string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationGamePageNotFound_Format"), gamesWithoutPage.Count),
                         NotificationType.Info);
                 }
             }
