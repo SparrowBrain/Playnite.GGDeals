@@ -1,4 +1,5 @@
 ﻿using GGDeals.Website.Url;
+using TestTools.Shared;
 using Xunit;
 
 namespace GGDeals.UnitTests.Website.Url

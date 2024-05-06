@@ -7,6 +7,7 @@ using GGDeals.Settings;
 using GGDeals.Website;
 using Moq;
 using Playnite.SDK.Models;
+using TestTools.Shared;
 using Xunit;
 
 namespace GGDeals.UnitTests.Services

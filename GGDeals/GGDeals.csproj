@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Playnite.SDK, Version=6.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\PlayniteSDK.6.11.0\lib\net462\Playnite.SDK.dll</HintPath>
     </Reference>
@@ -48,8 +51,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddFailures\AddFailuresFileService.cs" />
     <Compile Include="AddFailures\AddFailuresManager.cs" />
     <Compile Include="AddFailures\IAddFailuresFileService.cs" />
+    <Compile Include="AddFailures\IAddFailuresManager.cs" />
     <Compile Include="AddFailures\MVVM\ShowAddFailuresView.xaml.cs">
       <DependentUpon>ShowAddFailuresView.xaml</DependentUpon>
     </Compile>
@@ -60,6 +65,10 @@
     <Compile Include="Infrastructure\Converters\BooleanToCollapsedVisibilityConverter.cs" />
     <Compile Include="Services\AuthenticationStatusService.cs" />
     <Compile Include="Settings\GGDealsSettings.cs" />
+    <Compile Include="Settings\IMigratableSettings.cs" />
+    <Compile Include="Settings\IPluginSettingsPersistence.cs" />
+    <Compile Include="Settings\ISettingsMigrator.cs" />
+    <Compile Include="Settings\IVersionedSettings.cs" />
     <Compile Include="Settings\MVVM\GGDealsSettingsView.xaml.cs">
       <DependentUpon>GGDealsSettingsView.xaml</DependentUpon>
     </Compile>
@@ -71,6 +80,10 @@
     <Compile Include="Services\IAddAGameService.cs" />
     <Compile Include="Settings\MVVM\GGDealsSettingsViewModel.cs" />
     <Compile Include="Settings\MVVM\LibraryItem.cs" />
+    <Compile Include="Settings\PluginSettingsPersistence.cs" />
+    <Compile Include="Settings\SettingsMigrator.cs" />
+    <Compile Include="Settings\StartupSettingsValidator.cs" />
+    <Compile Include="Settings\VersionedSettings.cs" />
     <Compile Include="Website\GamePage.cs" />
     <Compile Include="Website\GGWebsite.cs" />
     <Compile Include="Website\HomePage.cs" />

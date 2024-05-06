@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using GGDeals.AddFailures;
 using GGDeals.AddFailures.MVVM;
 using GGDeals.Services;
+using GGDeals.Settings;
 using GGDeals.Settings.MVVM;
 using GGDeals.Website;
 using GGDeals.Website.Url;
 using Playnite.SDK;
+using Playnite.SDK.Events;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 
@@ -17,8 +21,11 @@ namespace GGDeals
 {
     public class GGDeals : GenericPlugin
     {
-        private readonly IPlayniteAPI _api;
         private static readonly ILogger Logger = LogManager.GetLogger();
+
+        private readonly IPlayniteAPI _api;
+        private readonly string _failuresFilePath;
+        private readonly StartupSettingsValidator _startupSettingsValidator;
 
         private GGDealsSettingsViewModel _settings;
 
@@ -27,6 +34,8 @@ namespace GGDeals
         public GGDeals(IPlayniteAPI api) : base(api)
         {
             _api = api;
+            _failuresFilePath = Path.Combine(this.GetPluginUserDataPath(), "failures.json");
+
             Properties = new GenericPluginProperties
             {
                 HasSettings = true
@@ -36,6 +45,14 @@ namespace GGDeals
             {
                 AddGamesToGGCollection(gamesAddedArgs.AddedItems);
             };
+
+            var pluginSettingsPersistence = new PluginSettingsPersistence(this);
+            _startupSettingsValidator = new StartupSettingsValidator(pluginSettingsPersistence, new SettingsMigrator(pluginSettingsPersistence));
+        }
+
+        public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
+        {
+            _startupSettingsValidator.EnsureCorrectVersionSettingsExist();
         }
 
         public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
@@ -98,17 +115,28 @@ namespace GGDeals
         {
             Task.Run(async () =>
             {
-                using (var awaitableWebView = new AwaitableWebView(PlayniteApi.WebViews.CreateOffscreenView()))
+                try
                 {
-                    var homePageResolver = new HomePageResolver();
-                    var gamePageUrlGuesser = new GamePageUrlGuesser(homePageResolver);
-                    var libraryNameMap = new LibraryNameMap(PlayniteApi);
-                    var ggWebsite = new GGWebsite(awaitableWebView, homePageResolver, gamePageUrlGuesser);
-                    var homePage = new HomePage(awaitableWebView);
-                    var gamePage = new GamePage(awaitableWebView, libraryNameMap);
-                    var addAGameService = new AddAGameService(_settings.Settings, ggWebsite, gamePage);
-                    var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, homePage, addAGameService);
-                    await ggDealsService.AddGamesToLibrary(games);
+                    using (var awaitableWebView = new AwaitableWebView(PlayniteApi.WebViews.CreateOffscreenView()))
+                    {
+                        var settings = LoadPluginSettings<GGDealsSettings>();
+                        var homePageResolver = new HomePageResolver();
+                        var gamePageUrlGuesser = new GamePageUrlGuesser(homePageResolver);
+                        var libraryNameMap = new LibraryNameMap(PlayniteApi);
+                        var ggWebsite = new GGWebsite(awaitableWebView, homePageResolver, gamePageUrlGuesser);
+                        var homePage = new HomePage(awaitableWebView);
+                        var gamePage = new GamePage(awaitableWebView, libraryNameMap);
+                        var addAGameService = new AddAGameService(settings, ggWebsite, gamePage);
+                        var addFailuresFileService = new AddFailuresFileService(_failuresFilePath);
+                        var addFailuresManager = new AddFailuresManager(addFailuresFileService);
+                        var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, homePage, addAGameService,
+                            addFailuresManager);
+                        await ggDealsService.AddGamesToLibrary(games);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex, "Failed to add games to GG.deals collection.");
                 }
             });
         }

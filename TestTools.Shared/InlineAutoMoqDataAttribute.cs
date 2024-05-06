@@ -1,6 +1,6 @@
 ﻿using AutoFixture.Xunit2;
 
-namespace GGDeals.UnitTests
+namespace TestTools.Shared
 {
     public class InlineAutoMoqDataAttribute : InlineAutoDataAttribute
     {

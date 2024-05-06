@@ -6,6 +6,7 @@ using AutoFixture.Xunit2;
 using GGDeals.AddFailures;
 using GGDeals.Services;
 using Moq;
+using TestTools.Shared;
 using Xunit;
 
 namespace GGDeals.UnitTests.AddFailures
@@ -77,9 +78,9 @@ namespace GGDeals.UnitTests.AddFailures
         {
             // Arrange
             var failures = new Dictionary<Guid, AddToCollectionResult>
-            {
-                { failuresOnFile.Last().Key, failuresOnFile.Last().Value}
-            };
+                {
+                    { failuresOnFile.Last().Key, failuresOnFile.Last().Value}
+                };
             addFailuresFileServiceMock.Setup(x => x.Load()).ReturnsAsync(failuresOnFile);
 
             // Act

@@ -8,7 +8,7 @@ using Playnite.SDK;
 
 namespace GGDeals.AddFailures
 {
-    public class AddFailuresManager : IDisposable
+    public class AddFailuresManager : IAddFailuresManager, IDisposable
     {
         private const double SemaphoreTimeoutSeconds = 10;
         private readonly ILogger _logger = LogManager.GetLogger();

@@ -14,6 +14,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GGDeals.IntegrationTests", "GGDeals.IntegrationTests\GGDeals.IntegrationTests.csproj", "{225117BF-BFD9-4837-B980-F4D201DF3C77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTools.Shared", "TestTools.Shared\TestTools.Shared.csproj", "{53B7484B-BE62-481C-90D3-1E75E18250E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +32,14 @@ Global
 		{6D7A45D8-7FFA-40A0-A665-E8FDD2DCC823}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D7A45D8-7FFA-40A0-A665-E8FDD2DCC823}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D7A45D8-7FFA-40A0-A665-E8FDD2DCC823}.Release|Any CPU.Build.0 = Release|Any CPU
+		{225117BF-BFD9-4837-B980-F4D201DF3C77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{225117BF-BFD9-4837-B980-F4D201DF3C77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{225117BF-BFD9-4837-B980-F4D201DF3C77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{225117BF-BFD9-4837-B980-F4D201DF3C77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53B7484B-BE62-481C-90D3-1E75E18250E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53B7484B-BE62-481C-90D3-1E75E18250E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53B7484B-BE62-481C-90D3-1E75E18250E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53B7484B-BE62-481C-90D3-1E75E18250E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
