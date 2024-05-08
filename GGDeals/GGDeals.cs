@@ -21,11 +21,12 @@ namespace GGDeals
 {
     public class GGDeals : GenericPlugin
     {
+        private const string FailuresFileName = "failures.json";
         private static readonly ILogger Logger = LogManager.GetLogger();
 
         private readonly IPlayniteAPI _api;
-        private readonly string _failuresFilePath;
         private readonly StartupSettingsValidator _startupSettingsValidator;
+        private readonly AddFailuresManager _addFailuresManager;
 
         private GGDealsSettingsViewModel _settings;
 
@@ -34,7 +35,9 @@ namespace GGDeals
         public GGDeals(IPlayniteAPI api) : base(api)
         {
             _api = api;
-            _failuresFilePath = Path.Combine(this.GetPluginUserDataPath(), "failures.json");
+            var failuresFilePath = Path.Combine(GetPluginUserDataPath(), FailuresFileName);
+            var addFailuresFileService = new AddFailuresFileService(failuresFilePath);
+            _addFailuresManager = new AddFailuresManager(addFailuresFileService);
 
             Properties = new GenericPluginProperties
             {
@@ -90,8 +93,7 @@ namespace GGDeals
                     window.Width = 768;
                     window.Title = ResourceProvider.GetString("LOC_GGDeals_ShowAddFailuresTitle");
 
-                    window.Content = new ShowAddFailuresView();
-                    window.DataContext = new ShowAddFailuresViewModel();
+                    window.Content = new ShowAddFailuresView(new ShowAddFailuresViewModel(_api, _addFailuresManager));
 
                     window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
                     window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -127,10 +129,8 @@ namespace GGDeals
                         var homePage = new HomePage(awaitableWebView);
                         var gamePage = new GamePage(awaitableWebView, libraryNameMap);
                         var addAGameService = new AddAGameService(settings, ggWebsite, gamePage);
-                        var addFailuresFileService = new AddFailuresFileService(_failuresFilePath);
-                        var addFailuresManager = new AddFailuresManager(addFailuresFileService);
-                        var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, homePage, addAGameService,
-                            addFailuresManager);
+
+                        var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, homePage, addAGameService, _addFailuresManager);
                         await ggDealsService.AddGamesToLibrary(games);
                     }
                 }
