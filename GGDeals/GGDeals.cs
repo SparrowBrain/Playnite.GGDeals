@@ -71,14 +71,14 @@ namespace GGDeals
         {
             yield return new MainMenuItem
             {
-                Description = ResourceProvider.GetString("LOC_GGDeals_MainMenuItemAddAllToGGDealsCollection"),
+                Description = ResourceProvider.GetString("LOC_GGDeals_MainMenuItemAddToGGDealsCollection"),
                 MenuSection = "@GG.deals",
                 Action = actionArgs => { AddGamesToGGCollection(_api.Database.Games.ToList()); }
             };
 
             yield return new MainMenuItem
             {
-                Description = ResourceProvider.GetString("LOC_GGDeals_MainMenuItemShowAddFailures"),
+                Description = ResourceProvider.GetString("LOC_GGDeals_MainMenuItemShowFailures"),
                 MenuSection = "@GG.deals",
                 Action = actionArgs =>
                 {
@@ -93,7 +93,8 @@ namespace GGDeals
                     window.Width = 768;
                     window.Title = ResourceProvider.GetString("LOC_GGDeals_ShowAddFailuresTitle");
 
-                    window.Content = new ShowAddFailuresView(new ShowAddFailuresViewModel(_api, _addFailuresManager));
+                    var showAddFailuresViewModel = new ShowAddFailuresViewModel(this, _addFailuresManager);
+                    window.Content = new ShowAddFailuresView(showAddFailuresViewModel);
 
                     window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
                     window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -113,7 +114,7 @@ namespace GGDeals
             return new GGDealsSettingsView(PlayniteApi);
         }
 
-        private void AddGamesToGGCollection(IReadOnlyCollection<Game> games)
+        public void AddGamesToGGCollection(IReadOnlyCollection<Game> games)
         {
             Task.Run(async () =>
             {

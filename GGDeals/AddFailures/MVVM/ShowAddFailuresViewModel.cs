@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using GGDeals.Services;
+using System.Windows.Input;
 using Playnite.SDK;
 using Playnite.SDK.Plugins;
 
@@ -13,13 +13,15 @@ namespace GGDeals.AddFailures.MVVM
     public class ShowAddFailuresViewModel : ObservableObject
     {
         private readonly ILogger _logger = LogManager.GetLogger();
-        private readonly IPlayniteAPI _api;
+        private readonly GGDeals _plugin;
         private readonly AddFailuresManager _addFailuresManager;
         private ObservableCollection<FailureItem> _failures;
+        private bool? _isAllChecked;
+        private bool _isAllCheckedThreeState;
 
-        public ShowAddFailuresViewModel(IPlayniteAPI api, AddFailuresManager addFailuresManager)
+        public ShowAddFailuresViewModel(GGDeals plugin, AddFailuresManager addFailuresManager)
         {
-            _api = api;
+            _plugin = plugin;
             _addFailuresManager = addFailuresManager;
             Load();
         }
@@ -30,6 +32,35 @@ namespace GGDeals.AddFailures.MVVM
             set => SetValue(ref _failures, value);
         }
 
+        // ReSharper disable once UnusedMember.Global
+        public bool? IsAllChecked
+        {
+            get => _isAllChecked;
+            set
+            {
+                IsAllCheckedThreeState = value.HasValue;
+                if (!value.HasValue)
+                {
+                    SetValue(ref _isAllChecked, value);
+                    return;
+                }
+
+                foreach (var failure in Failures)
+                {
+                    failure.IsChecked = value.Value;
+                }
+
+                SetValue(ref _isAllChecked, value);
+            }
+        }
+
+        // ReSharper disable once UnusedMember.Global
+        public bool IsAllCheckedThreeState
+        {
+            get => _isAllCheckedThreeState;
+            set => SetValue(ref _isAllCheckedThreeState, value);
+        }
+
         public void Load()
         {
             Task.Run(async () =>
@@ -37,14 +68,14 @@ namespace GGDeals.AddFailures.MVVM
                 try
                 {
                     var failures = await _addFailuresManager.GetFailures();
-                    var games = _api.Database.Games.Where(x => failures.ContainsKey(x.Id));
-                    var libraries = _api.Addons.Plugins
+                    var games = _plugin.PlayniteApi.Database.Games.Where(x => failures.ContainsKey(x.Id));
+                    var libraries = _plugin.PlayniteApi.Addons.Plugins
                         .Where(x => games.Select(g => g.PluginId).Contains(x.Id))
                         .Select(x => x as LibraryPlugin).ToList();
 
                     var failureItems = games.Select(x => new FailureItem(
-                        x.Id,
-                        x.Name,
+                        this,
+                        x,
                         libraries.FirstOrDefault(l => l.Id == x.PluginId)?.Name,
                         failures[x.Id]));
 
@@ -55,33 +86,33 @@ namespace GGDeals.AddFailures.MVVM
                 }
                 catch (Exception e)
                 {
-                    _logger.Error(e, "Failed to load failures");
+                    _logger.Error(e, "Failed to load failures.");
                 }
             });
         }
-    }
 
-    public class FailureItem : ObservableObject
-    {
-        private bool _isChecked;
-
-        public FailureItem(Guid id, string name, string libraryName, AddToCollectionResult result)
+        // ReSharper disable once UnusedMember.Global
+        public ICommand RetryChecked => new RelayCommand(() =>
         {
-            Id = id;
-            Name = name;
-            LibraryName = libraryName;
-            Result = result;
-        }
+            var games = Failures.Where(x => x.IsChecked).Select(x => x.Game).ToList();
+            _plugin.AddGamesToGGCollection(games);
+        });
 
-        public bool IsChecked
+        // ReSharper disable once UnusedMember.Global
+        public ICommand RemoveChecked => new RelayCommand(() =>
         {
-            get => _isChecked;
-            set => SetValue(ref _isChecked, value);
-        }
-
-        public Guid Id { get; }
-        public string Name { get; }
-        public string LibraryName { get; }
-        public AddToCollectionResult Result { get; }
+            var games = Failures.Where(x => x.IsChecked).Select(x => x.Game.Id).ToList();
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await _addFailuresManager.RemoveFailures(games);
+                }
+                catch (Exception e)
+                {
+                    _logger.Error(e, "Failed to remove failures.");
+                }
+            });
+        });
     }
 }

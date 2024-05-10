@@ -7,8 +7,34 @@
              xmlns:converters="clr-namespace:GGDeals.Infrastructure.Converters"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Margin" Value="10,5,10,10"></Setter>
+            <Setter Property="Height" Value="27"></Setter>
+        </Style>
+        <Style  TargetType="TextBlock">
+            <Setter Property="FontSize" Value="{DynamicResource FontSize}" />
+            <Setter Property="FontFamily" Value="{DynamicResource FontFamily}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+        </Style>
+    </UserControl.Resources>
     <Grid>
-        <ListBox ItemsSource="{Binding Failures}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <CheckBox Grid.Column="0" Margin="7,5,0,5" IsThreeState="{Binding IsAllCheckedThreeState}" IsChecked="{Binding IsAllChecked}" Content="{DynamicResource LOC_GGDeals_ShowAddFailuresGameName}" />
+            <TextBlock Grid.Column="1" Margin="3,5,0,5" Text="{DynamicResource LOC_GGDeals_ShowAddFailuresLibraryName}" />
+            <TextBlock Grid.Column="2" Margin="1,5,0,5" Text="{DynamicResource LOC_GGDeals_ShowAddFailuresReason}" />
+        </Grid>
+        <ListBox Grid.Row="1" ItemsSource="{Binding Failures}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -16,15 +42,21 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <CheckBox Grid.Column="0" IsChecked="{Binding IsChecked}" Content="{Binding Id}" />
-                        <TextBlock Grid.Column="1" Text="{Binding Name}" />
-                        <TextBlock Grid.Column="2" Text="{Binding LibraryName}" />
-                        <TextBlock Grid.Column="3" Text="{Binding Result}" />
+                        <CheckBox Grid.Column="0" IsChecked="{Binding IsChecked}" Content="{Binding Game.Name}" />
+                        <TextBlock Grid.Column="1" Text="{Binding LibraryName}" />
+                        <TextBlock Grid.Column="2" Text="{Binding Result, Converter={converters:AddResultToLocalizedStringConverter}}" />
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Command="{Binding RetryChecked}" Content="{DynamicResource LOC_GGDeals_ShowAddFailuresRetryCheckedButton}"></Button>
+            <Button Grid.Column="1" Command="{Binding RemoveChecked}" Content="{DynamicResource LOC_GGDeals_ShowAddFailuresRemoveCheckedButton}"></Button>
+        </Grid>
     </Grid>
 </UserControl>

@@ -55,6 +55,7 @@
     <Compile Include="AddFailures\AddFailuresManager.cs" />
     <Compile Include="AddFailures\IAddFailuresFileService.cs" />
     <Compile Include="AddFailures\IAddFailuresManager.cs" />
+    <Compile Include="AddFailures\MVVM\FailureItem.cs" />
     <Compile Include="AddFailures\MVVM\ShowAddFailuresView.xaml.cs">
       <DependentUpon>ShowAddFailuresView.xaml</DependentUpon>
     </Compile>
