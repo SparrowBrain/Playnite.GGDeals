@@ -1,0 +1,12 @@
+﻿Id: SparrowBrain_GGDeals
+Name: Play Next
+Author: SparrowBrain
+Version: 1.0.1
+Module: GGDeals.dll
+Type: GenericPlugin
+Icon: icon.png
+Links:
+    - Name: GitHub
+      Url: https://github.com/SparrowBrain/Playnite.GGDeals
+    - Name: Translate
+      Url: https://crowdin.com/project/sparrowbrain-playnite-ggdeals

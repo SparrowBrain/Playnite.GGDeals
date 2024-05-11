@@ -1,0 +1,14 @@
+AddonId: SparrowBrain_GGDeals
+Packages:
+  - Version: 1.0.1
+    RequiredApiVersion: 6.8.0
+    ReleaseDate: 2023-03-18
+    PackageUrl: https://github.com/SparrowBrain/Playnite.GGDeals/releases/download/v1.0.1/SparrowBrain_GGDeals_1_0_1.pext
+    Changelog:
+      - Fixed missing game cover/icon handling
+  - Version: 1.0.0
+    RequiredApiVersion: 6.8.0
+    ReleaseDate: 2023-03-16
+    PackageUrl: https://github.com/SparrowBrain/Playnite.GGDeals/releases/download/v1.0.0/SparrowBrain_GGDeals_1_0_0.pext
+    Changelog:
+      - Initial release

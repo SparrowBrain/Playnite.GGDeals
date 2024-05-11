@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4FDF1E89-5BC3-4C72-8FDA-0D580E7A5D5F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GGDeals</RootNamespace>
+    <AssemblyName>GGDeals</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Playnite.SDK, Version=70.50.60.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PlayniteSDK.70.50.60\lib\net462\Playnite.SDK.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Infrastructure\Converters\AddResultToLocalizedStringConverter.cs" />
+    <Compile Include="Menu\AddGames\MVVM\AddGamesView.xaml.cs">
+      <DependentUpon>AddGamesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Menu\AddGames\MVVM\AddGamesViewModel.cs" />
+    <Compile Include="Menu\AddGames\MVVM\IViewModelForWindow.cs" />
+    <Compile Include="Menu\Failures\AddFailuresFileService.cs" />
+    <Compile Include="Menu\Failures\AddFailuresManager.cs" />
+    <Compile Include="Menu\Failures\IAddFailuresFileService.cs" />
+    <Compile Include="Menu\Failures\IAddFailuresManager.cs" />
+    <Compile Include="Menu\Failures\MVVM\FailureItem.cs" />
+    <Compile Include="Menu\Failures\MVVM\ShowAddFailuresView.xaml.cs">
+      <DependentUpon>ShowAddFailuresView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Menu\Failures\MVVM\ShowAddFailuresViewModel.cs" />
+    <Compile Include="AwaitableWebView.cs" />
+    <Compile Include="GGDeals.cs" />
+    <Compile Include="Infrastructure\Converters\BaseConverter.cs" />
+    <Compile Include="Infrastructure\Converters\BooleanToCollapsedVisibilityConverter.cs" />
+    <Compile Include="Services\AuthenticationStatusService.cs" />
+    <Compile Include="Settings\GGDealsSettings.cs" />
+    <Compile Include="Settings\IMigratableSettings.cs" />
+    <Compile Include="Settings\IPluginSettingsPersistence.cs" />
+    <Compile Include="Settings\ISettingsMigrator.cs" />
+    <Compile Include="Settings\IVersionedSettings.cs" />
+    <Compile Include="Settings\MVVM\GGDealsSettingsView.xaml.cs">
+      <DependentUpon>GGDealsSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IAwaitableWebView.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AddAGameService.cs" />
+    <Compile Include="Services\AddToCollectionResult.cs" />
+    <Compile Include="Services\GGDealsService.cs" />
+    <Compile Include="Services\IAddAGameService.cs" />
+    <Compile Include="Settings\MVVM\GGDealsSettingsViewModel.cs" />
+    <Compile Include="Settings\MVVM\LibraryItem.cs" />
+    <Compile Include="Settings\PluginSettingsPersistence.cs" />
+    <Compile Include="Settings\SettingsMigrator.cs" />
+    <Compile Include="Settings\StartupSettingsValidator.cs" />
+    <Compile Include="Settings\VersionedSettings.cs" />
+    <Compile Include="Website\GamePage.cs" />
+    <Compile Include="Website\GGWebsite.cs" />
+    <Compile Include="Website\HomePage.cs" />
+    <Compile Include="Website\IGamePage.cs" />
+    <Compile Include="Website\IGGWebsite.cs" />
+    <Compile Include="Website\IHomePage.cs" />
+    <Compile Include="Website\ILibraryNameMap.cs" />
+    <Compile Include="Website\LibraryNameMap.cs" />
+    <Compile Include="Website\Url\GamePageUrlGuesser.cs" />
+    <Compile Include="Website\Url\HomePageResolver.cs" />
+    <Compile Include="Website\Url\IGamePageUrlGuesser.cs" />
+    <Compile Include="Website\Url\IHomePageResolver.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="extension.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Localization\*.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Page Include="Menu\AddGames\MVVM\AddGamesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Menu\Failures\MVVM\ShowAddFailuresView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Settings\MVVM\GGDealsSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

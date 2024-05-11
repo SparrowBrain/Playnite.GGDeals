@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\xunit.runner.visualstudio.2.8.0\build\net462\xunit.runner.visualstudio.props" Condition="Exists('..\packages\xunit.runner.visualstudio.2.8.0\build\net462\xunit.runner.visualstudio.props')" />
-  <Import Project="..\packages\xunit.core.2.8.0\build\xunit.core.props" Condition="Exists('..\packages\xunit.core.2.8.0\build\xunit.core.props')" />
+  <Import Project="..\packages\xunit.runner.console.2.4.2\build\xunit.runner.console.props" Condition="Exists('..\packages\xunit.runner.console.2.4.2\build\xunit.runner.console.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6D7A45D8-7FFA-40A0-A665-E8FDD2DCC823}</ProjectGuid>
+    <ProjectGuid>{A751BF7A-3F85-4ACC-8524-ADB7A61AD22F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GGDeals.UnitTests</RootNamespace>
-    <AssemblyName>GGDeals.UnitTests</AssemblyName>
+    <RootNamespace>ReleaseTools.IntegrationTests</RootNamespace>
+    <AssemblyName>ReleaseTools.IntegrationTests</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -68,12 +68,6 @@
     <Reference Include="Moq, Version=4.20.70.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.20.70\lib\net462\Moq.dll</HintPath>
     </Reference>
-    <Reference Include="NuGet.Frameworks, Version=6.5.0.154, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\NuGet.Frameworks.6.5.0\lib\netstandard2.0\NuGet.Frameworks.dll</HintPath>
-    </Reference>
-    <Reference Include="Playnite.SDK, Version=6.11.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PlayniteSDK.6.11.0\lib\net462\Playnite.SDK.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
@@ -108,32 +102,39 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddFailures\AddFailuresManagerTests.cs" />
-    <Compile Include="Services\AddAGameServiceTests.cs" />
-    <Compile Include="Services\AuthenticationStatusServiceTests.cs" />
-    <Compile Include="Settings\SettingsMigratorTests.cs" />
-    <Compile Include="Settings\StartupSettingsValidatorTests.cs" />
-    <Compile Include="Website\GamePageTests.cs" />
-    <Compile Include="Website\GGWebsiteTests.cs" />
-    <Compile Include="Website\HomePageTests.cs" />
-    <Compile Include="Website\LibraryNameMapTests.cs" />
-    <Compile Include="Website\Url\GamePageUrlGuesserTests.cs" />
-    <Compile Include="Services\GGDealsServiceTests.cs" />
+    <Compile Include="Changelog\ChangelogReaderTests.cs" />
+    <Compile Include="Changelog\ReleaseChangelogWriterTests.cs" />
+    <Compile Include="ExtensionYaml\ExtensionYamlUpdaterTests.cs" />
+    <Compile Include="InstallerManifestYaml\InstallerManifestUpdaterTests.cs" />
+    <Compile Include="InstallerManifestYaml\PlayniteSdkVersionParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Website\Url\HomePageResolverTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Changelog\TestData\expected_release_changelog.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="ExtensionYaml\TestData\extension_after.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="ExtensionYaml\TestData\extension_before.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="InstallerManifestYaml\TestData\after_installer_manifest.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="InstallerManifestYaml\TestData\before_installer_manifest.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="InstallerManifestYaml\TestData\GGDeals.csproj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GGDeals\GGDeals.csproj">
-      <Project>{4FDF1E89-5BC3-4C72-8FDA-0D580E7A5D5F}</Project>
-      <Name>GGDeals</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TestTools.Shared\TestTools.Shared.csproj">
-      <Project>{53B7484B-BE62-481C-90D3-1E75E18250E3}</Project>
-      <Name>TestTools.Shared</Name>
+    <ProjectReference Include="..\ReleaseTools\ReleaseTools.csproj">
+      <Project>{5C1FF6FE-5A69-4F8D-B161-75F58DB89666}</Project>
+      <Name>ReleaseTools</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
@@ -143,9 +144,7 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\xunit.core.2.8.0\build\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.8.0\build\xunit.core.props'))" />
-    <Error Condition="!Exists('..\packages\xunit.core.2.8.0\build\xunit.core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.8.0\build\xunit.core.targets'))" />
+    <Error Condition="!Exists('..\packages\xunit.runner.console.2.4.2\build\xunit.runner.console.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.console.2.4.2\build\xunit.runner.console.props'))" />
     <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.8.0\build\net462\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.8.0\build\net462\xunit.runner.visualstudio.props'))" />
   </Target>
-  <Import Project="..\packages\xunit.core.2.8.0\build\xunit.core.targets" Condition="Exists('..\packages\xunit.core.2.8.0\build\xunit.core.targets')" />
 </Project>
