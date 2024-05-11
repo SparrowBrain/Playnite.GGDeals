@@ -34,7 +34,8 @@ namespace GGDeals.Website.Url
                     .Replace(" ", "-")
                     .Replace("'", "-")
                     .Where(c => AllowedCharacters.Contains(c))
-                    .ToArray());
+                    .ToArray())
+                    .Replace("--", "-");
             }
 
             var consoleSuffix = GetConsoleSuffix(game);
