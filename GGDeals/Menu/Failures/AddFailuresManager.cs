@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using GGDeals.Services;
 using Playnite.SDK;
 
-namespace GGDeals.AddFailures
+namespace GGDeals.Menu.Failures
 {
     public class AddFailuresManager : IAddFailuresManager, IDisposable
     {

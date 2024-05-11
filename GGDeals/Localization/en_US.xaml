@@ -22,4 +22,5 @@
     <sys:String x:Key="LOC_GGDeals_ShowAddFailuresReasonNotProcessed">Not Processed</sys:String>
     <sys:String x:Key="LOC_GGDeals_ShowAddFailuresRemoveCheckedButton">Remove Checked</sys:String>
     <sys:String x:Key="LOC_GGDeals_ShowAddFailuresRetryCheckedButton">Retry Checked</sys:String>
+    <sys:String x:Key="LOC_GGDeals_ShowAddFailuresRetryCloseButton">Close</sys:String>
 </ResourceDictionary>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using GGDeals.AddFailures;
+using GGDeals.Menu.Failures;
 using GGDeals.Services;
 using Newtonsoft.Json;
 using Xunit;

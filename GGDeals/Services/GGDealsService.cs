@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Authentication;
 using System.Threading.Tasks;
-using GGDeals.AddFailures;
+using GGDeals.Menu.Failures;
 using GGDeals.Website;
 using Playnite.SDK;
 using Playnite.SDK.Models;

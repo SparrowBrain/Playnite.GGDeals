@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace GGDeals.AddFailures.MVVM
+namespace GGDeals.Menu.Failures.MVVM
 {
     /// <summary>
     /// Interaction logic for ShowAddFailuresView.xaml

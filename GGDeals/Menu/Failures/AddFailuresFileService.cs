@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using GGDeals.Services;
 using Newtonsoft.Json;
 
-namespace GGDeals.AddFailures
+namespace GGDeals.Menu.Failures
 {
     public class AddFailuresFileService : IAddFailuresFileService
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using GGDeals.AddFailures;
+using GGDeals.Menu.Failures;
 using GGDeals.Services;
 using Moq;
 using TestTools.Shared;

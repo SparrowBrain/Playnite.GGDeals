@@ -2,7 +2,7 @@
 using GGDeals.Services;
 using Playnite.SDK.Models;
 
-namespace GGDeals.AddFailures.MVVM
+namespace GGDeals.Menu.Failures.MVVM
 {
     public class FailureItem : ObservableObject
     {

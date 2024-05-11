@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using GGDeals.Services;
 
-namespace GGDeals.AddFailures
+namespace GGDeals.Menu.Failures
 {
     public interface IAddFailuresFileService
     {

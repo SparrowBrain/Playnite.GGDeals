@@ -51,15 +51,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddFailures\AddFailuresFileService.cs" />
-    <Compile Include="AddFailures\AddFailuresManager.cs" />
-    <Compile Include="AddFailures\IAddFailuresFileService.cs" />
-    <Compile Include="AddFailures\IAddFailuresManager.cs" />
-    <Compile Include="AddFailures\MVVM\FailureItem.cs" />
-    <Compile Include="AddFailures\MVVM\ShowAddFailuresView.xaml.cs">
+    <Compile Include="Menu\Failures\AddFailuresFileService.cs" />
+    <Compile Include="Menu\Failures\AddFailuresManager.cs" />
+    <Compile Include="Menu\Failures\IAddFailuresFileService.cs" />
+    <Compile Include="Menu\Failures\IAddFailuresManager.cs" />
+    <Compile Include="Menu\Failures\MVVM\FailureItem.cs" />
+    <Compile Include="Menu\Failures\MVVM\ShowAddFailuresView.xaml.cs">
       <DependentUpon>ShowAddFailuresView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AddFailures\MVVM\ShowAddFailuresViewModel.cs" />
+    <Compile Include="Menu\Failures\MVVM\ShowAddFailuresViewModel.cs" />
     <Compile Include="AwaitableWebView.cs" />
     <Compile Include="GGDeals.cs" />
     <Compile Include="Infrastructure\Converters\BaseConverter.cs" />
@@ -110,7 +110,7 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Page Include="AddFailures\MVVM\ShowAddFailuresView.xaml">
+    <Page Include="Menu\Failures\MVVM\ShowAddFailuresView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

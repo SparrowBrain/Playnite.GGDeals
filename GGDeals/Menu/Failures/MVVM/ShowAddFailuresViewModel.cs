@@ -8,7 +8,7 @@ using System.Windows.Input;
 using Playnite.SDK;
 using Playnite.SDK.Plugins;
 
-namespace GGDeals.AddFailures.MVVM
+namespace GGDeals.Menu.Failures.MVVM
 {
     public class ShowAddFailuresViewModel : ObservableObject
     {
