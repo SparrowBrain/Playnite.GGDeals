@@ -51,10 +51,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\Converters\AddResultToLocalizedStringConverter.cs" />
     <Compile Include="Menu\AddGames\MVVM\AddGamesView.xaml.cs">
       <DependentUpon>AddGamesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Menu\AddGames\MVVM\AddGamesViewModel.cs" />
+    <Compile Include="Menu\AddGames\MVVM\IViewModelForWindow.cs" />
     <Compile Include="Menu\Failures\AddFailuresFileService.cs" />
     <Compile Include="Menu\Failures\AddFailuresManager.cs" />
     <Compile Include="Menu\Failures\IAddFailuresFileService.cs" />

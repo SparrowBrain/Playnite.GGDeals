@@ -18,6 +18,7 @@ namespace GGDeals.Menu.Failures.MVVM
         private ObservableCollection<FailureItem> _failures;
         private bool? _isAllChecked;
         private bool _isAllCheckedThreeState;
+        private bool _isLoading;
 
         public ShowAddFailuresViewModel(GGDeals plugin, AddFailuresManager addFailuresManager)
         {
@@ -61,52 +62,59 @@ namespace GGDeals.Menu.Failures.MVVM
             set => SetValue(ref _isAllCheckedThreeState, value);
         }
 
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set => SetValue(ref _isLoading, value);
+        }
+
         public void Load()
         {
             Task.Run(async () =>
             {
-                try
-                {
-                    var failures = await _addFailuresManager.GetFailures();
-                    var games = _plugin.PlayniteApi.Database.Games.Where(x => failures.ContainsKey(x.Id));
-                    var libraries = _plugin.PlayniteApi.Addons.Plugins
-                        .Where(x => games.Select(g => g.PluginId).Contains(x.Id))
-                        .Select(x => x as LibraryPlugin).ToList();
-
-                    var failureItems = games.Select(x => new FailureItem(
-                        this,
-                        x,
-                        libraries.FirstOrDefault(l => l.Id == x.PluginId)?.Name,
-                        failures[x.Id]));
-
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        Failures = new ObservableCollection<FailureItem>(failureItems);
-                    });
-                }
-                catch (Exception e)
-                {
-                    _logger.Error(e, "Failed to load failures.");
-                }
+                await LoadAsync();
             });
         }
 
         // ReSharper disable once UnusedMember.Global
         public ICommand RetryChecked => new RelayCommand(() =>
         {
-            var games = Failures.Where(x => x.IsChecked).Select(x => x.Game).ToList();
-            _plugin.AddGamesToGGCollection(games);
+            Task.Run(async () =>
+            {
+                try
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        IsLoading = true;
+                    });
+                    var games = Failures.Where(x => x.IsChecked).Select(x => x.Game).ToList();
+                    await _plugin.AddGamesToGGCollectionAsync(games);
+                    await LoadAsync();
+                }
+                catch (Exception e)
+                {
+                    _logger.Error(e, "Failed to retry failures.");
+                }
+                finally
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        IsLoading = false;
+                    });
+                }
+            });
         });
 
         // ReSharper disable once UnusedMember.Global
         public ICommand RemoveChecked => new RelayCommand(() =>
         {
-            var games = Failures.Where(x => x.IsChecked).Select(x => x.Game.Id).ToList();
             Task.Run(async () =>
             {
                 try
                 {
+                    var games = Failures.Where(x => x.IsChecked).Select(x => x.Game.Id).ToList();
                     await _addFailuresManager.RemoveFailures(games);
+                    Load();
                 }
                 catch (Exception e)
                 {
@@ -114,5 +122,43 @@ namespace GGDeals.Menu.Failures.MVVM
                 }
             });
         });
+
+        private async Task LoadAsync()
+        {
+            try
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    IsLoading = true;
+                });
+                var failures = await _addFailuresManager.GetFailures();
+                var games = _plugin.PlayniteApi.Database.Games.Where(x => failures.ContainsKey(x.Id));
+                var libraries = _plugin.PlayniteApi.Addons.Plugins
+                    .Where(x => games.Select(g => g.PluginId).Contains(x.Id))
+                    .Select(x => x as LibraryPlugin).ToList();
+
+                var failureItems = games.Select(x => new FailureItem(
+                    this,
+                    x,
+                    libraries.FirstOrDefault(l => l.Id == x.PluginId)?.Name,
+                    failures[x.Id]));
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Failures = new ObservableCollection<FailureItem>(failureItems);
+                });
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "Failed to load failures.");
+            }
+            finally
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    IsLoading = false;
+                });
+            }
+        }
     }
 }

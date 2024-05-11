@@ -2,8 +2,6 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using GGDeals.Services;
-using Playnite.SDK;
 
 namespace GGDeals.Infrastructure.Converters
 {
@@ -25,26 +23,11 @@ namespace GGDeals.Infrastructure.Converters
         }
     }
 
-    internal class AddResultToLocalizedStringConverter : BaseConverter, IValueConverter
+    internal class InverseBooleanConverter : BaseConverter, IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is AddToCollectionResult result)
-            {
-                switch (result)
-                {
-                    case AddToCollectionResult.PageNotFound:
-                        return ResourceProvider.GetString("LOC_GGDeals_ShowAddFailuresReasonPageNotFound");
-
-                    case AddToCollectionResult.NotProcessed:
-                        return ResourceProvider.GetString("LOC_GGDeals_ShowAddFailuresReasonNotProcessed");
-
-                    default:
-                        return result.ToString();
-                }
-            }
-
-            return value;
+            return value is bool isTrue && !isTrue;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

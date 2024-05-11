@@ -80,7 +80,7 @@ namespace GGDeals
                         new AddGamesView(addGamesViewModel),
                         150,
                         500,
-                        ResourceProvider.GetString("LOC_GGDeals_AddGamesTitle"), 
+                        ResourceProvider.GetString("LOC_GGDeals_AddGamesTitle"),
                         false);
                 }
             };
@@ -96,7 +96,7 @@ namespace GGDeals
                         new ShowAddFailuresView(showAddFailuresViewModel),
                         768,
                         768,
-                        ResourceProvider.GetString("LOC_GGDeals_ShowAddFailuresTitle"), 
+                        ResourceProvider.GetString("LOC_GGDeals_ShowAddFailuresTitle"),
                         true);
                 }
             };
@@ -116,28 +116,33 @@ namespace GGDeals
         {
             Task.Run(async () =>
             {
-                try
-                {
-                    using (var awaitableWebView = new AwaitableWebView(PlayniteApi.WebViews.CreateOffscreenView()))
-                    {
-                        var settings = LoadPluginSettings<GGDealsSettings>();
-                        var homePageResolver = new HomePageResolver();
-                        var gamePageUrlGuesser = new GamePageUrlGuesser(homePageResolver);
-                        var libraryNameMap = new LibraryNameMap(PlayniteApi);
-                        var ggWebsite = new GGWebsite(awaitableWebView, homePageResolver, gamePageUrlGuesser);
-                        var homePage = new HomePage(awaitableWebView);
-                        var gamePage = new GamePage(awaitableWebView, libraryNameMap);
-                        var addAGameService = new AddAGameService(settings, ggWebsite, gamePage);
-
-                        var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, homePage, addAGameService, _addFailuresManager);
-                        await ggDealsService.AddGamesToLibrary(games);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex, "Failed to add games to GG.deals collection.");
-                }
+                await AddGamesToGGCollectionAsync(games);
             });
+        }
+
+        public async Task AddGamesToGGCollectionAsync(IReadOnlyCollection<Game> games)
+        {
+            try
+            {
+                using (var awaitableWebView = new AwaitableWebView(PlayniteApi.WebViews.CreateOffscreenView()))
+                {
+                    var settings = LoadPluginSettings<GGDealsSettings>();
+                    var homePageResolver = new HomePageResolver();
+                    var gamePageUrlGuesser = new GamePageUrlGuesser(homePageResolver);
+                    var libraryNameMap = new LibraryNameMap(PlayniteApi);
+                    var ggWebsite = new GGWebsite(awaitableWebView, homePageResolver, gamePageUrlGuesser);
+                    var homePage = new HomePage(awaitableWebView);
+                    var gamePage = new GamePage(awaitableWebView, libraryNameMap);
+                    var addAGameService = new AddAGameService(settings, ggWebsite, gamePage);
+
+                    var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, homePage, addAGameService, _addFailuresManager);
+                    await ggDealsService.AddGamesToLibrary(games);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Failed to add games to GG.deals collection.");
+            }
         }
 
         private void ShowDialog(UserControl view, double height, double width, string title, bool showMaximizeButton)
@@ -154,6 +159,10 @@ namespace GGDeals
             window.Title = title;
 
             window.Content = view;
+            if (view.DataContext is IViewModelForWindow viewModelForWindow)
+            {
+                viewModelForWindow.AssociateWindow(window);
+            }
 
             window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
