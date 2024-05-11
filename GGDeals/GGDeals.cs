@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using GGDeals.Menu.AddGames.MVVM;
 using GGDeals.Menu.Failures;
 using GGDeals.Menu.Failures.MVVM;
 using GGDeals.Services;
@@ -73,7 +73,16 @@ namespace GGDeals
             {
                 Description = ResourceProvider.GetString("LOC_GGDeals_MainMenuItemAddToGGDealsCollection"),
                 MenuSection = "@GG.deals",
-                Action = actionArgs => { AddGamesToGGCollection(_api.Database.Games.ToList()); }
+                Action = actionArgs =>
+                {
+                    var addGamesViewModel = new AddGamesViewModel(this);
+                    ShowDialog(
+                        new AddGamesView(addGamesViewModel),
+                        150,
+                        500,
+                        ResourceProvider.GetString("LOC_GGDeals_AddGamesTitle"), 
+                        false);
+                }
             };
 
             yield return new MainMenuItem
@@ -82,24 +91,13 @@ namespace GGDeals
                 MenuSection = "@GG.deals",
                 Action = actionArgs =>
                 {
-                    var window = _api.Dialogs.CreateWindow(new WindowCreationOptions()
-                    {
-                        ShowCloseButton = true,
-                        ShowMaximizeButton = true,
-                        ShowMinimizeButton = false,
-                    });
-
-                    window.Height = 768;
-                    window.Width = 768;
-                    window.Title = ResourceProvider.GetString("LOC_GGDeals_ShowAddFailuresTitle");
-
                     var showAddFailuresViewModel = new ShowAddFailuresViewModel(this, _addFailuresManager);
-                    window.Content = new ShowAddFailuresView(showAddFailuresViewModel);
-
-                    window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
-                    window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
-                    window.ShowDialog();
+                    ShowDialog(
+                        new ShowAddFailuresView(showAddFailuresViewModel),
+                        768,
+                        768,
+                        ResourceProvider.GetString("LOC_GGDeals_ShowAddFailuresTitle"), 
+                        true);
                 }
             };
         }
@@ -140,6 +138,27 @@ namespace GGDeals
                     Logger.Error(ex, "Failed to add games to GG.deals collection.");
                 }
             });
+        }
+
+        private void ShowDialog(UserControl view, double height, double width, string title, bool showMaximizeButton)
+        {
+            var window = _api.Dialogs.CreateWindow(new WindowCreationOptions()
+            {
+                ShowCloseButton = true,
+                ShowMaximizeButton = showMaximizeButton,
+                ShowMinimizeButton = false,
+            });
+
+            window.Height = height;
+            window.Width = width;
+            window.Title = title;
+
+            window.Content = view;
+
+            window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
+            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+            window.ShowDialog();
         }
     }
 }
