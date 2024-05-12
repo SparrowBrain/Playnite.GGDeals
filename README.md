@@ -20,15 +20,15 @@ The extension then when asked to add a game will use the game name to guess the 
 
 ## Recommended usage
 1. Authenticate in the addon settings; 
-![Main NextPlay view screenshot](/ci/screenshots/05.jpg)
+    ![Main NextPlay view screenshot](/ci/screenshots/05.jpg)
 2. Select libraries you want to sync. By default all libraries except for Steam and GOG will be synced;
 3. Either sync individual games via the game menu, or sync all games via Main menu -> Extensions -> GG.deals -> Add games to GG.deals collection...;
-![Main NextPlay view screenshot](/ci/screenshots/01.jpg)
-![Main NextPlay view screenshot](/ci/screenshots/02.jpg)
-![Main NextPlay view screenshot](/ci/screenshots/03.jpg)
+    ![Main NextPlay view screenshot](/ci/screenshots/01.jpg)
+    ![Main NextPlay view screenshot](/ci/screenshots/02.jpg)
+    ![Main NextPlay view screenshot](/ci/screenshots/03.jpg)
 4. In case there are any syncing failures, check the Main menu -> Extensions -> GG.deals -> Show failures...;
 5. Manually add the games to you collection on the website. Remove these games from failures list;
-![Main NextPlay view screenshot](/ci/screenshots/04.jpg)
+    ![Main NextPlay view screenshot](/ci/screenshots/04.jpg)
 
 In my experience this extension can successfully add ~80% of games. Sadly, the url pattern is not as consistent as I expected, hence some manual labor will be required.
 
