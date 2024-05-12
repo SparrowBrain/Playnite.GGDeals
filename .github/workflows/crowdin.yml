@@ -10,13 +10,16 @@ jobs:
   synchronize-with-crowdin:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.2
 
       - name: Generate token
         id: generate_token
-        uses: tibdex/github-app-token@v2
+        uses: tibdex/github-app-token@v1
         with:
           app_id: "${{ secrets.LITTLE_BUDDY_APP_ID }}"
           private_key: "${{ secrets.LITTLE_BUDDY_PRIVATE_KEY }}"
