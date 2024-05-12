@@ -42,3 +42,6 @@ In my experience this extension can successfully add ~80% of games. Sadly, the u
 
 ## Installation
 You can install it either from Playnite's addon browser, or from [the web addon browser](https://playnite.link/addons.html#SparrowBrain_GGDeals).
+
+## Translation
+You can help with translation by visiting [the project on Crowdin](https://crowdin.com/project/sparrowbrain-playnite-ggdeals).

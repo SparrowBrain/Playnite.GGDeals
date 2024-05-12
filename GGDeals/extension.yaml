@@ -5,3 +5,8 @@ Version: 1.0.0
 Module: GGDeals.dll
 Type: GenericPlugin
 Icon: icon.png
+Links:
+    - Name: GitHub
+      Url: https://github.com/SparrowBrain/Playnite.GGDeals
+    - Name: Translate
+      Url: https://crowdin.com/project/sparrowbrain-playnite-ggdeals
