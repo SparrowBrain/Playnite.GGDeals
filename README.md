@@ -18,14 +18,15 @@ Currently, there is no GG.deals API, so the extension simulates clicks on the GG
 
 The extension then when asked to add a game will use the game name to guess the url on the website. If the game exists by that url, the game will be added to respective launcher (depending on the library plugin). 
 
+![Main NextPlay view screenshot](/ci/screenshots/01.jpg)
+![Main NextPlay view screenshot](/ci/screenshots/02.jpg)
+![Main NextPlay view screenshot](/ci/screenshots/03.jpg)
+
 ## Recommended usage
 1. Authenticate in the addon settings; 
     ![Main NextPlay view screenshot](/ci/screenshots/05.jpg)
 2. Select libraries you want to sync. By default all libraries except for Steam and GOG will be synced;
 3. Either sync individual games via the game menu, or sync all games via Main menu -> Extensions -> GG.deals -> Add games to GG.deals collection...;
-    ![Main NextPlay view screenshot](/ci/screenshots/01.jpg)
-    ![Main NextPlay view screenshot](/ci/screenshots/02.jpg)
-    ![Main NextPlay view screenshot](/ci/screenshots/03.jpg)
 4. In case there are any syncing failures, check the Main menu -> Extensions -> GG.deals -> Show failures...;
 5. Manually add the games to you collection on the website. Remove these games from failures list;
     ![Main NextPlay view screenshot](/ci/screenshots/04.jpg)
