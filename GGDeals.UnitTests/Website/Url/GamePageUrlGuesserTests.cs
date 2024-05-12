@@ -16,7 +16,7 @@ namespace GGDeals.UnitTests.Website.Url
         [InlineAutoMoqData("DARK SOULS: REMASTERED", "https://abc.xyz/game/dark-souls-remastered/")]
         [InlineAutoMoqData("Terminator: Dark Fate - Defiance", "https://abc.xyz/game/terminator-dark-fate-defiance/")]
         [InlineAutoMoqData("Destroy All Humans! 2 - Reprobed", "https://abc.xyz/game/destroy-all-humans-2-reprobed/")]
-        [InlineAutoMoqData("Assassin's Creed Origins", "https://abc.xyz/game/assassin-s-creed-origins/")]
+        [InlineAutoMoqData("Assassin's Creed Valhalla", "https://abc.xyz/game/assassins-creed-valhalla/")]
         [InlineAutoMoqData("Superbrothers: Sword & Sworcery EP", "https://abc.xyz/game/superbrothers-sword-sworcery-ep/")]
         public void Resolve_GivenGameName_ReturnsFullUrl(
             string gameName,

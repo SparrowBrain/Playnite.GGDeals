@@ -32,7 +32,6 @@ namespace GGDeals.Website.Url
                     .ToLower()
                     .Replace(" - ", "-")
                     .Replace(" ", "-")
-                    .Replace("'", "-")
                     .Where(c => AllowedCharacters.Contains(c))
                     .ToArray())
                     .Replace("--", "-");
