@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using AutoFixture.Xunit2;
+﻿using AutoFixture.Xunit2;
 using GGDeals.Website.Url;
 using Moq;
-using Playnite.SDK;
 using Playnite.SDK.Models;
 using TestTools.Shared;
 using Xunit;
