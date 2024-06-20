@@ -1,5 +1,6 @@
---------v1.0.1
+--------v1.1.0
 - Added Lithuanian language
+- Added skipping of Playnite library (skipped by default)
 
 v1.0.1
 - Added missing links
