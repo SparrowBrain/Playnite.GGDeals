@@ -1,3 +1,6 @@
+------v2.0.0
+- Processing games only after metadata fetch
+
 v1.1.0
 - Added Lithuanian language
 - Added skipping of Playnite library (skipped by default)

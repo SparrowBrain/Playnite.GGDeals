@@ -108,9 +108,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddFailures\AddFailuresManagerTests.cs" />
+    <Compile Include="Menu\Failures\AddFailuresManagerTests.cs" />
     <Compile Include="Services\AddAGameServiceTests.cs" />
     <Compile Include="Services\AuthenticationStatusServiceTests.cs" />
+    <Compile Include="Services\PersistentProcessingQueueTests.cs" />
     <Compile Include="Settings\SettingsMigratorTests.cs" />
     <Compile Include="Settings\StartupSettingsValidatorTests.cs" />
     <Compile Include="Website\GamePageTests.cs" />
