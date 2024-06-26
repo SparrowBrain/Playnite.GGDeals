@@ -60,7 +60,7 @@ namespace GGDeals.UnitTests.Services
 			queuePersistenceMock.Setup(x => x.Load()).ReturnsAsync(oldGameIds);
 
 			// Act
-			var sut = new PersistentProcessingQueue(playniteApiMock.Object, queuePersistenceMock.Object, (p, x) => Task.CompletedTask);
+			var sut = new PersistentProcessingQueue(queuePersistenceMock.Object, x => Task.CompletedTask);
 			await sut.Enqueue(newGameIds);
 
 			// Assert
@@ -78,7 +78,7 @@ namespace GGDeals.UnitTests.Services
 			// Arrange
 			var actionCalled = false;
 			var semaphore = new SemaphoreSlim(0, 1);
-			var sut = new PersistentProcessingQueue(playniteApiMock.Object, queuePersistenceMock.Object, (p, x) =>
+			var sut = new PersistentProcessingQueue(queuePersistenceMock.Object, x =>
 			{
 				actionCalled = true;
 				semaphore.Release();
@@ -102,7 +102,7 @@ namespace GGDeals.UnitTests.Services
 		{
 			// Arrange
 			var semaphore = new SemaphoreSlim(0, 1);
-			var sut = new PersistentProcessingQueue(playniteApiMock.Object, queuePersistenceMock.Object, (p, x) =>
+			var sut = new PersistentProcessingQueue(queuePersistenceMock.Object, x =>
 			{
 				semaphore.Release();
 				return Task.CompletedTask;
@@ -126,7 +126,7 @@ namespace GGDeals.UnitTests.Services
 		{
 			// Arrange
 			var semaphore = new SemaphoreSlim(0, 1);
-			var sut = new PersistentProcessingQueue(playniteApiMock.Object, queuePersistenceMock.Object, (p, x) => throw new Exception());
+			var sut = new PersistentProcessingQueue(queuePersistenceMock.Object, x => throw new Exception());
 			await sut.Enqueue(gameIds);
 
 			// Act
@@ -146,7 +146,7 @@ namespace GGDeals.UnitTests.Services
 		{
 			// Arrange
 			var semaphore = new SemaphoreSlim(0, 1);
-			var sut = new PersistentProcessingQueue(playniteApiMock.Object, queuePersistenceMock.Object, (p, x) => throw new Exception());
+			var sut = new PersistentProcessingQueue(queuePersistenceMock.Object, x => throw new Exception());
 			await sut.Enqueue(gameIds);
 			queuePersistenceMock.Reset();
 

@@ -1,25 +1,23 @@
-﻿using System;
+﻿using Playnite.SDK;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Playnite.SDK;
 
 namespace GGDeals.Services
 {
 	public class PersistentProcessingQueue
 	{
 		private readonly ILogger _logger = LogManager.GetLogger();
-		private readonly IPlayniteAPI _api;
 		private readonly IQueuePersistence _queuePersistence;
-		private readonly Func<IPlayniteAPI, IReadOnlyCollection<Guid>, Task> _action;
+		private readonly Func<IReadOnlyCollection<Guid>, Task> _action;
 
 		private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 		private readonly ConcurrentQueue<Guid> _gameIds;
 
-		public PersistentProcessingQueue(IPlayniteAPI api, IQueuePersistence queuePersistence, Func<IPlayniteAPI, IReadOnlyCollection<Guid>, Task> action)
+		public PersistentProcessingQueue(IQueuePersistence queuePersistence, Func<IReadOnlyCollection<Guid>, Task> action)
 		{
-			_api = api;
 			_queuePersistence = queuePersistence;
 			_action = action;
 
@@ -50,7 +48,7 @@ namespace GGDeals.Services
 						gameIds.Add(gameId);
 					}
 
-					await _action(_api, gameIds);
+					await _action(gameIds);
 					await _queuePersistence.Save(_gameIds);
 				}
 				catch (Exception e)
