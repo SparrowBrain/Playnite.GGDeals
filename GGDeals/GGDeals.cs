@@ -145,9 +145,10 @@ namespace GGDeals
 					var ggWebsite = new GGWebsite(awaitableWebView, homePageResolver, gamePageUrlGuesser);
 					var homePage = new HomePage(awaitableWebView);
 					var gamePage = new GamePage(awaitableWebView, libraryNameMap);
-					var addAGameService = new AddAGameService(settings, ggWebsite, gamePage);
+					var gameToAddFilter = new GameToAddFilter(settings);
+					var addGamesService = new AddGamesService(gameToAddFilter);
 
-					var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, homePage, addAGameService, _addFailuresManager);
+					var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, homePage, addGamesService, _addFailuresManager);
 					await ggDealsService.AddGamesToLibrary(games);
 				}
 			}

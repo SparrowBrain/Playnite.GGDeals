@@ -68,6 +68,9 @@
     <Reference Include="Moq, Version=4.20.70.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.20.70\lib\net462\Moq.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NuGet.Frameworks, Version=6.5.0.154, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\NuGet.Frameworks.6.5.0\lib\netstandard2.0\NuGet.Frameworks.dll</HintPath>
     </Reference>
@@ -108,9 +111,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\Services\GameToGameWithLauncherConverterTests.cs" />
+    <Compile Include="Api\Services\LibraryToGGLauncherMapTests.cs" />
+    <Compile Include="Api\Services\RequestDataBatcherTests.cs" />
     <Compile Include="Menu\Failures\AddFailuresManagerTests.cs" />
     <Compile Include="Services\AddAGameServiceTests.cs" />
+    <Compile Include="Services\AddGamesServiceTests.cs" />
     <Compile Include="Services\AuthenticationStatusServiceTests.cs" />
+    <Compile Include="Services\GameToAddFilterTests.cs" />
     <Compile Include="Services\PersistentProcessingQueueTests.cs" />
     <Compile Include="Settings\SettingsMigratorTests.cs" />
     <Compile Include="Settings\StartupSettingsValidatorTests.cs" />
