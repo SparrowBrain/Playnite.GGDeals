@@ -5,6 +5,7 @@ namespace GGDeals.Settings
 {
 	public class GGDealsSettings : ObservableObject, IVersionedSettings
 	{
+		private string _devCollectionImportEndpoint;
 		public const int CurrentVersion = 0;
 
 		public GGDealsSettings()
@@ -27,5 +28,11 @@ namespace GGDeals.Settings
 		public List<Guid> LibrariesToSkip { get; set; }
 
 		public bool SyncPlayniteLibrary { get; set; }
+
+		public string DevCollectionImportEndpoint
+		{
+			get => _devCollectionImportEndpoint;
+			set => SetValue(ref _devCollectionImportEndpoint, value);
+		}
 	}
 }

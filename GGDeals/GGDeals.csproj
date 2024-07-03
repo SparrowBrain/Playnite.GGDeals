@@ -52,10 +52,18 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\Models\GameWithLauncher.cs" />
+    <Compile Include="Api\Models\GGLauncher.cs" />
     <Compile Include="Api\Models\ImportRequest.cs" />
+    <Compile Include="Api\Models\ImportResponse.cs" />
+    <Compile Include="Api\Models\ImportResult.cs" />
+    <Compile Include="Api\Models\ImportResultStatus.cs" />
+    <Compile Include="Api\Models\ResponseData.cs" />
     <Compile Include="Api\Services\GameToGameWithLauncherConverter.cs" />
+    <Compile Include="Api\Services\GGDealsApiClient.cs" />
     <Compile Include="Api\Services\ILibraryToGGLauncherMap.cs" />
     <Compile Include="Api\Services\LibraryToGGLauncherMap.cs" />
+    <Compile Include="Api\Services\RequestDataBatcher.cs" />
     <Compile Include="Infrastructure\Converters\AddResultToLocalizedStringConverter.cs" />
     <Compile Include="Menu\AddGames\MVVM\AddGamesView.xaml.cs">
       <DependentUpon>AddGamesView.xaml</DependentUpon>

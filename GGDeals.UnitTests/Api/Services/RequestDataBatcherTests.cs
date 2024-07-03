@@ -5,6 +5,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using GGDeals.Api.Services;
 using Xunit;
 
 namespace GGDeals.UnitTests.Api.Services
@@ -82,7 +84,7 @@ namespace GGDeals.UnitTests.Api.Services
 			// Arrange
 			var game = games.Last();
 			var json = JsonConvert.SerializeObject(games);
-			while (json.Length < 10_000_000)
+			while (Encoding.UTF8.GetBytes(json).Length < 10_000_000)
 			{
 				var newGame = JsonConvert.DeserializeObject<GameWithLauncher>(JsonConvert.SerializeObject(game));
 				newGame.Id = Guid.NewGuid();
@@ -103,45 +105,6 @@ namespace GGDeals.UnitTests.Api.Services
 			var secondBatch = JsonConvert.DeserializeObject<List<GameWithLauncher>>(result.Last());
 			Assert.Equivalent(firstBatchGames, firstBatch);
 			Assert.Equivalent(secondBatchGames, secondBatch);
-		}
-	}
-
-	public class RequestDataBatcher
-	{
-		private const int BatchGameCount = 1000;
-		private const int MaxJsonLength = 10_000_000;
-
-		public IEnumerable<string> CreateDataJsons(IReadOnlyCollection<GameWithLauncher> games)
-		{
-			if (games.Count == 0)
-			{
-				throw new ArgumentException("Cannot batch an empty games list", nameof(games));
-			}
-
-			var remainingGames = new List<GameWithLauncher>(games);
-			while (true)
-			{
-				var batch = remainingGames.Take(BatchGameCount).ToList();
-				var gamesTaken = batch.Count;
-				var json = JsonConvert.SerializeObject(batch);
-				if (json.Length > MaxJsonLength)
-				{
-					for (var i = 1; json.Length > MaxJsonLength; i++)
-					{
-						batch = remainingGames.Take(gamesTaken - i).ToList();
-						gamesTaken = batch.Count;
-						json = JsonConvert.SerializeObject(batch);
-					}
-				}
-
-				yield return json;
-
-				remainingGames = remainingGames.Skip(gamesTaken).ToList();
-				if (!remainingGames.Any())
-				{
-					yield break;
-				}
-			}
 		}
 	}
 }

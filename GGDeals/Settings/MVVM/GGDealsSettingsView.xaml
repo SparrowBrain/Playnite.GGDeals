@@ -4,45 +4,60 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:GGDeals.Infrastructure.Converters"
+             xmlns:debug="debug-mode"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="600">
-    <UserControl.Resources>
-        <Style TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlockStyle}">
-            <Setter Property="Margin" Value="0,5,5,0" />
-            <Setter Property="TextWrapping" Value="Wrap"></Setter>
-        </Style>
-        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Margin" Value="5,0,5,0"></Setter>
-        </Style>
-        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-            <Setter Property="Margin" Value="2.5,2.5,2.5,2.5"></Setter>
-        </Style>
-        <Style TargetType="RadioButton" BasedOn="{StaticResource {x:Type RadioButton}}">
-            <Setter Property="Margin" Value="0,2.5,0,2.5"></Setter>
-        </Style>
-    </UserControl.Resources>
-    <StackPanel>
-        <GroupBox Header="{DynamicResource LOC_GGDeals_SettingsAuthenticationGroupTitle}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="{DynamicResource LOC_GGDeals_SettingsAuthenticate}"  Command="{Binding Authenticate}"></Button>
-                <TextBlock Grid.Column="1" Text="{Binding AuthenticationStatus}"></TextBlock>
-            </Grid>
+  <UserControl.Resources>
+    <Style TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlockStyle}">
+      <Setter Property="Margin" Value="0,5,5,0" />
+      <Setter Property="TextWrapping" Value="Wrap"></Setter>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+      <Setter Property="Margin" Value="5,0,5,0"></Setter>
+    </Style>
+    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+      <Setter Property="Margin" Value="2.5,2.5,2.5,2.5"></Setter>
+    </Style>
+    <Style TargetType="RadioButton" BasedOn="{StaticResource {x:Type RadioButton}}">
+      <Setter Property="Margin" Value="0,2.5,0,2.5"></Setter>
+    </Style>
+  </UserControl.Resources>
+  <StackPanel>
+    <GroupBox Header="{DynamicResource LOC_GGDeals_SettingsAuthenticationGroupTitle}">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition></ColumnDefinition>
+          <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Button Grid.Column="0" Content="{DynamicResource LOC_GGDeals_SettingsAuthenticate}"  Command="{Binding Authenticate}"></Button>
+        <TextBlock Grid.Column="1" Text="{Binding AuthenticationStatus}"></TextBlock>
+      </Grid>
+    </GroupBox>
+    <GroupBox Header="{DynamicResource LOC_GGDeals_SettingsLibrariesGroupTitle}">
+      <ListBox ItemsSource="{Binding LibraryItems}">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <StackPanel Orientation="Horizontal">
+              <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding Name}" />
+              <TextBlock Margin="5,0" Text="ℹ" Visibility="{Binding IsOffByDefault,  Converter={converters:BooleanToCollapsedVisibilityConverter}}" ToolTip="{DynamicResource LOC_GGDeals_SettingsLibraryDisabledByDefault}"></TextBlock>
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </GroupBox>
+    <mc:AlternateContent>
+      <mc:Choice Requires="debug">
+        <GroupBox Header="Debug">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition></ColumnDefinition>
+              <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="API Endpoint"></TextBlock>
+            <TextBox Grid.Column="1" Text="{Binding Settings.DevCollectionImportEndpoint}"></TextBox>
+          </Grid>
         </GroupBox>
-        <GroupBox Header="{DynamicResource LOC_GGDeals_SettingsLibrariesGroupTitle}">
-            <ListBox ItemsSource="{Binding LibraryItems}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding Name}" />
-                            <TextBlock Margin="5,0" Text="ℹ" Visibility="{Binding IsOffByDefault,  Converter={converters:BooleanToCollapsedVisibilityConverter}}" ToolTip="{DynamicResource LOC_GGDeals_SettingsLibraryDisabledByDefault}"></TextBlock>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </GroupBox>
-    </StackPanel>
+      </mc:Choice>
+    </mc:AlternateContent>
+  </StackPanel>
 </UserControl>
