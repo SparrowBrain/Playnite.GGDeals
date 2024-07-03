@@ -13,19 +13,19 @@ namespace GGDeals.Services
 		private readonly IQueuePersistence _queuePersistence;
 		private readonly Func<IReadOnlyCollection<Guid>, Task> _action;
 
-		private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
-		private readonly ConcurrentQueue<Guid> _gameIds;
+		private readonly SemaphoreSlim _initSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim _processingSemaphore = new SemaphoreSlim(1, 1);
+		private ConcurrentQueue<Guid> _gameIds;
 
 		public PersistentProcessingQueue(IQueuePersistence queuePersistence, Func<IReadOnlyCollection<Guid>, Task> action)
 		{
 			_queuePersistence = queuePersistence;
 			_action = action;
-
-			_gameIds = new ConcurrentQueue<Guid>(_queuePersistence.Load().Result);
 		}
 
 		public async Task Enqueue(IReadOnlyCollection<Guid> gameIds)
 		{
+			await EnsureInitialized();
 			foreach (var gameId in gameIds)
 			{
 				_gameIds.Enqueue(gameId);
@@ -38,7 +38,8 @@ namespace GGDeals.Services
 		{
 			Task.Run(async () =>
 			{
-				await _semaphore.WaitAsync();
+				await EnsureInitialized();
+				await _processingSemaphore.WaitAsync();
 
 				var gameIds = new List<Guid>();
 				try
@@ -58,9 +59,26 @@ namespace GGDeals.Services
 				}
 				finally
 				{
-					_semaphore.Release();
+					_processingSemaphore.Release();
 				}
 			});
+		}
+
+		private async Task EnsureInitialized()
+		{
+			if (_gameIds != null)
+			{
+				return;
+			}
+
+			await _initSemaphore.WaitAsync();
+			if (_gameIds != null)
+			{
+				return;
+			}
+
+			var gameIds = await _queuePersistence.Load();
+			_gameIds = new ConcurrentQueue<Guid>(gameIds);
 		}
 	}
 }
