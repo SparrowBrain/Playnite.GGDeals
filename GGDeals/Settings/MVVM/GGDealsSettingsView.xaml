@@ -29,8 +29,8 @@
           <ColumnDefinition></ColumnDefinition>
           <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Button Grid.Column="0" Content="{DynamicResource LOC_GGDeals_SettingsAuthenticate}"  Command="{Binding Authenticate}"></Button>
-        <TextBlock Grid.Column="1" Text="{Binding AuthenticationStatus}"></TextBlock>
+        <TextBlock Grid.Column="0" Text="{DynamicResource LOC_GGDeals_SettingsAuthenticationToken}"></TextBlock>
+        <TextBox Grid.Column="1" Text="{Binding Settings.AuthenticationToken}"></TextBox>
       </Grid>
     </GroupBox>
     <GroupBox Header="{DynamicResource LOC_GGDeals_SettingsLibrariesGroupTitle}">
