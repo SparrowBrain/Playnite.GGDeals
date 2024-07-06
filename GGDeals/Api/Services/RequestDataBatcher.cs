@@ -7,7 +7,7 @@ using System.Text;
 
 namespace GGDeals.Api.Services
 {
-	public class RequestDataBatcher
+	public class RequestDataBatcher : IRequestDataBatcher
 	{
 		private const int BatchGameCount = 1000;
 		private const int MaxJsonLength = 10_000_000;

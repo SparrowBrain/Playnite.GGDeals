@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Authentication;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GGDeals.Services
@@ -34,7 +35,7 @@ namespace GGDeals.Services
 			_addFailuresManager = addFailuresManager;
 		}
 
-		public async Task AddGamesToLibrary(IReadOnlyCollection<Game> games)
+		public async Task AddGamesToLibrary(IReadOnlyCollection<Game> games, CancellationToken ct)
 		{
 			var addedGames = new List<Guid>();
 			var gamesWithoutPage = new List<Guid>();
@@ -49,11 +50,11 @@ namespace GGDeals.Services
 					throw new AuthenticationException("User is not logged in!");
 				}
 
-				var addResults = await _addGamesService.TryAddToCollection(games);
-				addedGames = addResults.Where(r => r.Value == AddToCollectionResult.Added).Select(r => r.Key).ToList();
-				gamesWithoutPage = addResults.Where(r => r.Value == AddToCollectionResult.PageNotFound).Select(r => r.Key).ToList();
-				alreadyOwnedGames = addResults.Where(r => r.Value == AddToCollectionResult.AlreadyOwned).Select(r => r.Key).ToList();
-				skippedDueToLibrary = addResults.Where(r => r.Value == AddToCollectionResult.SkippedDueToLibrary).Select(r => r.Key).ToList();
+				var addResults = await _addGamesService.TryAddToCollection(games, ct);
+				addedGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.Added).Select(r => r.Key).ToList();
+				gamesWithoutPage = addResults.Where(r => r.Value.Result == AddToCollectionResult.PageNotFound).Select(r => r.Key).ToList();
+				alreadyOwnedGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.AlreadyOwned).Select(r => r.Key).ToList();
+				skippedDueToLibrary = addResults.Where(r => r.Value.Result == AddToCollectionResult.SkippedDueToLibrary).Select(r => r.Key).ToList();
 
 				if (gamesWithoutPage.Count > 0)
 				{

@@ -4,7 +4,7 @@ using Playnite.SDK.Models;
 
 namespace GGDeals.Api.Services
 {
-	public class GameToGameWithLauncherConverter
+	public class GameToGameWithLauncherConverter : IGameToGameWithLauncherConverter
 	{
 		private readonly ILibraryToGGLauncherMap _libraryToGGLauncherMap;
 

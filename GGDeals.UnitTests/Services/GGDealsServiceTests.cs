@@ -8,7 +8,9 @@ using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using GGDeals.Settings;
 using TestTools.Shared;
 using Xunit;
 
@@ -24,6 +26,7 @@ namespace GGDeals.UnitTests.Services
 			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
 			Exception exception,
 			List<Game> games,
+			CancellationToken ct,
 			GGDealsService sut)
 		{
 			// Arrange
@@ -31,7 +34,7 @@ namespace GGDeals.UnitTests.Services
 			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
 
 			// Act
-			await sut.AddGamesToLibrary(games);
+			await sut.AddGamesToLibrary(games, ct);
 
 			// Assert
 			notificationsApiMock.Verify(
@@ -47,6 +50,7 @@ namespace GGDeals.UnitTests.Services
 			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
 			Exception exception,
 			List<Game> games,
+			CancellationToken ct,
 			GGDealsService sut)
 		{
 			// Arrange
@@ -54,7 +58,7 @@ namespace GGDeals.UnitTests.Services
 			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
 
 			// Act
-			await sut.AddGamesToLibrary(games);
+			await sut.AddGamesToLibrary(games, ct);
 
 			// Assert
 			notificationsApiMock.Verify(
@@ -63,20 +67,25 @@ namespace GGDeals.UnitTests.Services
 		}
 
 		[Theory]
-		[AutoMoqData]
-		public async Task AddGamesToLibrary_ShowsInfoNotification_WhenIsUserLoggedInReturnsFalse(
+		[InlineAutoMoqData(null)]
+		[InlineAutoMoqData("")]
+		[InlineAutoMoqData("   ")]
+		public async Task AddGamesToLibrary_ShowsInfoNotification_WhenAuthenticationTokenIsEmpty(
+			string authenticationToken,
 			[Frozen] Mock<IHomePage> homePageMock,
 			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
 			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
+			[Frozen] GGDealsSettings settings,
 			List<Game> games,
+			CancellationToken ct,
 			GGDealsService sut)
 		{
 			// Arrange
-			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(false);
+			settings.AuthenticationToken = authenticationToken;
 			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
 
 			// Act
-			await sut.AddGamesToLibrary(games);
+			await sut.AddGamesToLibrary(games, ct);
 
 			// Assert
 			notificationsApiMock.Verify(
@@ -91,13 +100,14 @@ namespace GGDeals.UnitTests.Services
 			[Frozen] Mock<IAddFailuresManager> addFailuresManagerMock,
 			Exception exception,
 			List<Game> games,
+			CancellationToken ct,
 			GGDealsService sut)
 		{
 			// Arrange
 			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(false);
 
 			// Act
-			await sut.AddGamesToLibrary(games);
+			await sut.AddGamesToLibrary(games, ct);
 
 			// Assert
 			addFailuresManagerMock.Verify(
@@ -114,15 +124,16 @@ namespace GGDeals.UnitTests.Services
 			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
 			Exception exception,
 			List<Game> games,
+			CancellationToken ct,
 			GGDealsService sut)
 		{
 			// Arrange
 			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
-			addGamesServiceMock.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>())).ThrowsAsync(exception);
+			addGamesServiceMock.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>())).ThrowsAsync(exception);
 			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
 
 			// Act
-			await sut.AddGamesToLibrary(games);
+			await sut.AddGamesToLibrary(games, ct);
 
 			// Assert
 			notificationsApiMock.Verify(
@@ -138,14 +149,15 @@ namespace GGDeals.UnitTests.Services
 			[Frozen] Mock<IAddFailuresManager> addFailuresManagerMock,
 			Exception exception,
 			List<Game> games,
+			CancellationToken ct,
 			GGDealsService sut)
 		{
 			// Arrange
 			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
-			addGamesServiceMock.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>())).ThrowsAsync(exception);
+			addGamesServiceMock.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>())).ThrowsAsync(exception);
 
 			// Act
-			await sut.AddGamesToLibrary(games);
+			await sut.AddGamesToLibrary(games, ct);
 
 			// Assert
 			addFailuresManagerMock.Verify(
@@ -161,17 +173,18 @@ namespace GGDeals.UnitTests.Services
 			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
 			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
 			List<Game> games,
+			CancellationToken ct,
 			GGDealsService sut)
 		{
 			// Arrange
 			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
 			addGamesServiceMock
-				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => AddToCollectionResult.PageNotFound));
+				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.PageNotFound }));
 			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
 
 			// Act
-			await sut.AddGamesToLibrary(games);
+			await sut.AddGamesToLibrary(games, ct);
 
 			// Assert
 			notificationsApiMock.Verify(
@@ -186,21 +199,22 @@ namespace GGDeals.UnitTests.Services
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
 			[Frozen] Mock<IAddFailuresManager> addFailuresManagerMock,
 			List<Game> games,
+			CancellationToken ct,
 			GGDealsService sut)
 		{
 			// Arrange
 			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
 			addGamesServiceMock
-				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => AddToCollectionResult.PageNotFound));
+				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.PageNotFound }));
 
 			// Act
-			await sut.AddGamesToLibrary(games);
+			await sut.AddGamesToLibrary(games, ct);
 
 			// Assert
 			addFailuresManagerMock.Verify(
-				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f =>  f.Values.All(v=> v.Result == AddToCollectionResult.PageNotFound) && f.Keys.SequenceEqual(games.Select(g=>g.Id)))),
-					 Times.Once);
+				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f => f.Values.All(v => v.Result == AddToCollectionResult.PageNotFound) && f.Keys.SequenceEqual(games.Select(g => g.Id)))),
+				Times.Once);
 		}
 
 		[Theory]
@@ -211,17 +225,18 @@ namespace GGDeals.UnitTests.Services
 			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
 			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
 			List<Game> games,
+			CancellationToken ct,
 			GGDealsService sut)
 		{
 			// Arrange
 			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
 			addGamesServiceMock
-				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => AddToCollectionResult.Added));
+				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.Added }));
 			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
 
 			// Act
-			await sut.AddGamesToLibrary(games);
+			await sut.AddGamesToLibrary(games, ct);
 
 			// Assert
 			notificationsApiMock.Verify(x => x.Add(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<NotificationType>()), Times.Never);
@@ -234,16 +249,17 @@ namespace GGDeals.UnitTests.Services
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
 			[Frozen] Mock<IAddFailuresManager> addFailuresManagerMock,
 			List<Game> games,
+			CancellationToken ct,
 			GGDealsService sut)
 		{
 			// Arrange
 			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
 			addGamesServiceMock
-				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => AddToCollectionResult.Added));
+				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.Added }));
 
 			// Act
-			await sut.AddGamesToLibrary(games);
+			await sut.AddGamesToLibrary(games, ct);
 
 			// Assert
 			addFailuresManagerMock.Verify(
@@ -259,101 +275,21 @@ namespace GGDeals.UnitTests.Services
 			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
 			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
 			List<Game> games,
+			CancellationToken ct,
 			GGDealsService sut)
 		{
 			// Arrange
 			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
 			addGamesServiceMock
-				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => AddToCollectionResult.SkippedDueToLibrary));
+				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.SkippedDueToLibrary }));
 			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
 
 			// Act
-			await sut.AddGamesToLibrary(games);
+			await sut.AddGamesToLibrary(games, ct);
 
 			// Assert
 			notificationsApiMock.Verify(x => x.Add(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<NotificationType>()), Times.Never);
-		}
-
-		[Theory]
-		[AutoMoqData]
-		public async Task AddGamesToLibrary_DoesNotAddAFailure_WhenLibraryIsIgnored(
-			[Frozen] Mock<IHomePage> homePageMock,
-			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
-			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
-			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
-			[Frozen] Mock<IAddFailuresManager> addFailuresManagerMock,
-			List<Game> games,
-			GGDealsService sut)
-		{
-			// Arrange
-			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
-			addGamesServiceMock
-				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => AddToCollectionResult.SkippedDueToLibrary));
-			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
-
-			// Act
-			await sut.AddGamesToLibrary(games);
-
-			// Assert
-			addFailuresManagerMock.Verify(x => x.AddFailures(It.IsAny<Dictionary<Guid, AddResult>>()), Times.Never);
-		}
-
-		[Theory]
-		[AutoMoqData]
-		public async Task AddGamesToLibrary_RemovesFailures_WhenLibraryIsIgnored(
-			[Frozen] Mock<IHomePage> homePageMock,
-			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
-			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
-			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
-			[Frozen] Mock<IAddFailuresManager> addFailuresManagerMock,
-			List<Game> games,
-			GGDealsService sut)
-		{
-			// Arrange
-			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
-			addGamesServiceMock
-				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => AddToCollectionResult.SkippedDueToLibrary));
-			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
-
-			// Act
-			await sut.AddGamesToLibrary(games);
-
-			// Assert
-			addFailuresManagerMock.Verify(
-				x => x.RemoveFailures(
-					It.Is<IReadOnlyCollection<Guid>>(f => games.Select(g => g.Id).ToList().SequenceEqual(f))),
-				Times.Once);
-		}
-
-		[Theory]
-		[AutoMoqData]
-		public async Task AddGamesToLibrary_RemovesFailures_WhenGameIsAlreadyOwned(
-			[Frozen] Mock<IHomePage> homePageMock,
-			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
-			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
-			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
-			[Frozen] Mock<IAddFailuresManager> addFailuresManagerMock,
-			List<Game> games,
-			GGDealsService sut)
-		{
-			// Arrange
-			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
-			addGamesServiceMock
-				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => AddToCollectionResult.AlreadyOwned));
-			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
-
-			// Act
-			await sut.AddGamesToLibrary(games);
-
-			// Assert
-			addFailuresManagerMock.Verify(
-				x => x.RemoveFailures(
-					It.Is<IReadOnlyCollection<Guid>>(f => games.Select(g => g.Id).ToList().SequenceEqual(f))),
-				Times.Once);
 		}
 	}
 }

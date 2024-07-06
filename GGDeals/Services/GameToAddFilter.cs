@@ -15,25 +15,24 @@ namespace GGDeals.Services
 			_settings = settings;
 		}
 
-		public bool ShouldTryAddGame(Game game, out AddToCollectionResult? status)
+		public bool ShouldTryAddGame(Game game, out AddResult status)
 		{
 			if (game.PluginId == Guid.Empty && !_settings.SyncPlayniteLibrary)
 			{
 				Logger.Debug($"Skipped due to Playnite library: {{ Id: {game.Id}, Name: {game.Name} }}.");
-				status = AddToCollectionResult.SkippedDueToLibrary;
+				status = new AddResult() { Result = AddToCollectionResult.SkippedDueToLibrary };
 				return false;
 			}
 
 			if (_settings.LibrariesToSkip.Contains(game.PluginId))
 			{
 				Logger.Debug($"Skipped due to library: {{ Id: {game.Id}, Name: {game.Name} }}.");
-				status = AddToCollectionResult.SkippedDueToLibrary;
+				status = new AddResult() { Result = AddToCollectionResult.SkippedDueToLibrary };
 				return false;
 			}
 
 			status = null;
 			return true;
-
 		}
 	}
 }

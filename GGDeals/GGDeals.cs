@@ -1,5 +1,7 @@
-﻿using GGDeals.Menu.AddGames.MVVM;
+﻿using GGDeals.Api.Services;
+using GGDeals.Menu.AddGames.MVVM;
 using GGDeals.Menu.Failures;
+using GGDeals.Menu.Failures.File;
 using GGDeals.Menu.Failures.MVVM;
 using GGDeals.Services;
 using GGDeals.Settings;
@@ -14,10 +16,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using GGDeals.Menu.Failures.File;
 
 namespace GGDeals
 {
@@ -147,10 +149,15 @@ namespace GGDeals
 					var homePage = new HomePage(awaitableWebView);
 					var gamePage = new GamePage(awaitableWebView, libraryNameMap);
 					var gameToAddFilter = new GameToAddFilter(settings);
-					var addGamesService = new AddGamesService(gameToAddFilter);
+					var libraryToGGLauncherMap = new LibraryToGGLauncherMap();
+					var gameToGameWithLauncherConverter = new GameToGameWithLauncherConverter(libraryToGGLauncherMap);
+					var requestDataBatcher = new RequestDataBatcher();
+					var ggDealsApiClient = new GGDealsApiClient(settings);
+					var addGamesService = new AddGamesService(settings, gameToAddFilter, gameToGameWithLauncherConverter, requestDataBatcher, ggDealsApiClient);
 
 					var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, homePage, addGamesService, _addFailuresManager);
-					await ggDealsService.AddGamesToLibrary(games);
+					// TODO: Implement cancellation token source
+					await ggDealsService.AddGamesToLibrary(games, CancellationToken.None);
 				}
 			}
 			catch (Exception ex)

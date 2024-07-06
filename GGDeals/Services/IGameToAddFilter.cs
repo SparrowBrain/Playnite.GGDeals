@@ -4,6 +4,6 @@ namespace GGDeals.Services
 {
 	public interface IGameToAddFilter
 	{
-		bool ShouldTryAddGame(Game game, out AddToCollectionResult? status);
+		bool ShouldTryAddGame(Game game, out AddResult status);
 	}
 }

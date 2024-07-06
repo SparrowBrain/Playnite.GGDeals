@@ -26,7 +26,7 @@ namespace GGDeals.UnitTests.Services
 
 			// Assert
 			Assert.False(result);
-			Assert.Equal(AddToCollectionResult.SkippedDueToLibrary, status);
+			Assert.Equal(AddToCollectionResult.SkippedDueToLibrary, status.Result);
 		}
 
 		[Theory]
@@ -45,7 +45,7 @@ namespace GGDeals.UnitTests.Services
 
 			// Assert
 			Assert.False(result);
-			Assert.Equal(AddToCollectionResult.SkippedDueToLibrary, status);
+			Assert.Equal(AddToCollectionResult.SkippedDueToLibrary, status.Result);
 		}
 	}
 }

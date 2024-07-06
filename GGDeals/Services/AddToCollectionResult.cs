@@ -7,5 +7,6 @@
         AlreadyOwned,
         SkippedDueToLibrary,
         NotProcessed,
+        Error
     }
 }

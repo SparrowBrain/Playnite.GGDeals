@@ -1,17 +1,20 @@
 ﻿using GGDeals.Api.Models;
 using GGDeals.Settings;
 using Newtonsoft.Json;
+using Playnite.SDK;
 using System;
 using System.Net;
 using System.Net.Http;
 using System.Security.Authentication;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GGDeals.Api.Services
 {
-	public class GGDealsApiClient : IDisposable
+	public class GGDealsApiClient : IDisposable, IGGDealsApiClient
 	{
+		private static ILogger _logger = LogManager.GetLogger();
 		private static string _endpoint = "ACTUAL ENDPOINT GOES HERE?";
 		private readonly HttpClient _httpClient;
 
@@ -24,11 +27,14 @@ namespace GGDeals.Api.Services
 #endif
 		}
 
-		public async Task<ImportResponse> ImportGames(ImportRequest request)
+		public async Task<ImportResponse> ImportGames(ImportRequest request, CancellationToken ct)
 		{
 			var content = PrepareContent(request);
+			_logger.Debug($"Calling GG.Deals with body: {content}");
 
-			var response = await _httpClient.PostAsync(_endpoint, content);
+			var response = await _httpClient.PostAsync(_endpoint, content, ct);
+			var responseString = await response.Content.ReadAsStringAsync();
+			_logger.Info($"Response from GG.Deals: Status: {response.StatusCode} Body {responseString}");
 			if (response.StatusCode == HttpStatusCode.Unauthorized)
 			{
 				throw new AuthenticationException("User is not logged in!");
@@ -36,7 +42,7 @@ namespace GGDeals.Api.Services
 
 			response.EnsureSuccessStatusCode();
 
-			return await ParseResponse(response);
+			return ParseResponse(responseString);
 		}
 
 		private static StringContent PrepareContent(ImportRequest request)
@@ -46,9 +52,8 @@ namespace GGDeals.Api.Services
 			return content;
 		}
 
-		private static async Task<ImportResponse> ParseResponse(HttpResponseMessage response)
+		private static ImportResponse ParseResponse(string responseContent)
 		{
-			var responseContent = await response.Content.ReadAsStringAsync();
 			var importResponse = JsonConvert.DeserializeObject<ImportResponse>(responseContent);
 			return importResponse;
 		}

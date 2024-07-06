@@ -61,7 +61,10 @@
     <Compile Include="Api\Models\ResponseData.cs" />
     <Compile Include="Api\Services\GameToGameWithLauncherConverter.cs" />
     <Compile Include="Api\Services\GGDealsApiClient.cs" />
+    <Compile Include="Api\Services\IGameToGameWithLauncherConverter.cs" />
+    <Compile Include="Api\Services\IGGDealsApiClient.cs" />
     <Compile Include="Api\Services\ILibraryToGGLauncherMap.cs" />
+    <Compile Include="Api\Services\IRequestDataBatcher.cs" />
     <Compile Include="Api\Services\LibraryToGGLauncherMap.cs" />
     <Compile Include="Api\Services\RequestDataBatcher.cs" />
     <Compile Include="Infrastructure\Converters\AddResultToLocalizedStringConverter.cs" />
