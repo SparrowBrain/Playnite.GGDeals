@@ -23,7 +23,7 @@ namespace GGDeals.UnitTests.Api.Services
 			{
 				ContractResolver = new DefaultContractResolver
 				{
-					NamingStrategy = new SnakeCaseNamingStrategy()
+					NamingStrategy = new DefaultNamingStrategy()
 				},
 			};
 			_sut = CreateSut();

@@ -7,6 +7,7 @@ namespace GGDeals.Api.Models
 	public class GameWithLauncher : Game
 	{
 		[JsonConverter(typeof(StringEnumConverter))]
+		[JsonProperty("gg_launcher")]
 		public GGLauncher GGLauncher { get; set; }
 	}
 }

@@ -16,7 +16,13 @@ namespace GGDeals.Api.Services
 
 		public RequestDataBatcher(JsonSerializerSettings jsonSerializerSettings)
 		{
-			_jsonSerializerSettings = jsonSerializerSettings;
+			_jsonSerializerSettings = new JsonSerializerSettings
+			{
+				ContractResolver = new DefaultContractResolver
+				{
+					NamingStrategy = new DefaultNamingStrategy()
+				},
+			};
 		}
 
 		public IEnumerable<string> CreateDataJsons(IReadOnlyCollection<GameWithLauncher> games)
