@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace GGDeals.Services
+namespace GGDeals.Queue
 {
 	public interface IQueuePersistence
 	{

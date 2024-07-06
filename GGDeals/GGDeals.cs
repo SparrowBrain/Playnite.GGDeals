@@ -20,6 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using GGDeals.Queue;
 
 namespace GGDeals
 {
@@ -152,18 +153,22 @@ namespace GGDeals
 			try
 			{
 				var games = _api.Database.Games.Where(x => gameIds.Contains(x.Id)).ToList();
-
 				var settings = LoadPluginSettings<GGDealsSettings>();
-				var gameToAddFilter = new GameToAddFilter(settings);
-				var libraryToGGLauncherMap = new LibraryToGGLauncherMap();
-				var gameToGameWithLauncherConverter = new GameToGameWithLauncherConverter(libraryToGGLauncherMap);
-				var requestDataBatcher = new RequestDataBatcher(_apiJsonSerializerSettings);
-				var ggDealsApiClient = new GGDealsApiClient(settings, _apiJsonSerializerSettings);
-				var addGamesService = new AddGamesService(settings, gameToAddFilter, gameToGameWithLauncherConverter, requestDataBatcher, ggDealsApiClient);
+				using (var ggDealsApiClient = new GGDealsApiClient(settings, _apiJsonSerializerSettings))
+				{
+					var gameToAddFilter = new GameToAddFilter(settings);
+					var libraryToGGLauncherMap = new LibraryToGGLauncherMap();
+					var gameToGameWithLauncherConverter = new GameToGameWithLauncherConverter(libraryToGGLauncherMap);
+					var requestDataBatcher = new RequestDataBatcher(_apiJsonSerializerSettings);
 
-				var ggDealsService = new GGDealsService(settings, PlayniteApi, addGamesService, _addFailuresManager);
-				// TODO: Implement cancellation token source
-				await ggDealsService.AddGamesToLibrary(games, CancellationToken.None);
+					var addGamesService = new AddGamesService(settings, gameToAddFilter,
+						gameToGameWithLauncherConverter, requestDataBatcher, ggDealsApiClient);
+
+					var ggDealsService =
+						new GGDealsService(settings, PlayniteApi, addGamesService, _addFailuresManager);
+					// TODO: Implement cancellation token source
+					await ggDealsService.AddGamesToLibrary(games, CancellationToken.None);
+				}
 			}
 			catch (Exception ex)
 			{

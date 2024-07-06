@@ -1,5 +1,5 @@
 ﻿using AutoFixture.Xunit2;
-using GGDeals.Services;
+using GGDeals.Queue;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace GGDeals.IntegrationTests.Services
+namespace GGDeals.IntegrationTests.Queue
 {
 	public class QueuePersistenceTests
 	{
@@ -29,17 +29,17 @@ namespace GGDeals.IntegrationTests.Services
 
 		[Theory]
 		[AutoData]
-		public async Task Load_ReturnsContentsOfFile_WhenFileExists(List<Guid> contents)
+		public async Task Load_ReturnsContentsOfFile_WhenFileExists(QueueFile file)
 		{
 			// Arrange
-			File.WriteAllText(FailuresFilePath, JsonConvert.SerializeObject(contents));
+			File.WriteAllText(FailuresFilePath, JsonConvert.SerializeObject(file));
 			var sut = CreateSut();
 
 			// Act
 			var result = await sut.Load();
 
 			// Assert
-			Assert.Equal(contents, result);
+			Assert.Equal(file.GameIds, result);
 		}
 
 		[Theory]
@@ -62,7 +62,7 @@ namespace GGDeals.IntegrationTests.Services
 		[Theory]
 		[AutoData]
 		public async Task Save_OverwritesFile_WhenFileExists(
-			List<Guid> originalContents,
+			QueueFile originalContents,
 			List<Guid> newContents)
 		{
 			// Arrange
@@ -90,9 +90,10 @@ namespace GGDeals.IntegrationTests.Services
 			}
 		}
 
-		private static List<Guid> ReadFile()
+		private static IReadOnlyCollection<Guid> ReadFile()
 		{
-			return JsonConvert.DeserializeObject<List<Guid>>(File.ReadAllText(FailuresFilePath));
+			var file = JsonConvert.DeserializeObject<QueueFile>(File.ReadAllText(FailuresFilePath));
+			return file.GameIds;
 		}
 	}
 }

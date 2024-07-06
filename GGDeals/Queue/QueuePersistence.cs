@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace GGDeals.Services
+namespace GGDeals.Queue
 {
 	public class QueuePersistence : IQueuePersistence
 	{
@@ -19,7 +19,8 @@ namespace GGDeals.Services
 		{
 			using (var streamWriter = new StreamWriter(_queueFilePath, false))
 			{
-				await streamWriter.WriteAsync(JsonConvert.SerializeObject(gameIds));
+				var file = new QueueFile() { GameIds = gameIds };
+				await streamWriter.WriteAsync(JsonConvert.SerializeObject(file));
 			}
 		}
 
@@ -33,7 +34,8 @@ namespace GGDeals.Services
 			using (var streamReader = new StreamReader(_queueFilePath))
 			{
 				var contents = await streamReader.ReadToEndAsync();
-				return JsonConvert.DeserializeObject<List<Guid>>(contents);
+				var file = JsonConvert.DeserializeObject<QueueFile>(contents);
+				return file.GameIds;
 			}
 		}
 	}

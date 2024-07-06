@@ -109,7 +109,7 @@
   <ItemGroup>
     <Compile Include="Menu\Failures\File\AddFailuresFileServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\QueuePersistenceTests.cs" />
+    <Compile Include="Queue\QueuePersistenceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

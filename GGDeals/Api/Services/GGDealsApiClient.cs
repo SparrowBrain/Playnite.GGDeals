@@ -1,7 +1,6 @@
 ﻿using GGDeals.Api.Models;
 using GGDeals.Settings;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Playnite.SDK;
 using System;
 using System.Net;
@@ -24,6 +23,7 @@ namespace GGDeals.Api.Services
 		{
 			_jsonSerializerSettings = jsonSerializerSettings;
 			_httpClient = new HttpClient();
+			_httpClient.Timeout = TimeSpan.FromMinutes(5);
 
 #if DEBUG
 			_endpoint = settings.DevCollectionImportEndpoint;
@@ -33,7 +33,7 @@ namespace GGDeals.Api.Services
 		public async Task<ImportResponse> ImportGames(ImportRequest request, CancellationToken ct)
 		{
 			var content = PrepareContent(request);
-			
+
 			var response = await _httpClient.PostAsync(_endpoint, content, ct);
 			var responseString = await response.Content.ReadAsStringAsync();
 			_logger.Info($"Response from GG.Deals: Status: {response.StatusCode}; Body {responseString}");

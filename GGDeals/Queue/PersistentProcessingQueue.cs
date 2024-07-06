@@ -1,11 +1,11 @@
-﻿using Playnite.SDK;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Playnite.SDK;
 
-namespace GGDeals.Services
+namespace GGDeals.Queue
 {
 	public class PersistentProcessingQueue
 	{
