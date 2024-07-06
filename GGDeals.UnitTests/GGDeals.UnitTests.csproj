@@ -115,21 +115,13 @@
     <Compile Include="Api\Services\LibraryToGGLauncherMapTests.cs" />
     <Compile Include="Api\Services\RequestDataBatcherTests.cs" />
     <Compile Include="Menu\Failures\AddFailuresManagerTests.cs" />
-    <Compile Include="Services\AddAGameServiceTests.cs" />
     <Compile Include="Services\AddGamesServiceTests.cs" />
-    <Compile Include="Services\AuthenticationStatusServiceTests.cs" />
     <Compile Include="Services\GameToAddFilterTests.cs" />
     <Compile Include="Services\PersistentProcessingQueueTests.cs" />
     <Compile Include="Settings\SettingsMigratorTests.cs" />
     <Compile Include="Settings\StartupSettingsValidatorTests.cs" />
-    <Compile Include="Website\GamePageTests.cs" />
-    <Compile Include="Website\GGWebsiteTests.cs" />
-    <Compile Include="Website\HomePageTests.cs" />
-    <Compile Include="Website\LibraryNameMapTests.cs" />
-    <Compile Include="Website\Url\GamePageUrlGuesserTests.cs" />
     <Compile Include="Services\GGDealsServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Website\Url\HomePageResolverTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

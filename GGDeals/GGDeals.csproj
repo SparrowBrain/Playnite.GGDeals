@@ -85,12 +85,10 @@
       <DependentUpon>ShowAddFailuresView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Menu\Failures\MVVM\ShowAddFailuresViewModel.cs" />
-    <Compile Include="AwaitableWebView.cs" />
     <Compile Include="GGDeals.cs" />
     <Compile Include="Infrastructure\Converters\BaseConverter.cs" />
     <Compile Include="Infrastructure\Converters\BooleanToCollapsedVisibilityConverter.cs" />
     <Compile Include="Services\AddGamesService.cs" />
-    <Compile Include="Services\AuthenticationStatusService.cs" />
     <Compile Include="Services\GameToAddFilter.cs" />
     <Compile Include="Services\IAddGamesService.cs" />
     <Compile Include="Services\IGameToAddFilter.cs" />
@@ -108,7 +106,6 @@
     </Compile>
     <Compile Include="IAwaitableWebView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\AddAGameService.cs" />
     <Compile Include="Services\AddToCollectionResult.cs" />
     <Compile Include="Services\GGDealsService.cs" />
     <Compile Include="Services\IAddAGameService.cs" />
@@ -118,18 +115,6 @@
     <Compile Include="Settings\SettingsMigrator.cs" />
     <Compile Include="Settings\StartupSettingsValidator.cs" />
     <Compile Include="Settings\VersionedSettings.cs" />
-    <Compile Include="Website\GamePage.cs" />
-    <Compile Include="Website\GGWebsite.cs" />
-    <Compile Include="Website\HomePage.cs" />
-    <Compile Include="Website\IGamePage.cs" />
-    <Compile Include="Website\IGGWebsite.cs" />
-    <Compile Include="Website\IHomePage.cs" />
-    <Compile Include="Website\ILibraryNameMap.cs" />
-    <Compile Include="Website\LibraryNameMap.cs" />
-    <Compile Include="Website\Url\GamePageUrlGuesser.cs" />
-    <Compile Include="Website\Url\HomePageResolver.cs" />
-    <Compile Include="Website\Url\IGamePageUrlGuesser.cs" />
-    <Compile Include="Website\Url\IHomePageResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="extension.yaml">

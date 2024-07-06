@@ -1,5 +1,4 @@
 ﻿using GGDeals.Menu.Failures;
-using GGDeals.Website;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using System;
@@ -8,6 +7,7 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
+using GGDeals.Settings;
 
 namespace GGDeals.Services
 {
@@ -15,22 +15,19 @@ namespace GGDeals.Services
 	{
 		private static readonly ILogger Logger = LogManager.GetLogger();
 
+		private readonly GGDealsSettings _settings;
 		private readonly IPlayniteAPI _playniteApi;
-		private readonly IGGWebsite _ggWebsite;
-		private readonly IHomePage _homePage;
 		private readonly IAddGamesService _addGamesService;
 		private readonly IAddFailuresManager _addFailuresManager;
 
 		public GGDealsService(
+			GGDealsSettings settings,
 			IPlayniteAPI playniteApi,
-			IGGWebsite ggWebsite,
-			IHomePage homePage,
 			IAddGamesService addGamesService,
 			IAddFailuresManager addFailuresManager)
 		{
+			_settings = settings;
 			_playniteApi = playniteApi;
-			_ggWebsite = ggWebsite;
-			_homePage = homePage;
 			_addGamesService = addGamesService;
 			_addFailuresManager = addFailuresManager;
 		}
@@ -44,10 +41,9 @@ namespace GGDeals.Services
 
 			try
 			{
-				await _ggWebsite.NavigateToHomePage();
-				if (!await _homePage.IsUserLoggedIn())
+				if (string.IsNullOrWhiteSpace(_settings.AuthenticationToken))
 				{
-					throw new AuthenticationException("User is not logged in!");
+					throw new AuthenticationException("Authentication token is empty!");
 				}
 
 				var addResults = await _addGamesService.TryAddToCollection(games, ct);

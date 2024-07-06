@@ -6,8 +6,6 @@ using GGDeals.Menu.Failures.MVVM;
 using GGDeals.Services;
 using GGDeals.Settings;
 using GGDeals.Settings.MVVM;
-using GGDeals.Website;
-using GGDeals.Website.Url;
 using Playnite.SDK;
 using Playnite.SDK.Events;
 using Playnite.SDK.Models;
@@ -139,26 +137,18 @@ namespace GGDeals
 			try
 			{
 				var games = _api.Database.Games.Where(x => gameIds.Contains(x.Id)).ToList();
-				using (var awaitableWebView = new AwaitableWebView(PlayniteApi.WebViews.CreateOffscreenView()))
-				{
-					var settings = LoadPluginSettings<GGDealsSettings>();
-					var homePageResolver = new HomePageResolver();
-					var gamePageUrlGuesser = new GamePageUrlGuesser(homePageResolver);
-					var libraryNameMap = new LibraryNameMap(PlayniteApi);
-					var ggWebsite = new GGWebsite(awaitableWebView, homePageResolver, gamePageUrlGuesser);
-					var homePage = new HomePage(awaitableWebView);
-					var gamePage = new GamePage(awaitableWebView, libraryNameMap);
-					var gameToAddFilter = new GameToAddFilter(settings);
-					var libraryToGGLauncherMap = new LibraryToGGLauncherMap();
-					var gameToGameWithLauncherConverter = new GameToGameWithLauncherConverter(libraryToGGLauncherMap);
-					var requestDataBatcher = new RequestDataBatcher();
-					var ggDealsApiClient = new GGDealsApiClient(settings);
-					var addGamesService = new AddGamesService(settings, gameToAddFilter, gameToGameWithLauncherConverter, requestDataBatcher, ggDealsApiClient);
 
-					var ggDealsService = new GGDealsService(PlayniteApi, ggWebsite, homePage, addGamesService, _addFailuresManager);
-					// TODO: Implement cancellation token source
-					await ggDealsService.AddGamesToLibrary(games, CancellationToken.None);
-				}
+				var settings = LoadPluginSettings<GGDealsSettings>();
+				var gameToAddFilter = new GameToAddFilter(settings);
+				var libraryToGGLauncherMap = new LibraryToGGLauncherMap();
+				var gameToGameWithLauncherConverter = new GameToGameWithLauncherConverter(libraryToGGLauncherMap);
+				var requestDataBatcher = new RequestDataBatcher();
+				var ggDealsApiClient = new GGDealsApiClient(settings);
+				var addGamesService = new AddGamesService(settings, gameToAddFilter, gameToGameWithLauncherConverter, requestDataBatcher, ggDealsApiClient);
+
+				var ggDealsService = new GGDealsService(settings, PlayniteApi, addGamesService, _addFailuresManager);
+				// TODO: Implement cancellation token source
+				await ggDealsService.AddGamesToLibrary(games, CancellationToken.None);
 			}
 			catch (Exception ex)
 			{

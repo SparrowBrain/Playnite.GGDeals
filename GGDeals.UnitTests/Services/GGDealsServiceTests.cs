@@ -1,7 +1,6 @@
 ﻿using AutoFixture.Xunit2;
 using GGDeals.Menu.Failures;
 using GGDeals.Services;
-using GGDeals.Website;
 using Moq;
 using Playnite.SDK;
 using Playnite.SDK.Models;
@@ -19,60 +18,11 @@ namespace GGDeals.UnitTests.Services
 	public class GGDealsServiceTests
 	{
 		[Theory]
-		[AutoMoqData]
-		public async Task AddGamesToLibrary_ShowsErrorNotification_WhenNavigateToHomePageThrowsException(
-			[Frozen] Mock<IGGWebsite> ggWebsiteMock,
-			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
-			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
-			Exception exception,
-			List<Game> games,
-			CancellationToken ct,
-			GGDealsService sut)
-		{
-			// Arrange
-			ggWebsiteMock.Setup(x => x.NavigateToHomePage()).ThrowsAsync(exception);
-			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
-
-			// Act
-			await sut.AddGamesToLibrary(games, ct);
-
-			// Assert
-			notificationsApiMock.Verify(
-				x => x.Add("gg-deals-generic-error", It.IsAny<string>(),
-					It.Is<NotificationType>(n => n == NotificationType.Error)), Times.Once);
-		}
-
-		[Theory]
-		[AutoMoqData]
-		public async Task AddGamesToLibrary_ShowsErrorNotification_WhenCheckingIsUserLoggedInThrowsException(
-			[Frozen] Mock<IHomePage> homePageMock,
-			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
-			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
-			Exception exception,
-			List<Game> games,
-			CancellationToken ct,
-			GGDealsService sut)
-		{
-			// Arrange
-			homePageMock.Setup(x => x.IsUserLoggedIn()).ThrowsAsync(exception);
-			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
-
-			// Act
-			await sut.AddGamesToLibrary(games, ct);
-
-			// Assert
-			notificationsApiMock.Verify(
-				x => x.Add("gg-deals-generic-error", It.IsAny<string>(),
-					It.Is<NotificationType>(n => n == NotificationType.Error)), Times.Once);
-		}
-
-		[Theory]
 		[InlineAutoMoqData(null)]
 		[InlineAutoMoqData("")]
 		[InlineAutoMoqData("   ")]
 		public async Task AddGamesToLibrary_ShowsInfoNotification_WhenAuthenticationTokenIsEmpty(
 			string authenticationToken,
-			[Frozen] Mock<IHomePage> homePageMock,
 			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
 			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
 			[Frozen] GGDealsSettings settings,
@@ -95,16 +45,16 @@ namespace GGDeals.UnitTests.Services
 
 		[Theory]
 		[AutoMoqData]
-		public async Task AddGamesToLibrary_AddsToFailuresAllUnprocessedGames_WhenIsUserLoggedInReturnsFalse(
-			[Frozen] Mock<IHomePage> homePageMock,
+		public async Task AddGamesToLibrary_AddsToFailuresAllUnprocessedGames_WhenAuthenticationTokenIsEmpty(
 			[Frozen] Mock<IAddFailuresManager> addFailuresManagerMock,
+			[Frozen] GGDealsSettings settings,
 			Exception exception,
 			List<Game> games,
 			CancellationToken ct,
 			GGDealsService sut)
 		{
 			// Arrange
-			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(false);
+			settings.AuthenticationToken = string.Empty;
 
 			// Act
 			await sut.AddGamesToLibrary(games, ct);
@@ -118,7 +68,6 @@ namespace GGDeals.UnitTests.Services
 		[Theory]
 		[AutoMoqData]
 		public async Task AddGamesToLibrary_ShowsErrorNotification_WhenTryAddToCollectionThrowsException(
-			[Frozen] Mock<IHomePage> homePageMock,
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
 			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
 			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
@@ -128,7 +77,6 @@ namespace GGDeals.UnitTests.Services
 			GGDealsService sut)
 		{
 			// Arrange
-			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
 			addGamesServiceMock.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>())).ThrowsAsync(exception);
 			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
 
@@ -144,7 +92,6 @@ namespace GGDeals.UnitTests.Services
 		[Theory]
 		[AutoMoqData]
 		public async Task AddGamesToLibrary_AddsToFailuresAllUnprocessedGames_WhenTryAddToCollectionThrowsException(
-			[Frozen] Mock<IHomePage> homePageMock,
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
 			[Frozen] Mock<IAddFailuresManager> addFailuresManagerMock,
 			Exception exception,
@@ -153,7 +100,6 @@ namespace GGDeals.UnitTests.Services
 			GGDealsService sut)
 		{
 			// Arrange
-			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
 			addGamesServiceMock.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>())).ThrowsAsync(exception);
 
 			// Act
@@ -168,7 +114,6 @@ namespace GGDeals.UnitTests.Services
 		[Theory]
 		[AutoMoqData]
 		public async Task AddGamesToLibrary_ShowsInfoNotification_WhenGamePageCouldNotBeFound(
-			[Frozen] Mock<IHomePage> homePageMock,
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
 			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
 			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
@@ -177,7 +122,6 @@ namespace GGDeals.UnitTests.Services
 			GGDealsService sut)
 		{
 			// Arrange
-			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
 			addGamesServiceMock
 				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
 				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.PageNotFound }));
@@ -195,7 +139,6 @@ namespace GGDeals.UnitTests.Services
 		[Theory]
 		[AutoMoqData]
 		public async Task AddGamesToLibrary_AddToFailures_WhenGamePageCouldNotBeFound(
-			[Frozen] Mock<IHomePage> homePageMock,
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
 			[Frozen] Mock<IAddFailuresManager> addFailuresManagerMock,
 			List<Game> games,
@@ -203,7 +146,6 @@ namespace GGDeals.UnitTests.Services
 			GGDealsService sut)
 		{
 			// Arrange
-			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
 			addGamesServiceMock
 				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
 				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.PageNotFound }));
@@ -220,7 +162,6 @@ namespace GGDeals.UnitTests.Services
 		[Theory]
 		[AutoMoqData]
 		public async Task AddGamesToLibrary_ShowsNoNotification_WhenGameIsAdded(
-			[Frozen] Mock<IHomePage> homePageMock,
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
 			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
 			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
@@ -229,7 +170,6 @@ namespace GGDeals.UnitTests.Services
 			GGDealsService sut)
 		{
 			// Arrange
-			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
 			addGamesServiceMock
 				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
 				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.Added }));
@@ -245,7 +185,6 @@ namespace GGDeals.UnitTests.Services
 		[Theory]
 		[AutoMoqData]
 		public async Task AddGamesToLibrary_RemovesFromFailures_WhenGameIsAdded(
-			[Frozen] Mock<IHomePage> homePageMock,
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
 			[Frozen] Mock<IAddFailuresManager> addFailuresManagerMock,
 			List<Game> games,
@@ -253,7 +192,6 @@ namespace GGDeals.UnitTests.Services
 			GGDealsService sut)
 		{
 			// Arrange
-			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
 			addGamesServiceMock
 				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
 				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.Added }));
@@ -270,7 +208,6 @@ namespace GGDeals.UnitTests.Services
 		[Theory]
 		[AutoMoqData]
 		public async Task AddGamesToLibrary_ShowsNoNotification_WhenLibraryIsIgnored(
-			[Frozen] Mock<IHomePage> homePageMock,
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
 			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
 			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
@@ -279,7 +216,6 @@ namespace GGDeals.UnitTests.Services
 			GGDealsService sut)
 		{
 			// Arrange
-			homePageMock.Setup(x => x.IsUserLoggedIn()).ReturnsAsync(true);
 			addGamesServiceMock
 				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
 				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.SkippedDueToLibrary }));
