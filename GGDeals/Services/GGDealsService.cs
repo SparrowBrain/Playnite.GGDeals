@@ -35,7 +35,7 @@ namespace GGDeals.Services
 		public async Task AddGamesToLibrary(IReadOnlyCollection<Game> games, CancellationToken ct)
 		{
 			var addedGames = new List<Guid>();
-			var gamesWithoutPage = new List<Guid>();
+			var missedGames = new List<Guid>();
 			var alreadyOwnedGames = new List<Guid>();
 			var skippedDueToLibrary = new List<Guid>();
 
@@ -48,15 +48,15 @@ namespace GGDeals.Services
 
 				var addResults = await _addGamesService.TryAddToCollection(games, ct);
 				addedGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.Added).Select(r => r.Key).ToList();
-				gamesWithoutPage = addResults.Where(r => r.Value.Result == AddToCollectionResult.PageNotFound).Select(r => r.Key).ToList();
+				missedGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.Missed).Select(r => r.Key).ToList();
 				alreadyOwnedGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.AlreadyOwned).Select(r => r.Key).ToList();
 				skippedDueToLibrary = addResults.Where(r => r.Value.Result == AddToCollectionResult.SkippedDueToLibrary).Select(r => r.Key).ToList();
 
-				if (gamesWithoutPage.Count > 0)
+				if (missedGames.Count > 0)
 				{
 					_playniteApi.Notifications.Add(
 						"gg-deals-gamepagenotfound",
-						string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationGamePageNotFound_Format"), gamesWithoutPage.Count),
+						string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationGamePageNotFound_Format"), missedGames.Count),
 						NotificationType.Info);
 				}
 			}
@@ -68,7 +68,7 @@ namespace GGDeals.Services
 					ResourceProvider.GetString("LOC_GGDeals_NotificationUserNotAuthenticatedLoginInAddonSettings"),
 					NotificationType.Info);
 
-				await AddUnprocessedGameFailures(games, addedGames, gamesWithoutPage);
+				await AddUnprocessedGameFailures(games, addedGames, missedGames);
 			}
 			catch (Exception ex)
 			{
@@ -78,15 +78,15 @@ namespace GGDeals.Services
 					ResourceProvider.GetString("LOC_GGDeals_NotificationFailedAddingGamesToLibrary"),
 					NotificationType.Error);
 
-				await AddUnprocessedGameFailures(games, addedGames, gamesWithoutPage);
+				await AddUnprocessedGameFailures(games, addedGames, missedGames);
 			}
 
-			Logger.Info($"Finished adding games to GG.deals collection: Total: {games.Count}, PageNotFound: {gamesWithoutPage.Count}, AlreadyOwned: {alreadyOwnedGames.Count}, SkippedDueToLibrary: {skippedDueToLibrary.Count}, Added: {addedGames.Count}");
+			Logger.Info($"Finished adding games to GG.deals collection: Total: {games.Count}, PageNotFound: {missedGames.Count}, AlreadyOwned: {alreadyOwnedGames.Count}, SkippedDueToLibrary: {skippedDueToLibrary.Count}, Added: {addedGames.Count}");
 
-			if (gamesWithoutPage.Count > 0)
+			if (missedGames.Count > 0)
 			{
-				await _addFailuresManager.AddFailures(gamesWithoutPage.ToDictionary(g => g,
-					_ => new AddResult() { Result = AddToCollectionResult.PageNotFound }));
+				await _addFailuresManager.AddFailures(missedGames.ToDictionary(g => g,
+					_ => new AddResult() { Result = AddToCollectionResult.Missed }));
 			}
 
 			if (addedGames.Count > 0)

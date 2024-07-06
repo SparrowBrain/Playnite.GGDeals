@@ -124,7 +124,7 @@ namespace GGDeals.UnitTests.Services
 			// Arrange
 			addGamesServiceMock
 				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.PageNotFound }));
+				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.Missed }));
 			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
 
 			// Act
@@ -148,14 +148,14 @@ namespace GGDeals.UnitTests.Services
 			// Arrange
 			addGamesServiceMock
 				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.PageNotFound }));
+				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.Missed }));
 
 			// Act
 			await sut.AddGamesToLibrary(games, ct);
 
 			// Assert
 			addFailuresManagerMock.Verify(
-				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f => f.Values.All(v => v.Result == AddToCollectionResult.PageNotFound) && f.Keys.SequenceEqual(games.Select(g => g.Id)))),
+				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f => f.Values.All(v => v.Result == AddToCollectionResult.Missed) && f.Keys.SequenceEqual(games.Select(g => g.Id)))),
 				Times.Once);
 		}
 

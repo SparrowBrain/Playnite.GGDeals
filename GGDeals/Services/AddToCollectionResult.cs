@@ -3,7 +3,7 @@
     public enum AddToCollectionResult
     {
         Added,
-        PageNotFound,
+        Missed,
         AlreadyOwned,
         SkippedDueToLibrary,
         NotProcessed,

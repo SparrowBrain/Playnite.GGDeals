@@ -1,6 +1,7 @@
 ﻿using GGDeals.Api.Models;
 using GGDeals.Settings;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Playnite.SDK;
 using System;
 using System.Net;
@@ -14,12 +15,14 @@ namespace GGDeals.Api.Services
 {
 	public class GGDealsApiClient : IDisposable, IGGDealsApiClient
 	{
+		private readonly JsonSerializerSettings _jsonSerializerSettings;
 		private static ILogger _logger = LogManager.GetLogger();
 		private static string _endpoint = "ACTUAL ENDPOINT GOES HERE?";
 		private readonly HttpClient _httpClient;
 
-		public GGDealsApiClient(GGDealsSettings settings)
+		public GGDealsApiClient(GGDealsSettings settings, JsonSerializerSettings jsonSerializerSettings)
 		{
+			_jsonSerializerSettings = jsonSerializerSettings;
 			_httpClient = new HttpClient();
 
 #if DEBUG
@@ -30,14 +33,13 @@ namespace GGDeals.Api.Services
 		public async Task<ImportResponse> ImportGames(ImportRequest request, CancellationToken ct)
 		{
 			var content = PrepareContent(request);
-			_logger.Debug($"Calling GG.Deals with body: {content}");
-
+			
 			var response = await _httpClient.PostAsync(_endpoint, content, ct);
 			var responseString = await response.Content.ReadAsStringAsync();
-			_logger.Info($"Response from GG.Deals: Status: {response.StatusCode} Body {responseString}");
+			_logger.Info($"Response from GG.Deals: Status: {response.StatusCode}; Body {responseString}");
 			if (response.StatusCode == HttpStatusCode.Unauthorized)
 			{
-				throw new AuthenticationException("User is not logged in!");
+				throw new AuthenticationException(responseString);
 			}
 
 			response.EnsureSuccessStatusCode();
@@ -45,16 +47,17 @@ namespace GGDeals.Api.Services
 			return ParseResponse(responseString);
 		}
 
-		private static StringContent PrepareContent(ImportRequest request)
+		private StringContent PrepareContent(ImportRequest request)
 		{
-			var requestJson = JsonConvert.SerializeObject(request);
+			var requestJson = JsonConvert.SerializeObject(request, _jsonSerializerSettings);
+			_logger.Debug($"Calling GG.Deals with body: {requestJson}");
 			var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
 			return content;
 		}
 
-		private static ImportResponse ParseResponse(string responseContent)
+		private ImportResponse ParseResponse(string responseContent)
 		{
-			var importResponse = JsonConvert.DeserializeObject<ImportResponse>(responseContent);
+			var importResponse = JsonConvert.DeserializeObject<ImportResponse>(responseContent, _jsonSerializerSettings);
 			return importResponse;
 		}
 

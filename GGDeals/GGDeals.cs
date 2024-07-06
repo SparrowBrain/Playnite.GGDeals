@@ -6,6 +6,8 @@ using GGDeals.Menu.Failures.MVVM;
 using GGDeals.Services;
 using GGDeals.Settings;
 using GGDeals.Settings.MVVM;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Playnite.SDK;
 using Playnite.SDK.Events;
 using Playnite.SDK.Models;
@@ -31,6 +33,14 @@ namespace GGDeals
 		private readonly StartupSettingsValidator _startupSettingsValidator;
 		private readonly AddFailuresManager _addFailuresManager;
 		private readonly PersistentProcessingQueue _persistentProcessingQueue;
+
+		private readonly JsonSerializerSettings _apiJsonSerializerSettings = new JsonSerializerSettings
+		{
+			ContractResolver = new DefaultContractResolver
+			{
+				NamingStrategy = new SnakeCaseNamingStrategy()
+			},
+		};
 
 		private GGDealsSettingsViewModel _settings;
 
@@ -134,6 +144,11 @@ namespace GGDeals
 
 		public async Task AddGamesToGGCollectionAsync(IReadOnlyCollection<Guid> gameIds)
 		{
+			if (!gameIds.Any())
+			{
+				return;
+			}
+
 			try
 			{
 				var games = _api.Database.Games.Where(x => gameIds.Contains(x.Id)).ToList();
@@ -142,8 +157,8 @@ namespace GGDeals
 				var gameToAddFilter = new GameToAddFilter(settings);
 				var libraryToGGLauncherMap = new LibraryToGGLauncherMap();
 				var gameToGameWithLauncherConverter = new GameToGameWithLauncherConverter(libraryToGGLauncherMap);
-				var requestDataBatcher = new RequestDataBatcher();
-				var ggDealsApiClient = new GGDealsApiClient(settings);
+				var requestDataBatcher = new RequestDataBatcher(_apiJsonSerializerSettings);
+				var ggDealsApiClient = new GGDealsApiClient(settings, _apiJsonSerializerSettings);
 				var addGamesService = new AddGamesService(settings, gameToAddFilter, gameToGameWithLauncherConverter, requestDataBatcher, ggDealsApiClient);
 
 				var ggDealsService = new GGDealsService(settings, PlayniteApi, addGamesService, _addFailuresManager);

@@ -9,11 +9,9 @@ namespace GGDeals.Settings.MVVM
 {
 	public class GGDealsSettingsViewModel : ObservableObject, ISettings
 	{
-		private readonly ILogger _logger = LogManager.GetLogger();
 		private readonly GGDeals _plugin;
 		private GGDealsSettings _settings;
 		private GGDealsSettings _editingClone;
-		private string _authenticationStatus;
 		private List<LibraryItem> _libraryItems;
 
 		public GGDealsSettingsViewModel(GGDeals plugin)

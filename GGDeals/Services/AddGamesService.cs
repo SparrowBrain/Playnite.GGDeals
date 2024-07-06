@@ -83,7 +83,7 @@ namespace GGDeals.Services
 					break;
 
 				case ImportResultStatus.Miss:
-					addToCollectionResult = AddToCollectionResult.PageNotFound;
+					addToCollectionResult = AddToCollectionResult.Missed;
 					break;
 
 				default:
