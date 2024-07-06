@@ -2,7 +2,9 @@
 using GGDeals.Settings;
 using Newtonsoft.Json;
 using System;
+using System.Net;
 using System.Net.Http;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,6 +29,11 @@ namespace GGDeals.Api.Services
 			var content = PrepareContent(request);
 
 			var response = await _httpClient.PostAsync(_endpoint, content);
+			if (response.StatusCode == HttpStatusCode.Unauthorized)
+			{
+				throw new AuthenticationException("User is not logged in!");
+			}
+
 			response.EnsureSuccessStatusCode();
 
 			return await ParseResponse(response);

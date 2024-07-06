@@ -70,9 +70,12 @@
     </Compile>
     <Compile Include="Menu\AddGames\MVVM\AddGamesViewModel.cs" />
     <Compile Include="Menu\AddGames\MVVM\IViewModelForWindow.cs" />
-    <Compile Include="Menu\Failures\AddFailuresFileService.cs" />
+    <Compile Include="Menu\Failures\File\AddFailuresFileService.cs" />
     <Compile Include="Menu\Failures\AddFailuresManager.cs" />
-    <Compile Include="Menu\Failures\IAddFailuresFileService.cs" />
+    <Compile Include="Menu\Failures\File\FailuresFile.cs" />
+    <Compile Include="Menu\Failures\File\IAddFailuresFileService.cs" />
+    <Compile Include="Menu\Failures\File\IVersionedFailuresFile.cs" />
+    <Compile Include="Menu\Failures\File\VersionedFailuresFile.cs" />
     <Compile Include="Menu\Failures\IAddFailuresManager.cs" />
     <Compile Include="Menu\Failures\MVVM\FailureItem.cs" />
     <Compile Include="Menu\Failures\MVVM\ShowAddFailuresView.xaml.cs">
@@ -88,6 +91,7 @@
     <Compile Include="Services\GameToAddFilter.cs" />
     <Compile Include="Services\IAddGamesService.cs" />
     <Compile Include="Services\IGameToAddFilter.cs" />
+    <Compile Include="Services\ImportResult.cs" />
     <Compile Include="Services\IQueuePersistence.cs" />
     <Compile Include="Services\PersistentProcessingQueue.cs" />
     <Compile Include="Services\QueuePersistence.cs" />

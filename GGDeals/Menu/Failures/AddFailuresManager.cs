@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GGDeals.Menu.Failures.File;
 using GGDeals.Services;
 using Playnite.SDK;
 
@@ -15,14 +16,14 @@ namespace GGDeals.Menu.Failures
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
         private readonly IAddFailuresFileService _addFailuresFileService;
 
-        private Dictionary<Guid, AddToCollectionResult> _failures;
+        private Dictionary<Guid, AddResult> _failures;
 
         public AddFailuresManager(IAddFailuresFileService addFailuresFileService)
         {
             _addFailuresFileService = addFailuresFileService;
         }
 
-        public async Task AddFailures(IDictionary<Guid, AddToCollectionResult> failures)
+        public async Task AddFailures(IDictionary<Guid, AddResult> failures)
         {
             try
             {
@@ -81,14 +82,14 @@ namespace GGDeals.Menu.Failures
             }
         }
 
-        public async Task<Dictionary<Guid, AddToCollectionResult>> GetFailures()
+        public async Task<Dictionary<Guid, AddResult>> GetFailures()
         {
             try
             {
                 await _semaphore.WaitAsync(TimeSpan.FromSeconds(SemaphoreTimeoutSeconds));
                 await EnsureFailuresAreLoaded();
 
-                return new Dictionary<Guid, AddToCollectionResult>(_failures);
+                return new Dictionary<Guid, AddResult>(_failures);
             }
             catch (Exception ex)
             {

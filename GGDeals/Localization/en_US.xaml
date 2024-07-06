@@ -17,6 +17,7 @@
     <sys:String x:Key="LOC_GGDeals_ShowAddFailuresTitle">Failures</sys:String>
     <sys:String x:Key="LOC_GGDeals_ShowAddFailuresGameName">Name</sys:String>
     <sys:String x:Key="LOC_GGDeals_ShowAddFailuresLibraryName">Library</sys:String>
+    <sys:String x:Key="LOC_GGDeals_ShowAddFailuresMessage">Message</sys:String>
     <sys:String x:Key="LOC_GGDeals_ShowAddFailuresReason">Reason</sys:String>
     <sys:String x:Key="LOC_GGDeals_ShowAddFailuresReasonPageNotFound">Page Not Found</sys:String>
     <sys:String x:Key="LOC_GGDeals_ShowAddFailuresReasonNotProcessed">Not Processed</sys:String>

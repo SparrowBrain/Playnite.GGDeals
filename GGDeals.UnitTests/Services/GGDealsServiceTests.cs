@@ -101,7 +101,7 @@ namespace GGDeals.UnitTests.Services
 
 			// Assert
 			addFailuresManagerMock.Verify(
-				x => x.AddFailures(It.Is<IDictionary<Guid, AddToCollectionResult>>(f => games.Select(g => g.Id).ToDictionary(id => id, _ => AddToCollectionResult.NotProcessed).SequenceEqual(f))),
+				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f => f.Values.All(v => v.Result == AddToCollectionResult.NotProcessed) && f.Keys.SequenceEqual(games.Select(g => g.Id)))),
 				Times.Once);
 		}
 
@@ -149,7 +149,7 @@ namespace GGDeals.UnitTests.Services
 
 			// Assert
 			addFailuresManagerMock.Verify(
-				x => x.AddFailures(It.Is<IDictionary<Guid, AddToCollectionResult>>(f => games.Select(g => g.Id).ToDictionary(id => id, _ => AddToCollectionResult.NotProcessed).SequenceEqual(f))),
+				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f => f.Values.All(v => v.Result == AddToCollectionResult.NotProcessed) && f.Keys.SequenceEqual(games.Select(g => g.Id)))),
 				Times.Once);
 		}
 
@@ -199,7 +199,7 @@ namespace GGDeals.UnitTests.Services
 
 			// Assert
 			addFailuresManagerMock.Verify(
-				x => x.AddFailures(It.Is<IDictionary<Guid, AddToCollectionResult>>(f => games.Select(g => g.Id).ToDictionary(id => id, _ => AddToCollectionResult.PageNotFound).SequenceEqual(f))),
+				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f =>  f.Values.All(v=> v.Result == AddToCollectionResult.PageNotFound) && f.Keys.SequenceEqual(games.Select(g=>g.Id)))),
 					 Times.Once);
 		}
 
@@ -297,7 +297,7 @@ namespace GGDeals.UnitTests.Services
 			await sut.AddGamesToLibrary(games);
 
 			// Assert
-			addFailuresManagerMock.Verify(x => x.AddFailures(It.IsAny<Dictionary<Guid, AddToCollectionResult>>()), Times.Never);
+			addFailuresManagerMock.Verify(x => x.AddFailures(It.IsAny<Dictionary<Guid, AddResult>>()), Times.Never);
 		}
 
 		[Theory]

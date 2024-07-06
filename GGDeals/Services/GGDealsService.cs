@@ -1,12 +1,12 @@
-﻿using System;
+﻿using GGDeals.Menu.Failures;
+using GGDeals.Website;
+using Playnite.SDK;
+using Playnite.SDK.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Authentication;
 using System.Threading.Tasks;
-using GGDeals.Menu.Failures;
-using GGDeals.Website;
-using Playnite.SDK;
-using Playnite.SDK.Models;
 
 namespace GGDeals.Services
 {
@@ -88,7 +88,8 @@ namespace GGDeals.Services
 
 			if (gamesWithoutPage.Count > 0)
 			{
-				await _addFailuresManager.AddFailures(gamesWithoutPage.ToDictionary(g => g, _ => AddToCollectionResult.PageNotFound));
+				await _addFailuresManager.AddFailures(gamesWithoutPage.ToDictionary(g => g,
+					_ => new AddResult() { Result = AddToCollectionResult.PageNotFound }));
 			}
 
 			if (addedGames.Count > 0)
@@ -113,7 +114,8 @@ namespace GGDeals.Services
 				.Where(g => !addedGames.Contains(g.Id))
 				.Where(g => !gamesWithoutPage.Contains(g.Id))
 				.ToList();
-			await _addFailuresManager.AddFailures(unprocessedGames.ToDictionary(g => g.Id, _ => AddToCollectionResult.NotProcessed));
+			await _addFailuresManager.AddFailures(unprocessedGames.ToDictionary(g => g.Id,
+				_ => new AddResult() { Result = AddToCollectionResult.NotProcessed }));
 		}
 	}
 }
