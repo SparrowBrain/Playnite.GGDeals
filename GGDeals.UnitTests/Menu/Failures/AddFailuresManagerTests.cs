@@ -94,6 +94,30 @@ namespace GGDeals.UnitTests.Menu.Failures
 
 		[Theory]
 		[AutoMoqData]
+		public async Task AddFailures_SavesToFile_IfFailureWithDifferentAddResultAlreadyAdded(
+			[Frozen] Mock<IAddFailuresFileService> addFailuresFileServiceMock,
+			Dictionary<Guid, AddResult> failuresOnFile,
+			AddResult newAddResult,
+			AddFailuresManager sut)
+		{
+			// Arrange
+			var failures = new Dictionary<Guid, AddResult>
+			{
+				{ failuresOnFile.Last().Key, newAddResult}
+			};
+			addFailuresFileServiceMock.Setup(x => x.Load()).ReturnsAsync(failuresOnFile);
+
+			// Act
+			await sut.AddFailures(failures);
+
+			// Assert
+			addFailuresFileServiceMock.Verify(
+				x => x.Save(It.Is<Dictionary<Guid, AddResult>>(d =>
+					failures.All(f => d.ContainsKey(f.Key)) && failuresOnFile.All(f => d.ContainsKey(f.Key)))), Times.Once);
+		}
+
+		[Theory]
+		[AutoMoqData]
 		public async Task RemoveFailures_ThrowsException_WhenSavingFails(
 			[Frozen] Mock<IAddFailuresFileService> addFailuresFileServiceMock,
 			Dictionary<Guid, AddResult> failuresOnFile,
