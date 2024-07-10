@@ -1,6 +1,7 @@
 ﻿using AutoFixture.Xunit2;
 using GGDeals.Menu.Failures;
 using GGDeals.Services;
+using GGDeals.Settings;
 using Moq;
 using Playnite.SDK;
 using Playnite.SDK.Models;
@@ -9,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using GGDeals.Settings;
 using TestTools.Shared;
 using Xunit;
 
@@ -113,7 +113,7 @@ namespace GGDeals.UnitTests.Services
 
 		[Theory]
 		[AutoMoqData]
-		public async Task AddGamesToLibrary_ShowsInfoNotification_WhenGamePageCouldNotBeFound(
+		public async Task AddGamesToLibrary_ShowsInfoNotification_WhenGameMatchIsAMiss(
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
 			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
 			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
@@ -138,7 +138,7 @@ namespace GGDeals.UnitTests.Services
 
 		[Theory]
 		[AutoMoqData]
-		public async Task AddGamesToLibrary_AddToFailures_WhenGamePageCouldNotBeFound(
+		public async Task AddGamesToLibrary_AddToFailures_WhenGameMatchIsAMiss(
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
 			[Frozen] Mock<IAddFailuresManager> addFailuresManagerMock,
 			List<Game> games,
@@ -157,6 +157,57 @@ namespace GGDeals.UnitTests.Services
 			addFailuresManagerMock.Verify(
 				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f => f.Values.All(v => v.Result == AddToCollectionResult.Missed) && f.Keys.SequenceEqual(games.Select(g => g.Id)))),
 				Times.Once);
+		}
+
+		[Theory]
+		[AutoMoqData]
+		public async Task AddGamesToLibrary_ShowsInfoNotification_WhenApiReturnsError(
+			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
+			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
+			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
+			List<Game> games,
+			CancellationToken ct,
+			GGDealsService sut)
+		{
+			// Arrange
+			addGamesServiceMock
+				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.Error }));
+			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
+
+			// Act
+			await sut.AddGamesToLibrary(games, ct);
+
+			// Assert
+			notificationsApiMock.Verify(
+				x => x.Add("gg-deals-api-error", It.IsAny<string>(),
+					It.Is<NotificationType>(n => n == NotificationType.Info)), Times.Once);
+		}
+
+		[Theory]
+		[AutoMoqData]
+		public async Task AddGamesToLibrary_AddToFailures_WhenApiReturnsError(
+			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
+			[Frozen] Mock<IAddFailuresManager> addFailuresManagerMock,
+			List<Game> games,
+			string message,
+			CancellationToken ct,
+			GGDealsService sut)
+		{
+			// Arrange
+			addGamesServiceMock
+				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync(games.ToDictionary(x => x.Id,
+					x => new AddResult() { Result = AddToCollectionResult.Error, Message = message }));
+
+			// Act
+			await sut.AddGamesToLibrary(games, ct);
+
+			// Assert
+			addFailuresManagerMock.Verify(
+				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f =>
+					f.Values.All(v => v.Result == AddToCollectionResult.Error && v.Message == message) &&
+					f.Keys.SequenceEqual(games.Select(g => g.Id)))), Times.Once);
 		}
 
 		[Theory]

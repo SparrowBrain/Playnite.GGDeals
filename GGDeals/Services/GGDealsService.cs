@@ -1,4 +1,5 @@
 ﻿using GGDeals.Menu.Failures;
+using GGDeals.Settings;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using System;
@@ -7,7 +8,6 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
-using GGDeals.Settings;
 
 namespace GGDeals.Services
 {
@@ -34,10 +34,11 @@ namespace GGDeals.Services
 
 		public async Task AddGamesToLibrary(IReadOnlyCollection<Game> games, CancellationToken ct)
 		{
-			var addedGames = new List<Guid>();
-			var missedGames = new List<Guid>();
-			var alreadyOwnedGames = new List<Guid>();
-			var skippedDueToLibrary = new List<Guid>();
+			var addedGames = new Dictionary<Guid, AddResult>();
+			var missedGames = new Dictionary<Guid, AddResult>();
+			var alreadyOwnedGames = new Dictionary<Guid, AddResult>();
+			var skippedDueToLibrary = new Dictionary<Guid, AddResult>();
+			var errorGames = new Dictionary<Guid, AddResult>();
 
 			try
 			{
@@ -47,16 +48,25 @@ namespace GGDeals.Services
 				}
 
 				var addResults = await _addGamesService.TryAddToCollection(games, ct);
-				addedGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.Added).Select(r => r.Key).ToList();
-				missedGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.Missed).Select(r => r.Key).ToList();
-				alreadyOwnedGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.AlreadyOwned).Select(r => r.Key).ToList();
-				skippedDueToLibrary = addResults.Where(r => r.Value.Result == AddToCollectionResult.SkippedDueToLibrary).Select(r => r.Key).ToList();
+				addedGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.Added).ToDictionary(x => x.Key, x => x.Value);
+				missedGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.Missed).ToDictionary(x => x.Key, x => x.Value);
+				alreadyOwnedGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.AlreadyOwned).ToDictionary(x => x.Key, x => x.Value);
+				skippedDueToLibrary = addResults.Where(r => r.Value.Result == AddToCollectionResult.SkippedDueToLibrary).ToDictionary(x => x.Key, x => x.Value);
+				errorGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.Error).ToDictionary(x => x.Key, x => x.Value);
 
 				if (missedGames.Count > 0)
 				{
 					_playniteApi.Notifications.Add(
 						"gg-deals-gamepagenotfound",
-						string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationGamePageNotFound_Format"), missedGames.Count),
+						string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationGameMiss_Format"), missedGames.Count),
+						NotificationType.Info);
+				}
+
+				if (errorGames.Count > 0)
+				{
+					_playniteApi.Notifications.Add(
+						"gg-deals-api-error",
+						string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationApiError_Format"), errorGames.Count),
 						NotificationType.Info);
 				}
 			}
@@ -68,7 +78,7 @@ namespace GGDeals.Services
 					ResourceProvider.GetString("LOC_GGDeals_NotificationUserNotAuthenticatedLoginInAddonSettings"),
 					NotificationType.Info);
 
-				await AddUnprocessedGameFailures(games, addedGames, missedGames);
+				await AddUnprocessedGameFailures(games, addedGames, missedGames, errorGames);
 			}
 			catch (Exception ex)
 			{
@@ -78,38 +88,43 @@ namespace GGDeals.Services
 					ResourceProvider.GetString("LOC_GGDeals_NotificationFailedAddingGamesToLibrary"),
 					NotificationType.Error);
 
-				await AddUnprocessedGameFailures(games, addedGames, missedGames);
+				await AddUnprocessedGameFailures(games, addedGames, missedGames, errorGames);
 			}
 
 			Logger.Info($"Finished adding games to GG.deals collection: Total: {games.Count}, PageNotFound: {missedGames.Count}, AlreadyOwned: {alreadyOwnedGames.Count}, SkippedDueToLibrary: {skippedDueToLibrary.Count}, Added: {addedGames.Count}");
 
 			if (missedGames.Count > 0)
 			{
-				await _addFailuresManager.AddFailures(missedGames.ToDictionary(g => g,
-					_ => new AddResult() { Result = AddToCollectionResult.Missed }));
+				await _addFailuresManager.AddFailures(missedGames);
+			}
+
+			if (errorGames.Count > 0)
+			{
+				await _addFailuresManager.AddFailures(errorGames);
 			}
 
 			if (addedGames.Count > 0)
 			{
-				await _addFailuresManager.RemoveFailures(addedGames);
+				await _addFailuresManager.RemoveFailures(addedGames.Keys);
 			}
 
 			if (skippedDueToLibrary.Count > 0)
 			{
-				await _addFailuresManager.RemoveFailures(skippedDueToLibrary);
+				await _addFailuresManager.RemoveFailures(skippedDueToLibrary.Keys);
 			}
 
 			if (alreadyOwnedGames.Count > 0)
 			{
-				await _addFailuresManager.RemoveFailures(alreadyOwnedGames);
+				await _addFailuresManager.RemoveFailures(alreadyOwnedGames.Keys);
 			}
 		}
 
-		private async Task AddUnprocessedGameFailures(IReadOnlyCollection<Game> games, List<Guid> addedGames, List<Guid> gamesWithoutPage)
+		private async Task AddUnprocessedGameFailures(IReadOnlyCollection<Game> games, IDictionary<Guid, AddResult> addedGames, IDictionary<Guid, AddResult> missedGames, IDictionary<Guid, AddResult> errorGames)
 		{
 			var unprocessedGames = games
-				.Where(g => !addedGames.Contains(g.Id))
-				.Where(g => !gamesWithoutPage.Contains(g.Id))
+				.Where(g => !addedGames.Keys.Contains(g.Id))
+				.Where(g => !missedGames.Keys.Contains(g.Id))
+				.Where(g => !errorGames.Keys.Contains(g.Id))
 				.ToList();
 			await _addFailuresManager.AddFailures(unprocessedGames.ToDictionary(g => g.Id,
 				_ => new AddResult() { Result = AddToCollectionResult.NotProcessed }));

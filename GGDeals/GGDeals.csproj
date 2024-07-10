@@ -93,7 +93,7 @@
     <Compile Include="Services\GameToAddFilter.cs" />
     <Compile Include="Services\IAddGamesService.cs" />
     <Compile Include="Services\IGameToAddFilter.cs" />
-    <Compile Include="Services\ImportResult.cs" />
+    <Compile Include="Services\AddResult.cs" />
     <Compile Include="Queue\IQueuePersistence.cs" />
     <Compile Include="Queue\PersistentProcessingQueue.cs" />
     <Compile Include="Queue\QueuePersistence.cs" />
@@ -109,7 +109,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AddToCollectionResult.cs" />
     <Compile Include="Services\GGDealsService.cs" />
-    <Compile Include="Services\IAddAGameService.cs" />
     <Compile Include="Settings\MVVM\GGDealsSettingsViewModel.cs" />
     <Compile Include="Settings\MVVM\LibraryItem.cs" />
     <Compile Include="Settings\PluginSettingsPersistence.cs" />
