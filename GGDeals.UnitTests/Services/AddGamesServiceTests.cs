@@ -37,6 +37,26 @@ namespace GGDeals.UnitTests.Services
 		}
 
 		[Theory]
+		[AutoMoqData]
+		public async Task TryAddToCollection_DoesNotCallTheApi_WhenGamesAllAreFilteredOut(
+			[Frozen] Mock<IGameToAddFilter> gameToAddFilterMock,
+			[Frozen] Mock<IRequestDataBatcher> requestDataBatcherMock,
+			List<Game> games,
+			CancellationToken ct,
+			AddResult expectedAddResult,
+			AddGamesService sut)
+		{
+			// Arrange
+			gameToAddFilterMock.Setup(x => x.ShouldTryAddGame(It.IsAny<Game>(), out expectedAddResult)).Returns(false);
+
+			// Act
+			await sut.TryAddToCollection(games, ct);
+
+			// Assert
+			requestDataBatcherMock.Verify(x => x.CreateDataJsons(It.IsAny<IReadOnlyCollection<GameWithLauncher>>()), Times.Never);
+		}
+
+		[Theory]
 		[InlineAutoMoqData(ImportResultStatus.Error, AddToCollectionResult.Error)]
 		[InlineAutoMoqData(ImportResultStatus.Added, AddToCollectionResult.Added)]
 		[InlineAutoMoqData(ImportResultStatus.Skipped, AddToCollectionResult.AlreadyOwned)]

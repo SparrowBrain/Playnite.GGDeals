@@ -49,6 +49,11 @@ namespace GGDeals.Services
 				}
 			}
 
+			if (!gamesToProcess.Any())
+			{
+				return result;
+			}
+
 			var requests = _requestDataBatcher.CreateDataJsons(gamesToProcess)
 				.Select(data => new ImportRequest() { Data = data, Token = _settings.AuthenticationToken });
 
