@@ -1,14 +1,13 @@
-﻿using AutoFixture;
-using AutoFixture.Xunit2;
+﻿using AutoFixture.Xunit2;
 using GGDeals.Api.Models;
+using GGDeals.Api.Services;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GGDeals.Api.Services;
 using Xunit;
-using Newtonsoft.Json.Serialization;
 
 namespace GGDeals.UnitTests.Api.Services
 {
@@ -99,7 +98,7 @@ namespace GGDeals.UnitTests.Api.Services
 			{
 				var newGame = JsonConvert.DeserializeObject<GameWithLauncher>(JsonConvert.SerializeObject(game));
 				newGame.Id = Guid.NewGuid();
-				newGame.Description = new string('A', 5_000_000);
+				newGame.Name = new string('A', 5_000_000);
 				games.Add(newGame);
 				json = JsonConvert.SerializeObject(games);
 			}

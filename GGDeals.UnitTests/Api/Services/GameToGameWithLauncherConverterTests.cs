@@ -26,7 +26,13 @@ namespace GGDeals.UnitTests.Api.Services
 
 			// Assert
 			Assert.Equal(ggLauncher, result.GGLauncher);
-			Assert.Equivalent(game, result);
+			Assert.Equal(game.Id, result.Id);
+			Assert.Equal(game.GameId, result.GameId);
+			Assert.Equal(game.Links, result.Links);
+			Assert.Equal(game.Source, result.Source);
+			Assert.Equal(game.ReleaseDate, result.ReleaseDate);
+			Assert.Equal(game.ReleaseYear, result.ReleaseYear);
+			Assert.Equal(game.Name, result.Name);
 		}
 	}
 }
