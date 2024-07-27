@@ -115,7 +115,12 @@ namespace GGDeals.Services
 				await AddUnprocessedGameFailures(games, addedGames, missedGames, errorGames, ignoredGames, skippedDueToLibrary, alreadyOwnedGames);
 			}
 
-			Logger.Info($"Finished adding games to GG.deals collection: Total: {games.Count}, PageNotFound: {missedGames.Count}, AlreadyOwned: {alreadyOwnedGames.Count}, SkippedDueToLibrary: {skippedDueToLibrary.Count}, Added: {addedGames.Count}");
+			Logger.Info($@"Finished adding games to GG.deals collection: Total: {games.Count},
+{nameof(AddToCollectionResult.NotFound)}: {missedGames.Count},
+AlreadyOwned: {alreadyOwnedGames.Count},
+SkippedDueToLibrary: {skippedDueToLibrary.Count},
+Ignored: {ignoredGames.Count},
+Added: {addedGames.Count}");
 
 			await HandleFailuresWithStatusChange(games, missedGames);
 			await HandleFailuresWithoutStatusChange(errorGames);

@@ -84,6 +84,8 @@ namespace GGDeals.Services
 
 				game.TagIds.Add(tag.Id);
 			}
+
+			_playniteApi.Database.Games.Update(game);
 		}
 	}
 }
