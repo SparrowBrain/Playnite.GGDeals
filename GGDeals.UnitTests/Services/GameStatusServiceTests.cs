@@ -91,12 +91,15 @@ namespace GGDeals.UnitTests.Services
 			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
 			Tag ggDealsTag,
 			List<Tag> tags,
+			List<Game> games,
 			Game game)
 		{
 			// Arrange
 			ggDealsTag.Name = tagName;
 			tags.Add(ggDealsTag);
 			playniteApiMock.Setup(a => a.Database.Tags).Returns(new TestableItemCollection<Tag>(tags));
+			var gamesDatabase = new TestableItemCollection<Game>(games);
+			playniteApiMock.Setup(a => a.Database.Games).Returns(gamesDatabase);
 			var sut = CreateSut(playniteApiMock);
 
 			// Act
@@ -104,6 +107,7 @@ namespace GGDeals.UnitTests.Services
 
 			// Assert
 			Assert.Contains(ggDealsTag.Id, game.TagIds);
+			Assert.Equal(1, gamesDatabase.UpdateCount);
 		}
 
 		[Theory]

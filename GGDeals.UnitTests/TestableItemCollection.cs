@@ -15,6 +15,8 @@ namespace GGDeals.UnitTests
 			_items = items;
 		}
 
+		public int UpdateCount { get; private set; }
+
 		public void Dispose()
 		{
 			throw new NotImplementedException();
@@ -122,7 +124,7 @@ namespace GGDeals.UnitTests
 
 		public void Update(T item)
 		{
-			throw new NotImplementedException();
+			UpdateCount++;
 		}
 
 		public void Update(IEnumerable<T> items)
