@@ -91,6 +91,10 @@ namespace GGDeals.Services
 					addToCollectionResult = AddToCollectionResult.Missed;
 					break;
 
+				case ImportResultStatus.Ignored:
+					addToCollectionResult = AddToCollectionResult.Ignored;
+					break;
+
 				default:
 					throw new Exception("No mapping between ImportResultStatus and AddToCollectionResult");
 			}

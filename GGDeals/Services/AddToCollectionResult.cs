@@ -6,7 +6,8 @@
         Missed,
         AlreadyOwned,
         SkippedDueToLibrary,
-        NotProcessed,
-        Error
+        New,
+        Error,
+        Ignored
     }
 }

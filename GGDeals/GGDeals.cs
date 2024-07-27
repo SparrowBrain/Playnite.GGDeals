@@ -26,6 +26,7 @@ namespace GGDeals
 {
 	public class GGDeals : GenericPlugin
 	{
+		public const string PluginId = "2af05ded-085c-426b-a10e-8e03185092bf";
 		private const string FailuresFileName = "failures.json";
 		private const string QueueFileName = "queue.json";
 		private static readonly ILogger Logger = LogManager.GetLogger();
@@ -45,7 +46,7 @@ namespace GGDeals
 
 		private GGDealsSettingsViewModel _settings;
 
-		public override Guid Id { get; } = Guid.Parse("2af05ded-085c-426b-a10e-8e03185092bf");
+		public override Guid Id { get; } = Guid.Parse(PluginId);
 
 		public GGDeals(IPlayniteAPI api) : base(api)
 		{

@@ -6,5 +6,6 @@
 		Added,
 		Skipped,
 		Miss,
+		Ignored,
 	}
 }

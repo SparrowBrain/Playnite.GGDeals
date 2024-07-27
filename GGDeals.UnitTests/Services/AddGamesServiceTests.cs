@@ -61,6 +61,7 @@ namespace GGDeals.UnitTests.Services
 		[InlineAutoMoqData(ImportResultStatus.Added, AddToCollectionResult.Added)]
 		[InlineAutoMoqData(ImportResultStatus.Skipped, AddToCollectionResult.AlreadyOwned)]
 		[InlineAutoMoqData(ImportResultStatus.Miss, AddToCollectionResult.Missed)]
+		[InlineAutoMoqData(ImportResultStatus.Ignored, AddToCollectionResult.Ignored)]
 		public async Task TryAddToCollection_ReturnsSuccess_WhenGamesResponseSuccess(
 			ImportResultStatus importResultStatus,
 			AddToCollectionResult expectedAddToCollectionResult,

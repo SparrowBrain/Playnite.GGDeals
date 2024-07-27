@@ -3,6 +3,8 @@
 - Users now must provide authentication token generated on GG.deals website instead of logging in through the extension
 - Processing games only after metadata fetch
 - Added text messages to failures window
+----------- Improved handling for games hidden by duplicate hider
+----------- Adding gg.deals link to games
 ----------- Adding a custom tag for owned games
 ----------- Adding a GG.deals link for owned games?
 

@@ -39,8 +39,8 @@ namespace GGDeals.UnitTests.Services
 
 			// Assert
 			notificationsApiMock.Verify(
-				x => x.Add("gg-deals-auth-error", It.IsAny<string>(),
-					It.Is<NotificationType>(n => n == NotificationType.Info)), Times.Once);
+				x => x.Add(It.Is<NotificationMessage>(n =>
+					n.Id == "gg-deals-auth-error" && n.Type == NotificationType.Info)), Times.Once);
 		}
 
 		[Theory]
@@ -61,7 +61,7 @@ namespace GGDeals.UnitTests.Services
 
 			// Assert
 			addFailuresManagerMock.Verify(
-				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f => f.Values.All(v => v.Result == AddToCollectionResult.NotProcessed) && f.Keys.SequenceEqual(games.Select(g => g.Id)))),
+				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f => f.Values.All(v => v.Result == AddToCollectionResult.New) && f.Keys.SequenceEqual(games.Select(g => g.Id)))),
 				Times.Once);
 		}
 
@@ -107,7 +107,7 @@ namespace GGDeals.UnitTests.Services
 
 			// Assert
 			addFailuresManagerMock.Verify(
-				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f => f.Values.All(v => v.Result == AddToCollectionResult.NotProcessed) && f.Keys.SequenceEqual(games.Select(g => g.Id)))),
+				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f => f.Values.All(v => v.Result == AddToCollectionResult.New) && f.Keys.SequenceEqual(games.Select(g => g.Id)))),
 				Times.Once);
 		}
 
@@ -208,6 +208,54 @@ namespace GGDeals.UnitTests.Services
 				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f =>
 					f.Values.All(v => v.Result == AddToCollectionResult.Error && v.Message == message) &&
 					f.Keys.SequenceEqual(games.Select(g => g.Id)))), Times.Once);
+		}
+
+		[Theory]
+		[AutoMoqData]
+		public async Task AddGamesToLibrary_ShowsInfoNotification_WhenGameMatchIsIgnored(
+			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
+			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
+			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
+			List<Game> games,
+			CancellationToken ct,
+			GGDealsService sut)
+		{
+			// Arrange
+			addGamesServiceMock
+				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.Ignored }));
+			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
+
+			// Act
+			await sut.AddGamesToLibrary(games, ct);
+
+			// Assert
+			notificationsApiMock.Verify(
+				x => x.Add("gg-deals-ignored", It.IsAny<string>(),
+					It.Is<NotificationType>(n => n == NotificationType.Info)), Times.Once);
+		}
+
+		[Theory]
+		[AutoMoqData]
+		public async Task AddGamesToLibrary_RemovesFromFailures_WhenGameIsIgnored(
+			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
+			[Frozen] Mock<IAddFailuresManager> addFailuresManagerMock,
+			List<Game> games,
+			CancellationToken ct,
+			GGDealsService sut)
+		{
+			// Arrange
+			addGamesServiceMock
+				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.Ignored }));
+
+			// Act
+			await sut.AddGamesToLibrary(games, ct);
+
+			// Assert
+			addFailuresManagerMock.Verify(
+				x => x.RemoveFailures(It.Is<IReadOnlyCollection<Guid>>(f => games.Select(g => g.Id).Contains(f))),
+				Times.Once());
 		}
 
 		[Theory]
