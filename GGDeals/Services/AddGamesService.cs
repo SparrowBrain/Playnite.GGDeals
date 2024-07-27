@@ -84,11 +84,11 @@ namespace GGDeals.Services
 					break;
 
 				case ImportResultStatus.Skipped:
-					addToCollectionResult = AddToCollectionResult.AlreadyOwned;
+					addToCollectionResult = AddToCollectionResult.Synced;
 					break;
 
 				case ImportResultStatus.Miss:
-					addToCollectionResult = AddToCollectionResult.Missed;
+					addToCollectionResult = AddToCollectionResult.NotFound;
 					break;
 
 				case ImportResultStatus.Ignored:

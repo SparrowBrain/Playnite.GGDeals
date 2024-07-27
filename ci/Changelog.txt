@@ -2,10 +2,12 @@
 - Calling official GG.deals API instead of scraping the website
 - Users now must provide authentication token generated on GG.deals website instead of logging in through the extension
 - Processing games only after metadata fetch
+- Using custom tags to keep track of sync status
 - Added text messages to failures window
+- Authentication error notification now opens extension settings when clicked
+- Add failure notification now opens add failure window when clicked
 ----------- Improved handling for games hidden by duplicate hider
 ----------- Adding gg.deals link to games
------------ Adding a custom tag for owned games
 ----------- Adding a GG.deals link for owned games?
 
 v1.1.0

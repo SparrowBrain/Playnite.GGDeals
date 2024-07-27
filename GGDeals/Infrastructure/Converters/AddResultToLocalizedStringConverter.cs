@@ -14,7 +14,7 @@ namespace GGDeals.Infrastructure.Converters
             {
                 switch (result)
                 {
-                    case AddToCollectionResult.Missed:
+                    case AddToCollectionResult.NotFound:
                         return ResourceProvider.GetString("LOC_GGDeals_ShowAddFailuresReasonPageNotFound");
 
                     case AddToCollectionResult.New:

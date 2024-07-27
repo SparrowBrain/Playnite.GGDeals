@@ -3,6 +3,7 @@ using GGDeals.Menu.AddGames.MVVM;
 using GGDeals.Menu.Failures;
 using GGDeals.Menu.Failures.File;
 using GGDeals.Menu.Failures.MVVM;
+using GGDeals.Queue;
 using GGDeals.Services;
 using GGDeals.Settings;
 using GGDeals.Settings.MVVM;
@@ -20,7 +21,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using GGDeals.Queue;
 
 namespace GGDeals
 {
@@ -45,6 +45,7 @@ namespace GGDeals
 		};
 
 		private GGDealsSettingsViewModel _settings;
+		private readonly Action _openFailuresView;
 
 		public override Guid Id { get; } = Guid.Parse(PluginId);
 
@@ -70,6 +71,16 @@ namespace GGDeals
 
 			var pluginSettingsPersistence = new PluginSettingsPersistence(this);
 			_startupSettingsValidator = new StartupSettingsValidator(pluginSettingsPersistence, new SettingsMigrator(pluginSettingsPersistence));
+			_openFailuresView = () =>
+			{
+				var showAddFailuresViewModel = new ShowAddFailuresViewModel(this, _addFailuresManager);
+				ShowDialog(
+					new ShowAddFailuresView(showAddFailuresViewModel),
+					768,
+					768,
+					ResourceProvider.GetString("LOC_GGDeals_ShowAddFailuresTitle"),
+					true);
+			};
 		}
 
 		public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
@@ -113,16 +124,7 @@ namespace GGDeals
 			{
 				Description = ResourceProvider.GetString("LOC_GGDeals_MainMenuItemShowFailures"),
 				MenuSection = "@GG.deals",
-				Action = actionArgs =>
-				{
-					var showAddFailuresViewModel = new ShowAddFailuresViewModel(this, _addFailuresManager);
-					ShowDialog(
-						new ShowAddFailuresView(showAddFailuresViewModel),
-						768,
-						768,
-						ResourceProvider.GetString("LOC_GGDeals_ShowAddFailuresTitle"),
-						true);
-				}
+				Action = actionArgs => _openFailuresView.Invoke()
 			};
 		}
 
@@ -157,7 +159,8 @@ namespace GGDeals
 				var settings = LoadPluginSettings<GGDealsSettings>();
 				using (var ggDealsApiClient = new GGDealsApiClient(settings, _apiJsonSerializerSettings))
 				{
-					var gameToAddFilter = new GameToAddFilter(settings);
+					var gameStatusService = new GameStatusService(_api);
+					var gameToAddFilter = new GameToAddFilter(settings, gameStatusService);
 					var libraryToGGLauncherMap = new LibraryToGGLauncherMap();
 					var gameToGameWithLauncherConverter = new GameToGameWithLauncherConverter(libraryToGGLauncherMap);
 					var requestDataBatcher = new RequestDataBatcher(_apiJsonSerializerSettings);
@@ -166,7 +169,7 @@ namespace GGDeals
 						gameToGameWithLauncherConverter, requestDataBatcher, ggDealsApiClient);
 
 					var ggDealsService =
-						new GGDealsService(settings, PlayniteApi, addGamesService, _addFailuresManager);
+						new GGDealsService(settings, _openFailuresView, PlayniteApi, addGamesService, _addFailuresManager, gameStatusService);
 					// TODO: Implement cancellation token source
 					await ggDealsService.AddGamesToLibrary(games, CancellationToken.None);
 				}

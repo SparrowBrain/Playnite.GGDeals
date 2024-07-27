@@ -7,10 +7,10 @@
     <sys:String x:Key="LOC_GGDeals_GameMenuItemAddToGGDealsCollection">Add to GG.deals collection</sys:String>
     <sys:String x:Key="LOC_GGDeals_MainMenuItemAddToGGDealsCollection">Add games to GG.deals collection...</sys:String>
     <sys:String x:Key="LOC_GGDeals_MainMenuItemShowFailures">Show failures...</sys:String>
-    <sys:String x:Key="LOC_GGDeals_NotificationApiError_Format">Could not add {0} games due to an error. Use failures window for mode detailed info.</sys:String>
+    <sys:String x:Key="LOC_GGDeals_NotificationApiError_Format">Could not add {0} games due to an error. Click here for mode detailed info.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationUserNotAuthenticatedLoginInAddonSettings">User is not authenticated. Login in GG.deals addon settings.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationFailedAddingGamesToLibrary">Error occured while adding games to GG.deals library. If error persists, create an issue in https://github.com/SparrowBrain/Playnite.GGDeals repository.</sys:String>
-    <sys:String x:Key="LOC_GGDeals_NotificationGameMiss_Format">Could not match {0} games. Use failures window for mode detailed info.</sys:String>
+    <sys:String x:Key="LOC_GGDeals_NotificationGameMiss_Format">Could not match {0} games. Click here for mode detailed info.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationGamesIgnored_Format">{0} games ignored by API. They're either demo versions or other items not handled by GG.deals.</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsAuthenticationGroupTitle">Authentication</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsAuthenticationToken">Authentication Token</sys:String>

@@ -117,7 +117,9 @@
     <Compile Include="Menu\Failures\AddFailuresManagerTests.cs" />
     <Compile Include="Services\AddGamesServiceTests.cs" />
     <Compile Include="Services\GameToAddFilterTests.cs" />
+    <Compile Include="Services\GameStatusServiceTests.cs" />
     <Compile Include="Services\PersistentProcessingQueueTests.cs" />
+    <Compile Include="TestableItemCollection.cs" />
     <Compile Include="Settings\SettingsMigratorTests.cs" />
     <Compile Include="Settings\StartupSettingsValidatorTests.cs" />
     <Compile Include="Services\GGDealsServiceTests.cs" />

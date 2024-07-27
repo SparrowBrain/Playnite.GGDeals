@@ -14,9 +14,9 @@ namespace GGDeals.Api.Services
 {
 	public class GGDealsApiClient : IDisposable, IGGDealsApiClient
 	{
-		private readonly JsonSerializerSettings _jsonSerializerSettings;
-		private static ILogger _logger = LogManager.GetLogger();
+		private static readonly ILogger Logger = LogManager.GetLogger();
 		private static string _endpoint = "ACTUAL ENDPOINT GOES HERE?";
+		private readonly JsonSerializerSettings _jsonSerializerSettings;
 		private readonly HttpClient _httpClient;
 
 		public GGDealsApiClient(GGDealsSettings settings, JsonSerializerSettings jsonSerializerSettings)
@@ -36,7 +36,7 @@ namespace GGDeals.Api.Services
 
 			var response = await _httpClient.PostAsync(_endpoint, content, ct);
 			var responseString = await response.Content.ReadAsStringAsync();
-			_logger.Info($"Response from GG.Deals: Status: {response.StatusCode}; Body {responseString}");
+			Logger.Info($"Response from GG.Deals: Status: {response.StatusCode}; Body {responseString}");
 			if (response.StatusCode == HttpStatusCode.Unauthorized)
 			{
 				throw new AuthenticationException(responseString);
@@ -50,7 +50,7 @@ namespace GGDeals.Api.Services
 		private StringContent PrepareContent(ImportRequest request)
 		{
 			var requestJson = JsonConvert.SerializeObject(request, _jsonSerializerSettings);
-			_logger.Debug($"Calling GG.Deals with body: {requestJson}");
+			Logger.Debug($"Calling GG.Deals with body: {requestJson}");
 			var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
 			return content;
 		}

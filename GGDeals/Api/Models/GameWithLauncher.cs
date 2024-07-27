@@ -15,7 +15,7 @@ namespace GGDeals.Api.Models
 				GGLauncher = ggLauncher,
 				Id = game.Id,
 				GameId = game.GameId,
-				Links = new List<Link>(game.Links),
+				Links = game.Links,
 				Source = game.Source,
 				ReleaseDate = game.ReleaseDate,
 				ReleaseYear = game.ReleaseYear,

@@ -124,7 +124,7 @@ namespace GGDeals.UnitTests.Services
 			// Arrange
 			addGamesServiceMock
 				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.Missed }));
+				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.NotFound }));
 			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
 
 			// Act
@@ -132,8 +132,8 @@ namespace GGDeals.UnitTests.Services
 
 			// Assert
 			notificationsApiMock.Verify(
-				x => x.Add("gg-deals-gamepagenotfound", It.IsAny<string>(),
-					It.Is<NotificationType>(n => n == NotificationType.Info)), Times.Once);
+				x => x.Add(It.Is<NotificationMessage>(m =>
+					m.Id == "gg-deals-gamepagenotfound" && m.Type == NotificationType.Info)), Times.Once);
 		}
 
 		[Theory]
@@ -148,15 +148,38 @@ namespace GGDeals.UnitTests.Services
 			// Arrange
 			addGamesServiceMock
 				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.Missed }));
+				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.NotFound }));
 
 			// Act
 			await sut.AddGamesToLibrary(games, ct);
 
 			// Assert
 			addFailuresManagerMock.Verify(
-				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f => f.Values.All(v => v.Result == AddToCollectionResult.Missed) && f.Keys.SequenceEqual(games.Select(g => g.Id)))),
+				x => x.AddFailures(It.Is<IDictionary<Guid, AddResult>>(f => f.Values.All(v => v.Result == AddToCollectionResult.NotFound) && f.Keys.SequenceEqual(games.Select(g => g.Id)))),
 				Times.Once);
+		}
+
+		[Theory]
+		[AutoMoqData]
+		public async Task AddGamesToLibrary_UpdatesGameStatus_WhenGameMatchIsAMiss(
+			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
+			[Frozen] Mock<IGameStatusService> gameStatusServiceMock,
+			List<Game> games,
+			CancellationToken ct,
+			GGDealsService sut)
+		{
+			// Arrange
+			addGamesServiceMock
+				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.NotFound }));
+
+			// Act
+			await sut.AddGamesToLibrary(games, ct);
+
+			// Assert
+			gameStatusServiceMock.Verify(
+				x => x.UpdateStatus(It.Is<Game>(v => games.Any(g => v.Id == g.Id)), It.Is<AddToCollectionResult>(r => r == AddToCollectionResult.NotFound)),
+				Times.Exactly(games.Count));
 		}
 
 		[Theory]
@@ -180,8 +203,8 @@ namespace GGDeals.UnitTests.Services
 
 			// Assert
 			notificationsApiMock.Verify(
-				x => x.Add("gg-deals-api-error", It.IsAny<string>(),
-					It.Is<NotificationType>(n => n == NotificationType.Info)), Times.Once);
+				x => x.Add(It.Is<NotificationMessage>(m =>
+					m.Id == "gg-deals-api-error" && m.Type == NotificationType.Info)), Times.Once);
 		}
 
 		[Theory]
@@ -260,6 +283,29 @@ namespace GGDeals.UnitTests.Services
 
 		[Theory]
 		[AutoMoqData]
+		public async Task AddGamesToLibrary_UpdatesGameStatus_WhenGameMatchIsIgnored(
+			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
+			[Frozen] Mock<IGameStatusService> gameStatusServiceMock,
+			List<Game> games,
+			CancellationToken ct,
+			GGDealsService sut)
+		{
+			// Arrange
+			addGamesServiceMock
+				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.Ignored }));
+
+			// Act
+			await sut.AddGamesToLibrary(games, ct);
+
+			// Assert
+			gameStatusServiceMock.Verify(
+				x => x.UpdateStatus(It.Is<Game>(v => games.Any(g => v.Id == g.Id)), It.Is<AddToCollectionResult>(r => r == AddToCollectionResult.Ignored)),
+				Times.Exactly(games.Count));
+		}
+
+		[Theory]
+		[AutoMoqData]
 		public async Task AddGamesToLibrary_ShowsNoNotification_WhenGameIsAdded(
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
 			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
@@ -302,6 +348,31 @@ namespace GGDeals.UnitTests.Services
 			addFailuresManagerMock.Verify(
 				x => x.RemoveFailures(It.Is<IReadOnlyCollection<Guid>>(f => games.Select(g => g.Id).Contains(f))),
 				Times.Once());
+		}
+
+		[Theory]
+		[InlineAutoMoqData(AddToCollectionResult.Added)]
+		[InlineAutoMoqData(AddToCollectionResult.Synced)]
+		public async Task AddGamesToLibrary_UpdatesGameStatus_WhenGameMatchIsAdded(
+			AddToCollectionResult addResult,
+			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
+			[Frozen] Mock<IGameStatusService> gameStatusServiceMock,
+			List<Game> games,
+			CancellationToken ct,
+			GGDealsService sut)
+		{
+			// Arrange
+			addGamesServiceMock
+				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = addResult }));
+
+			// Act
+			await sut.AddGamesToLibrary(games, ct);
+
+			// Assert
+			gameStatusServiceMock.Verify(
+				x => x.UpdateStatus(It.Is<Game>(v => games.Any(g => v.Id == g.Id)), It.Is<AddToCollectionResult>(r => r == addResult)),
+				Times.Exactly(games.Count));
 		}
 
 		[Theory]

@@ -90,8 +90,10 @@
     <Compile Include="Infrastructure\Converters\BooleanToCollapsedVisibilityConverter.cs" />
     <Compile Include="Queue\QueueFile.cs" />
     <Compile Include="Services\AddGamesService.cs" />
+    <Compile Include="Services\GameStatusService.cs" />
     <Compile Include="Services\GameToAddFilter.cs" />
     <Compile Include="Services\IAddGamesService.cs" />
+    <Compile Include="Services\IGameStatusService.cs" />
     <Compile Include="Services\IGameToAddFilter.cs" />
     <Compile Include="Services\AddResult.cs" />
     <Compile Include="Queue\IQueuePersistence.cs" />

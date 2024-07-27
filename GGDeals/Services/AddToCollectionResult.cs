@@ -3,8 +3,8 @@
     public enum AddToCollectionResult
     {
         Added,
-        Missed,
-        AlreadyOwned,
+        NotFound,
+        Synced,
         SkippedDueToLibrary,
         New,
         Error,
