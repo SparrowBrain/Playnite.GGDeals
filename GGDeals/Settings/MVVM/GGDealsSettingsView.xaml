@@ -45,6 +45,14 @@
         </ListBox.ItemTemplate>
       </ListBox>
     </GroupBox>
+    <GroupBox Header="{DynamicResource LOC_GGDeals_SettingsOtherGroupTitle}">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <CheckBox Grid.Column="0" Content="{DynamicResource LOC_GGDeals_SettingsAddGGDealsLinks}" IsChecked="{Binding Settings.AddLinksToGames}"></CheckBox>
+      </Grid>
+    </GroupBox>
     <mc:AlternateContent>
       <mc:Choice Requires="debug">
         <GroupBox Header="Debug">

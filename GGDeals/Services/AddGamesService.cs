@@ -63,7 +63,7 @@ namespace GGDeals.Services
 				foreach (var item in response.Data.Result)
 				{
 					var addToCollectionResult = MapToAddToCollectionResult(item);
-					result.Add(item.Id, new AddResult() { Result = addToCollectionResult, Message = item.Message });
+					result.Add(item.Id, new AddResult() {Result = addToCollectionResult, Message = item.Message, Url = item.Url });
 				}
 			}
 

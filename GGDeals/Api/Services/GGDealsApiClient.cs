@@ -50,11 +50,7 @@ namespace GGDeals.Api.Services
 		private StringContent PrepareContent(ImportRequest request)
 		{
 			var requestJson = JsonConvert.SerializeObject(request, _jsonSerializerSettings);
-
-			var requestCopy = JsonConvert.DeserializeObject<ImportRequest>(requestJson);
-			requestCopy.Token = "***REDACTED***";
-			var jsonForLogging = JsonConvert.SerializeObject(requestCopy);
-			Logger.Debug($"Calling GG.Deals with body: {jsonForLogging}");
+			LogRequest(requestJson);
 
 			var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
 			return content;
@@ -64,6 +60,14 @@ namespace GGDeals.Api.Services
 		{
 			var importResponse = JsonConvert.DeserializeObject<ImportResponse>(responseContent, _jsonSerializerSettings);
 			return importResponse;
+		}
+
+		private static void LogRequest(string requestJson)
+		{
+			var requestCopy = JsonConvert.DeserializeObject<ImportRequest>(requestJson);
+			requestCopy.Token = "***REDACTED***";
+			var jsonForLogging = JsonConvert.SerializeObject(requestCopy);
+			Logger.Debug($"Calling GG.Deals with body: {jsonForLogging}");
 		}
 
 		public void Dispose()

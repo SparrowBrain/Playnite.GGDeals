@@ -164,12 +164,11 @@ namespace GGDeals
 					var libraryToGGLauncherMap = new LibraryToGGLauncherMap();
 					var gameToGameWithLauncherConverter = new GameToGameWithLauncherConverter(libraryToGGLauncherMap);
 					var requestDataBatcher = new RequestDataBatcher(_apiJsonSerializerSettings);
+					var addGamesService = new AddGamesService(settings, gameToAddFilter, gameToGameWithLauncherConverter, requestDataBatcher, ggDealsApiClient);
+					var addLinkService = new AddLinkService(_api);
+					var addResultProcessor = new AddResultProcessor(settings, gameStatusService, addLinkService);
 
-					var addGamesService = new AddGamesService(settings, gameToAddFilter,
-						gameToGameWithLauncherConverter, requestDataBatcher, ggDealsApiClient);
-
-					var ggDealsService =
-						new GGDealsService(settings, _openFailuresView, PlayniteApi, addGamesService, _addFailuresManager, gameStatusService);
+					var ggDealsService = new GGDealsService(settings, _openFailuresView, PlayniteApi, addGamesService, _addFailuresManager, addResultProcessor);
 					// TODO: Implement cancellation token source
 					await ggDealsService.AddGamesToLibrary(games, CancellationToken.None);
 				}

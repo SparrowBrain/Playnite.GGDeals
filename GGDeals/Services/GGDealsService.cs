@@ -20,7 +20,7 @@ namespace GGDeals.Services
 		private readonly IPlayniteAPI _playniteApi;
 		private readonly IAddGamesService _addGamesService;
 		private readonly IAddFailuresManager _addFailuresManager;
-		private readonly IGameStatusService _gameStatusService;
+		private readonly IAddResultProcessor _addResultProcessor;
 
 		public GGDealsService(
 			GGDealsSettings settings,
@@ -28,14 +28,14 @@ namespace GGDeals.Services
 			IPlayniteAPI playniteApi,
 			IAddGamesService addGamesService,
 			IAddFailuresManager addFailuresManager,
-			IGameStatusService gameStatusService)
+			IAddResultProcessor addResultProcessor)
 		{
 			_settings = settings;
 			_openFailureView = openFailureView;
 			_playniteApi = playniteApi;
 			_addGamesService = addGamesService;
 			_addFailuresManager = addFailuresManager;
-			_gameStatusService = gameStatusService;
+			_addResultProcessor = addResultProcessor;
 		}
 
 		public async Task AddGamesToLibrary(IReadOnlyCollection<Game> games, CancellationToken ct)
@@ -89,6 +89,8 @@ namespace GGDeals.Services
 						string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationGamesIgnored_Format"), ignoredGames.Count),
 						NotificationType.Info);
 				}
+
+				_addResultProcessor.Process(games, addResults);
 			}
 			catch (AuthenticationException authEx)
 			{
@@ -122,12 +124,12 @@ SkippedDueToLibrary: {skippedDueToLibrary.Count},
 Ignored: {ignoredGames.Count},
 Added: {addedGames.Count}");
 
-			await HandleFailuresWithStatusChange(games, missedGames);
-			await HandleFailuresWithoutStatusChange(errorGames);
-			await HandleNonFailuresWithStatusChange(games, addedGames);
-			await HandleNonFailuresWithStatusChange(games, alreadyOwnedGames);
-			await HandleNonFailuresWithStatusChange(games, ignoredGames);
-			await HandleNonFailuresWithoutStatusChange(skippedDueToLibrary);
+			await HandleFailures(missedGames);
+			await HandleFailures(errorGames);
+			await HandleNonFailures(addedGames);
+			await HandleNonFailures(alreadyOwnedGames);
+			await HandleNonFailures(ignoredGames);
+			await HandleNonFailures(skippedDueToLibrary);
 		}
 
 		private async Task AddUnprocessedGameFailures(IReadOnlyCollection<Game> games, params IDictionary<Guid, AddResult>[] results)
@@ -139,7 +141,7 @@ Added: {addedGames.Count}");
 				_ => new AddResult() { Result = AddToCollectionResult.New }));
 		}
 
-		private async Task HandleFailuresWithoutStatusChange(Dictionary<Guid, AddResult> results)
+		private async Task HandleFailures(Dictionary<Guid, AddResult> results)
 		{
 			if (results.Count > 0)
 			{
@@ -147,36 +149,10 @@ Added: {addedGames.Count}");
 			}
 		}
 
-		private async Task HandleNonFailuresWithoutStatusChange(Dictionary<Guid, AddResult> results)
+		private async Task HandleNonFailures(Dictionary<Guid, AddResult> results)
 		{
 			if (results.Count > 0)
 			{
-				await _addFailuresManager.RemoveFailures(results.Keys);
-			}
-		}
-
-		private async Task HandleFailuresWithStatusChange(IReadOnlyCollection<Game> games, Dictionary<Guid, AddResult> results)
-		{
-			if (results.Count > 0)
-			{
-				foreach (var result in results)
-				{
-					_gameStatusService.UpdateStatus(games.First(g => g.Id == result.Key), result.Value.Result);
-				}
-
-				await _addFailuresManager.AddFailures(results);
-			}
-		}
-
-		private async Task HandleNonFailuresWithStatusChange(IReadOnlyCollection<Game> games, Dictionary<Guid, AddResult> results)
-		{
-			if (results.Count > 0)
-			{
-				foreach (var result in results)
-				{
-					_gameStatusService.UpdateStatus(games.First(g => g.Id == result.Key), result.Value.Result);
-				}
-
 				await _addFailuresManager.RemoveFailures(results.Keys);
 			}
 		}

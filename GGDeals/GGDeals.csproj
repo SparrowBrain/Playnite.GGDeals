@@ -90,9 +90,13 @@
     <Compile Include="Infrastructure\Converters\BooleanToCollapsedVisibilityConverter.cs" />
     <Compile Include="Queue\QueueFile.cs" />
     <Compile Include="Services\AddGamesService.cs" />
+    <Compile Include="Services\AddLinkService.cs" />
+    <Compile Include="Services\AddResultProcessor.cs" />
     <Compile Include="Services\GameStatusService.cs" />
     <Compile Include="Services\GameToAddFilter.cs" />
     <Compile Include="Services\IAddGamesService.cs" />
+    <Compile Include="Services\IAddLinkService.cs" />
+    <Compile Include="Services\IAddResultProcessor.cs" />
     <Compile Include="Services\IGameStatusService.cs" />
     <Compile Include="Services\IGameToAddFilter.cs" />
     <Compile Include="Services\AddResult.cs" />
@@ -107,7 +111,6 @@
     <Compile Include="Settings\MVVM\GGDealsSettingsView.xaml.cs">
       <DependentUpon>GGDealsSettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IAwaitableWebView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AddToCollectionResult.cs" />
     <Compile Include="Services\GGDealsService.cs" />

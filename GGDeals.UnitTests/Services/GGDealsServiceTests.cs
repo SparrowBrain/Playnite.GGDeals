@@ -161,29 +161,6 @@ namespace GGDeals.UnitTests.Services
 
 		[Theory]
 		[AutoMoqData]
-		public async Task AddGamesToLibrary_UpdatesGameStatus_WhenGameMatchIsAMiss(
-			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
-			[Frozen] Mock<IGameStatusService> gameStatusServiceMock,
-			List<Game> games,
-			CancellationToken ct,
-			GGDealsService sut)
-		{
-			// Arrange
-			addGamesServiceMock
-				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.NotFound }));
-
-			// Act
-			await sut.AddGamesToLibrary(games, ct);
-
-			// Assert
-			gameStatusServiceMock.Verify(
-				x => x.UpdateStatus(It.Is<Game>(v => games.Any(g => v.Id == g.Id)), It.Is<AddToCollectionResult>(r => r == AddToCollectionResult.NotFound)),
-				Times.Exactly(games.Count));
-		}
-
-		[Theory]
-		[AutoMoqData]
 		public async Task AddGamesToLibrary_ShowsInfoNotification_WhenApiReturnsError(
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
 			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
@@ -283,29 +260,6 @@ namespace GGDeals.UnitTests.Services
 
 		[Theory]
 		[AutoMoqData]
-		public async Task AddGamesToLibrary_UpdatesGameStatus_WhenGameMatchIsIgnored(
-			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
-			[Frozen] Mock<IGameStatusService> gameStatusServiceMock,
-			List<Game> games,
-			CancellationToken ct,
-			GGDealsService sut)
-		{
-			// Arrange
-			addGamesServiceMock
-				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.Ignored }));
-
-			// Act
-			await sut.AddGamesToLibrary(games, ct);
-
-			// Assert
-			gameStatusServiceMock.Verify(
-				x => x.UpdateStatus(It.Is<Game>(v => games.Any(g => v.Id == g.Id)), It.Is<AddToCollectionResult>(r => r == AddToCollectionResult.Ignored)),
-				Times.Exactly(games.Count));
-		}
-
-		[Theory]
-		[AutoMoqData]
 		public async Task AddGamesToLibrary_ShowsNoNotification_WhenGameIsAdded(
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
 			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
@@ -351,31 +305,6 @@ namespace GGDeals.UnitTests.Services
 		}
 
 		[Theory]
-		[InlineAutoMoqData(AddToCollectionResult.Added)]
-		[InlineAutoMoqData(AddToCollectionResult.Synced)]
-		public async Task AddGamesToLibrary_UpdatesGameStatus_WhenGameMatchIsAdded(
-			AddToCollectionResult addResult,
-			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
-			[Frozen] Mock<IGameStatusService> gameStatusServiceMock,
-			List<Game> games,
-			CancellationToken ct,
-			GGDealsService sut)
-		{
-			// Arrange
-			addGamesServiceMock
-				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = addResult }));
-
-			// Act
-			await sut.AddGamesToLibrary(games, ct);
-
-			// Assert
-			gameStatusServiceMock.Verify(
-				x => x.UpdateStatus(It.Is<Game>(v => games.Any(g => v.Id == g.Id)), It.Is<AddToCollectionResult>(r => r == addResult)),
-				Times.Exactly(games.Count));
-		}
-
-		[Theory]
 		[AutoMoqData]
 		public async Task AddGamesToLibrary_ShowsNoNotification_WhenLibraryIsIgnored(
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
@@ -396,6 +325,31 @@ namespace GGDeals.UnitTests.Services
 
 			// Assert
 			notificationsApiMock.Verify(x => x.Add(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<NotificationType>()), Times.Never);
+		}
+
+		[Theory]
+		[AutoMoqData]
+		public async Task AddGamesToLibrary_ProcessAddResults(
+			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
+			[Frozen] Mock<IAddResultProcessor> addResultProcessorMock,
+			AddToCollectionResult addResult,
+			List<Game> games,
+			CancellationToken ct,
+			GGDealsService sut)
+		{
+			// Arrange
+			var addResults = games.ToDictionary(x => x.Id, x => new AddResult() { Result = addResult });
+			addGamesServiceMock
+				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync(addResults);
+
+			// Act
+			await sut.AddGamesToLibrary(games, ct);
+
+			// Assert
+			addResultProcessorMock.Verify(
+				x => x.Process(It.Is<IReadOnlyCollection<Game>>(g => g == games), It.Is<IDictionary<Guid, AddResult>>(r => r == addResults)),
+				Times.Once());
 		}
 	}
 }

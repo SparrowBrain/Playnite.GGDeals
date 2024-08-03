@@ -9,5 +9,7 @@ namespace GGDeals.Api.Models
 		public ImportResultStatus Status { get; set; }
 
 		public string Message { get; set; }
+
+		public string Url { get; set; }
 	}
 }
