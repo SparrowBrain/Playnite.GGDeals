@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GGDeals.Models;
 using GGDeals.Services;
 
 namespace GGDeals.Menu.Failures

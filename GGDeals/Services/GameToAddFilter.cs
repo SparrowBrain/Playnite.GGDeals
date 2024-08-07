@@ -1,7 +1,8 @@
-﻿using System;
+﻿using GGDeals.Models;
 using GGDeals.Settings;
 using Playnite.SDK;
 using Playnite.SDK.Models;
+using System;
 
 namespace GGDeals.Services
 {
@@ -10,13 +11,13 @@ namespace GGDeals.Services
 		private static readonly ILogger Logger = LogManager.GetLogger();
 		private readonly GGDealsSettings _settings;
 		private readonly IGameStatusService _gameStatusService;
+		private readonly SyncRunSettings _syncRunSettings;
 
-		public GameToAddFilter(
-			GGDealsSettings settings,
-			IGameStatusService gameStatusService)
+		public GameToAddFilter(GGDealsSettings settings, IGameStatusService gameStatusService, SyncRunSettings syncRunSettings)
 		{
 			_settings = settings;
 			_gameStatusService = gameStatusService;
+			_syncRunSettings = syncRunSettings;
 		}
 
 		public bool ShouldTryAddGame(Game game, out AddResult status)
@@ -36,26 +37,15 @@ namespace GGDeals.Services
 			}
 
 			var gameStatus = _gameStatusService.GetStatus(game);
-			switch (gameStatus)
+			if (!_syncRunSettings.StatusesToSync.Contains(gameStatus))
 			{
-				case AddToCollectionResult.Ignored:
-					Logger.Debug($"Skipped due to ignored status: {{ Id: {game.Id}, Name: {game.Name} }}.");
-					status = new AddResult() { Result = AddToCollectionResult.Ignored };
-					return false;
-
-				case AddToCollectionResult.Synced:
-					Logger.Debug($"Skipped due to already owned status: {{ Id: {game.Id}, Name: {game.Name} }}.");
-					status = new AddResult() { Result = AddToCollectionResult.Synced };
-					return false;
-
-				case AddToCollectionResult.New:
-				case AddToCollectionResult.NotFound:
-					status = null;
-					return true;
-
-				default:
-					throw new ArgumentOutOfRangeException($"Unexpected game sync status {gameStatus.ToString()} in filter.");
+				Logger.Debug($"Skipped due to status: {{ Id: {game.Id}, Name: {game.Name}, Status: {gameStatus} }}.");
+				status = new AddResult() { Result = gameStatus };
+				return false;
 			}
+
+			status = null;
+			return true;
 		}
 	}
 }

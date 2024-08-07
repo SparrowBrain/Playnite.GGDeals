@@ -5,6 +5,7 @@ using Moq;
 using Playnite.SDK.Models;
 using System.Collections.Generic;
 using System.Linq;
+using GGDeals.Models;
 using TestTools.Shared;
 using Xunit;
 

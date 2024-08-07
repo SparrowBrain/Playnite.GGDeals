@@ -8,6 +8,8 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
+using GGDeals.Menu.AddGames.MVVM;
+using GGDeals.Models;
 
 namespace GGDeals.Services
 {

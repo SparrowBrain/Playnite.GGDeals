@@ -7,8 +7,7 @@
 - Authentication error notification now opens extension settings when clicked
 - Add failure notification now opens add failure window when clicked
 - Adding GG.deals link to processed games
------------ Improved handling for games hidden by Duplicate Hider
------------ Added an option to disable sync when games are added to library
+- Improved handling for games hidden by Duplicate Hider
 
 v1.1.0
 - Added Lithuanian language

@@ -1,4 +1,4 @@
-﻿namespace GGDeals.Services
+﻿namespace GGDeals.Models
 {
     public enum AddToCollectionResult
     {

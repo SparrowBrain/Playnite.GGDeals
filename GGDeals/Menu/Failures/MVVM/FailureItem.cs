@@ -1,6 +1,7 @@
 ﻿using GGDeals.Services;
 using Playnite.SDK.Models;
 using System.Collections.Generic;
+using GGDeals.Models;
 
 namespace GGDeals.Menu.Failures.MVVM
 {

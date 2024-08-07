@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using GGDeals.Models;
 using GGDeals.Services;
 using Playnite.SDK;
 

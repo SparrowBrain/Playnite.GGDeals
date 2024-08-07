@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GGDeals.Services
+﻿namespace GGDeals.Models
 {
 	public class AddResult
 	{

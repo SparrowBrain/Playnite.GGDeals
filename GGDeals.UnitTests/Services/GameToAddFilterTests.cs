@@ -1,10 +1,12 @@
-﻿using System;
-using System.Linq;
-using AutoFixture.Xunit2;
+﻿using AutoFixture.Xunit2;
+using GGDeals.Models;
 using GGDeals.Services;
 using GGDeals.Settings;
 using Moq;
 using Playnite.SDK.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using TestTools.Shared;
 using Xunit;
 
@@ -50,75 +52,46 @@ namespace GGDeals.UnitTests.Services
 		}
 
 		[Theory]
-		[AutoMoqData]
-		public void ShouldTryAddGame_False_WhenGameIsIgnored(
+		[InlineAutoMoqData(AddToCollectionResult.Added, AddToCollectionResult.Ignored)]
+		public void ShouldTryAddGame_False_WhenStatusIsNotInSyncRunSettings(
+			AddToCollectionResult allowedStatus,
+			AddToCollectionResult actualStatus,
 			[Frozen] Mock<IGameStatusService> gameStatusServiceMock,
-			Game game,
-			GameToAddFilter sut)
+			GGDealsSettings settings,
+			Game game)
 		{
 			// Arrange
-			gameStatusServiceMock.Setup(s => s.GetStatus(game)).Returns(AddToCollectionResult.Ignored);
+			var syncRunSettings = new SyncRunSettings { StatusesToSync = new List<AddToCollectionResult> { allowedStatus } };
+			var sut = new GameToAddFilter(settings, gameStatusServiceMock.Object, syncRunSettings);
+			gameStatusServiceMock.Setup(s => s.GetStatus(game)).Returns(actualStatus);
 
 			// Act
 			var result = sut.ShouldTryAddGame(game, out var status);
 
 			// Assert
 			Assert.False(result);
-			Assert.Equal(AddToCollectionResult.Ignored, status.Result);
+			Assert.Equal(actualStatus, status.Result);
 		}
 
 		[Theory]
 		[AutoMoqData]
-		public void ShouldTryAddGame_False_WhenGameIsSynced(
+		public void ShouldTryAddGame_True_WhenStatusIsInSyncRunSettings(
 			[Frozen] Mock<IGameStatusService> gameStatusServiceMock,
-			Game game,
-			GameToAddFilter sut)
+			AddToCollectionResult allowedStatus,
+			GGDealsSettings settings,
+			Game game)
 		{
 			// Arrange
-			gameStatusServiceMock.Setup(s => s.GetStatus(game)).Returns(AddToCollectionResult.Synced);
-
-			// Act
-			var result = sut.ShouldTryAddGame(game, out var status);
-
-			// Assert
-			Assert.False(result);
-			Assert.Equal(AddToCollectionResult.Synced, status.Result);
-		}
-
-		[Theory]
-		[AutoMoqData]
-		public void ShouldTryAddGame_True_WhenGameIsNew(
-			[Frozen] Mock<IGameStatusService> gameStatusServiceMock,
-			Game game,
-			GameToAddFilter sut)
-		{
-			// Arrange
-			gameStatusServiceMock.Setup(s => s.GetStatus(game)).Returns(AddToCollectionResult.New);
+			var syncRunSettings = new SyncRunSettings { StatusesToSync = new List<AddToCollectionResult> { allowedStatus } };
+			var sut = new GameToAddFilter(settings, gameStatusServiceMock.Object, syncRunSettings);
+			gameStatusServiceMock.Setup(s => s.GetStatus(game)).Returns(allowedStatus);
 
 			// Act
 			var result = sut.ShouldTryAddGame(game, out var status);
 
 			// Assert
 			Assert.True(result);
-			Assert.Equal(null, status);
-		}
-
-		[Theory]
-		[AutoMoqData]
-		public void ShouldTryAddGame_True_WhenGameIsNotFound(
-			[Frozen] Mock<IGameStatusService> gameStatusServiceMock,
-			Game game,
-			GameToAddFilter sut)
-		{
-			// Arrange
-			gameStatusServiceMock.Setup(s => s.GetStatus(game)).Returns(AddToCollectionResult.NotFound);
-
-			// Act
-			var result = sut.ShouldTryAddGame(game, out var status);
-
-			// Assert
-			Assert.True(result);
-			Assert.Equal(null, status);
+			Assert.Null(status);
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GGDeals.Models;
 using GGDeals.Settings;
 using Playnite.SDK.Models;
 

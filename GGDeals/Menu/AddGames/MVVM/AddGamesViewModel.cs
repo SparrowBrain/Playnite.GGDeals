@@ -1,47 +1,99 @@
-﻿using System.Collections.Generic;
+﻿using GGDeals.Models;
+using Playnite.SDK;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using Playnite.SDK;
 
 namespace GGDeals.Menu.AddGames.MVVM
 {
-    public class AddGamesViewModel : ObservableObject, IViewModelForWindow
-    {
-        private readonly GGDeals _plugin;
-        private Window _window;
-        private bool _includeHidden;
+	public class AddGamesViewModel : ObservableObject, IViewModelForWindow
+	{
+		private readonly GGDeals _plugin;
+		private readonly Guid? _duplicateHiderTagId;
+		private Window _window;
+		private bool _addNew;
+		private bool _addSynced;
+		private bool _addNotFound;
+		private bool _addIgnored;
 
-        public AddGamesViewModel(GGDeals plugin)
-        {
-            _plugin = plugin;
-        }
+		public AddGamesViewModel(GGDeals plugin)
+		{
+			_plugin = plugin;
+			_duplicateHiderTagId = plugin.PlayniteApi.Database.Tags?.FirstOrDefault(t => t.Name == "[DH] Hidden")?.Id;
 
-        public void AssociateWindow(Window window)
-        {
-            _window = window;
-        }
+			AddNew = true;
+		}
 
-        public bool IncludeHidden
-        {
-            get => _includeHidden;
-            set => SetValue(ref _includeHidden, value);
-        }
+		public void AssociateWindow(Window window)
+		{
+			_window = window;
+		}
 
-        // ReSharper disable once UnusedMember.Global
-        public ICommand AddAllGames => new RelayCommand(() =>
-        {
-            var games = IncludeHidden
-                ? _plugin.PlayniteApi.Database.Games.ToList()
-                : _plugin.PlayniteApi.Database.Games.Where(game => !game.Hidden).ToList();
+		public bool AddNew
+		{
+			get => _addNew;
+			set => SetValue(ref _addNew, value);
+		}
 
-            _plugin.AddGamesToGGCollection(games);
-            OnAddingGamesInitiated();
-        });
+		public bool AddSynced
+		{
+			get => _addSynced;
+			set => SetValue(ref _addSynced, value);
+		}
 
-        protected virtual void OnAddingGamesInitiated()
-        {
-            _window.Close();
-        }
-    }
+		public bool AddNotFound
+		{
+			get => _addNotFound;
+			set => SetValue(ref _addNotFound, value);
+		}
+
+		public bool AddIgnored
+		{
+			get => _addIgnored;
+			set => SetValue(ref _addIgnored, value);
+		}
+
+		// ReSharper disable once UnusedMember.Global
+		public ICommand AddAllGames => new RelayCommand(() =>
+		{
+			var games = _plugin.PlayniteApi.Database.Games.Where(game =>
+				!game.Hidden || game.Hidden && _duplicateHiderTagId != null &&
+				(game.TagIds?.Contains(_duplicateHiderTagId.Value) ?? false)).ToList();
+
+			var syncRunSettings = new SyncRunSettings
+			{
+				StatusesToSync = new List<AddToCollectionResult>()
+			};
+
+			if (AddNew)
+			{
+				syncRunSettings.StatusesToSync.Add(AddToCollectionResult.New);
+			}
+
+			if (AddSynced)
+			{
+				syncRunSettings.StatusesToSync.Add(AddToCollectionResult.Synced);
+			}
+
+			if (AddNotFound)
+			{
+				syncRunSettings.StatusesToSync.Add(AddToCollectionResult.NotFound);
+			}
+
+			if (AddIgnored)
+			{
+				syncRunSettings.StatusesToSync.Add(AddToCollectionResult.Ignored);
+			}
+
+			_plugin.AddGamesToGGCollection(games, syncRunSettings);
+			OnAddingGamesInitiated();
+		});
+
+		protected virtual void OnAddingGamesInitiated()
+		{
+			_window.Close();
+		}
+	}
 }

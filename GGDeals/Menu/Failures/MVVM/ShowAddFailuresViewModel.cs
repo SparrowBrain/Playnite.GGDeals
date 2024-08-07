@@ -1,4 +1,5 @@
-﻿using Playnite.SDK;
+﻿using GGDeals.Models;
+using Playnite.SDK;
 using Playnite.SDK.Plugins;
 using System;
 using System.Collections.Generic;
@@ -88,7 +89,7 @@ namespace GGDeals.Menu.Failures.MVVM
 						IsLoading = true;
 					});
 					var gameIds = Failures.Where(x => x.IsChecked).Select(x => x.Game.Id).ToList();
-					await _plugin.AddGamesToGGCollectionAsync(gameIds);
+					await _plugin.AddGamesToGGCollectionAsync(gameIds, SyncRunSettings.All);
 					await LoadAsync();
 				}
 				catch (Exception e)

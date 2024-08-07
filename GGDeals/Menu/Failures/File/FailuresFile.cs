@@ -1,6 +1,7 @@
 ﻿using GGDeals.Services;
 using System;
 using System.Collections.Generic;
+using GGDeals.Models;
 
 namespace GGDeals.Menu.Failures.File
 {

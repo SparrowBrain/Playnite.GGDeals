@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="Menu\AddGames\MVVM\AddGamesViewModel.cs" />
     <Compile Include="Menu\AddGames\MVVM\IViewModelForWindow.cs" />
+    <Compile Include="Models\SyncRunSettings.cs" />
     <Compile Include="Menu\Failures\File\AddFailuresFileService.cs" />
     <Compile Include="Menu\Failures\AddFailuresManager.cs" />
     <Compile Include="Menu\Failures\File\FailuresFile.cs" />
@@ -99,7 +100,7 @@
     <Compile Include="Services\IAddResultProcessor.cs" />
     <Compile Include="Services\IGameStatusService.cs" />
     <Compile Include="Services\IGameToAddFilter.cs" />
-    <Compile Include="Services\AddResult.cs" />
+    <Compile Include="Models\AddResult.cs" />
     <Compile Include="Queue\IQueuePersistence.cs" />
     <Compile Include="Queue\PersistentProcessingQueue.cs" />
     <Compile Include="Queue\QueuePersistence.cs" />
@@ -112,7 +113,7 @@
       <DependentUpon>GGDealsSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\AddToCollectionResult.cs" />
+    <Compile Include="Models\AddToCollectionResult.cs" />
     <Compile Include="Services\GGDealsService.cs" />
     <Compile Include="Settings\MVVM\GGDealsSettingsViewModel.cs" />
     <Compile Include="Settings\MVVM\LibraryItem.cs" />

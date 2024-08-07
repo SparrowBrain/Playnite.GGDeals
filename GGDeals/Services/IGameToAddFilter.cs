@@ -1,4 +1,5 @@
-﻿using Playnite.SDK.Models;
+﻿using GGDeals.Models;
+using Playnite.SDK.Models;
 
 namespace GGDeals.Services
 {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using GGDeals.Models;
 using Playnite.SDK.Models;
 
 namespace GGDeals.Services

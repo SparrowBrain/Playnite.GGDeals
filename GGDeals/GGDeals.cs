@@ -21,6 +21,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using GGDeals.Models;
 
 namespace GGDeals
 {
@@ -57,7 +58,7 @@ namespace GGDeals
 			_addFailuresManager = new AddFailuresManager(addFailuresFileService);
 			_persistentProcessingQueue = new PersistentProcessingQueue(
 				new QueuePersistence(Path.Combine(GetPluginUserDataPath(), QueueFileName)),
-				AddGamesToGGCollectionAsync);
+				gameIds => AddGamesToGGCollectionAsync(gameIds, SyncRunSettings.Default));
 
 			Properties = new GenericPluginProperties
 			{
@@ -113,7 +114,7 @@ namespace GGDeals
 					var addGamesViewModel = new AddGamesViewModel(this);
 					ShowDialog(
 						new AddGamesView(addGamesViewModel),
-						150,
+						250,
 						500,
 						ResourceProvider.GetString("LOC_GGDeals_AddGamesTitle"),
 						false);
@@ -138,15 +139,20 @@ namespace GGDeals
 			return new GGDealsSettingsView(PlayniteApi);
 		}
 
-		public void AddGamesToGGCollection(IReadOnlyCollection<Game> games)
+		public void AddGamesToGGCollection(List<Game> games)
+		{
+			AddGamesToGGCollection(games, SyncRunSettings.Default);
+		}
+
+		public void AddGamesToGGCollection(List<Game> games, SyncRunSettings syncRunSettings)
 		{
 			Task.Run(async () =>
 			{
-				await AddGamesToGGCollectionAsync(games.Select(x => x.Id).ToList());
+				await AddGamesToGGCollectionAsync(games.Select(x => x.Id).ToList(), syncRunSettings);
 			});
 		}
 
-		public async Task AddGamesToGGCollectionAsync(IReadOnlyCollection<Guid> gameIds)
+		public async Task AddGamesToGGCollectionAsync(IReadOnlyCollection<Guid> gameIds, SyncRunSettings syncRunSettings)
 		{
 			if (!gameIds.Any())
 			{
@@ -160,7 +166,7 @@ namespace GGDeals
 				using (var ggDealsApiClient = new GGDealsApiClient(settings, _apiJsonSerializerSettings))
 				{
 					var gameStatusService = new GameStatusService(_api);
-					var gameToAddFilter = new GameToAddFilter(settings, gameStatusService);
+					var gameToAddFilter = new GameToAddFilter(settings, gameStatusService, syncRunSettings);
 					var libraryToGGLauncherMap = new LibraryToGGLauncherMap();
 					var gameToGameWithLauncherConverter = new GameToGameWithLauncherConverter(libraryToGGLauncherMap);
 					var requestDataBatcher = new RequestDataBatcher(_apiJsonSerializerSettings);
