@@ -2,13 +2,14 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <sys:String x:Key="LOC_GGDeals_AddGamesAddAllGames">Add Games</sys:String>
-    <sys:String x:Key="LOC_GGDeals_AddGamesStatusesToAdd">Sync statuses to add:</sys:String>
+    <sys:String x:Key="LOC_GGDeals_AddGamesStatusesToAdd">Only add games with these GG.deals sync statuses:</sys:String>
     <sys:String x:Key="LOC_GGDeals_AddGamesAddNew">New</sys:String>
     <sys:String x:Key="LOC_GGDeals_AddGamesAddSynced">Synced</sys:String>
     <sys:String x:Key="LOC_GGDeals_AddGamesAddNotFound">Not Found</sys:String>
     <sys:String x:Key="LOC_GGDeals_AddGamesAddIgnored">Ignored</sys:String>
     <sys:String x:Key="LOC_GGDeals_AddGamesTitle">Add Games</sys:String>
     <sys:String x:Key="LOC_GGDeals_GameMenuItemAddToGGDealsCollection">Add to GG.deals collection</sys:String>
+    <sys:String x:Key="LOC_GGDeals_GameMenuItemAddToGGDealsCollectionCustom">Add with custom rules...</sys:String>
     <sys:String x:Key="LOC_GGDeals_MainMenuItemAddToGGDealsCollection">Add games to GG.deals collection...</sys:String>
     <sys:String x:Key="LOC_GGDeals_MainMenuItemShowFailures">Show failures...</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationApiError_Format">Could not add {0} games due to an error. Click here for mode detailed info.</sys:String>

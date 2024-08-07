@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using Playnite.SDK.Models;
 
 namespace GGDeals.Menu.AddGames.MVVM
 {
 	public class AddGamesViewModel : ObservableObject, IViewModelForWindow
 	{
 		private readonly GGDeals _plugin;
+		private readonly List<Game> _games;
 		private readonly Guid? _duplicateHiderTagId;
 		private Window _window;
 		private bool _addNew;
@@ -18,9 +20,10 @@ namespace GGDeals.Menu.AddGames.MVVM
 		private bool _addNotFound;
 		private bool _addIgnored;
 
-		public AddGamesViewModel(GGDeals plugin)
+		public AddGamesViewModel(GGDeals plugin, List<Game> games)
 		{
 			_plugin = plugin;
+			_games = games;
 			_duplicateHiderTagId = plugin.PlayniteApi.Database.Tags?.FirstOrDefault(t => t.Name == "[DH] Hidden")?.Id;
 
 			AddNew = true;
@@ -58,7 +61,7 @@ namespace GGDeals.Menu.AddGames.MVVM
 		// ReSharper disable once UnusedMember.Global
 		public ICommand AddAllGames => new RelayCommand(() =>
 		{
-			var games = _plugin.PlayniteApi.Database.Games.Where(game =>
+			var games = _games.Where(game =>
 				!game.Hidden || game.Hidden && _duplicateHiderTagId != null &&
 				(game.TagIds?.Contains(_duplicateHiderTagId.Value) ?? false)).ToList();
 

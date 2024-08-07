@@ -3,6 +3,7 @@ using GGDeals.Menu.AddGames.MVVM;
 using GGDeals.Menu.Failures;
 using GGDeals.Menu.Failures.File;
 using GGDeals.Menu.Failures.MVVM;
+using GGDeals.Models;
 using GGDeals.Queue;
 using GGDeals.Services;
 using GGDeals.Settings;
@@ -21,7 +22,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using GGDeals.Models;
 
 namespace GGDeals
 {
@@ -99,7 +99,15 @@ namespace GGDeals
 			yield return new GameMenuItem
 			{
 				Description = ResourceProvider.GetString("LOC_GGDeals_GameMenuItemAddToGGDealsCollection"),
-				Action = actionArgs => { AddGamesToGGCollection(actionArgs.Games); }
+				Action = actionArgs => { AddGamesToGGCollection(actionArgs.Games); },
+				MenuSection = "GG.deals"
+			};
+
+			yield return new GameMenuItem
+			{
+				Description = ResourceProvider.GetString("LOC_GGDeals_GameMenuItemAddToGGDealsCollectionCustom"),
+				Action = actionArgs => { ShowAddGamesDialog(actionArgs.Games); },
+				MenuSection = "GG.deals"
 			};
 		}
 
@@ -109,16 +117,7 @@ namespace GGDeals
 			{
 				Description = ResourceProvider.GetString("LOC_GGDeals_MainMenuItemAddToGGDealsCollection"),
 				MenuSection = "@GG.deals",
-				Action = actionArgs =>
-				{
-					var addGamesViewModel = new AddGamesViewModel(this);
-					ShowDialog(
-						new AddGamesView(addGamesViewModel),
-						250,
-						500,
-						ResourceProvider.GetString("LOC_GGDeals_AddGamesTitle"),
-						false);
-				}
+				Action = actionArgs => { ShowAddGamesDialog(_api.Database.Games.ToList()); }
 			};
 
 			yield return new MainMenuItem
@@ -183,6 +182,17 @@ namespace GGDeals
 			{
 				Logger.Error(ex, "Failed to add games to GG.deals collection.");
 			}
+		}
+
+		private void ShowAddGamesDialog(List<Game> games)
+		{
+			var addGamesViewModel = new AddGamesViewModel(this, games);
+			ShowDialog(
+				new AddGamesView(addGamesViewModel),
+				250,
+				500,
+				ResourceProvider.GetString("LOC_GGDeals_AddGamesTitle"),
+				false);
 		}
 
 		private void ShowDialog(UserControl view, double height, double width, string title, bool showMaximizeButton)
