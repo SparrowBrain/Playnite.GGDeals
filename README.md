@@ -20,10 +20,9 @@ Currently there is no way to remove games from GG.deals via this extension, and 
 ## How to use it?
 In order to use this extension, you will need to generate an authentication token on [GG.deals website](https://gg.deals/):
 1. Login
-2. Click on your avatar (top right)
-3. [Settings](https://gg.deals/settings/)
-4. Connect to Playnite
-5. Copy the generated token
+2. Go to [Settings](https://gg.deals/settings/) (link here, or click on your avatar top right)
+3. Connect to Playnite
+4. Copy the generated token
 
 And then in Playnite:
 1. Playnite menu

@@ -15,7 +15,7 @@ namespace GGDeals.Api.Services
 	public class GGDealsApiClient : IDisposable, IGGDealsApiClient
 	{
 		private static readonly ILogger Logger = LogManager.GetLogger();
-		private static string _endpoint = "ACTUAL ENDPOINT GOES HERE?";
+		private static string _endpoint = "https://api.gg.deals/playnite/collection/import/";
 		private readonly JsonSerializerSettings _jsonSerializerSettings;
 		private readonly HttpClient _httpClient;
 

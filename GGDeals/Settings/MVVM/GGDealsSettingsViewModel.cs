@@ -3,7 +3,9 @@ using Playnite.SDK.Data;
 using Playnite.SDK.Plugins;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Windows.Input;
 
 namespace GGDeals.Settings.MVVM
 {
@@ -62,6 +64,11 @@ namespace GGDeals.Settings.MVVM
 			get => _libraryItems;
 			set => SetValue(ref _libraryItems, value);
 		}
+
+		public ICommand GenerateToken => new RelayCommand(() =>
+		{
+			Process.Start("https://gg.deals/settings");
+		});
 
 		private void InitializeLibraryItems()
 		{
