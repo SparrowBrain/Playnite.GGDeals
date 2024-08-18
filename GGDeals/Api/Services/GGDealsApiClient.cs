@@ -12,67 +12,70 @@ using System.Threading.Tasks;
 
 namespace GGDeals.Api.Services
 {
-	public class GGDealsApiClient : IDisposable, IGGDealsApiClient
-	{
-		private static readonly ILogger Logger = LogManager.GetLogger();
-		private static string _endpoint = "https://api.gg.deals/playnite/collection/import/";
-		private readonly JsonSerializerSettings _jsonSerializerSettings;
-		private readonly HttpClient _httpClient;
+    public class GGDealsApiClient : IGGDealsApiClient
+    {
+        private static readonly ILogger Logger = LogManager.GetLogger();
+        private static string _endpoint = "https://api.gg.deals/playnite/collection/import/";
+        private readonly JsonSerializerSettings _jsonSerializerSettings;
+        private readonly HttpClient _httpClient;
 
-		public GGDealsApiClient(GGDealsSettings settings, JsonSerializerSettings jsonSerializerSettings)
-		{
-			_jsonSerializerSettings = jsonSerializerSettings;
-			_httpClient = new HttpClient();
-			_httpClient.Timeout = TimeSpan.FromMinutes(5);
+        public GGDealsApiClient(GGDealsSettings settings, JsonSerializerSettings jsonSerializerSettings)
+        {
+            _jsonSerializerSettings = jsonSerializerSettings;
+            _httpClient = new HttpClient();
+            _httpClient.Timeout = TimeSpan.FromMinutes(5);
 
 #if DEBUG
-			_endpoint = settings.DevCollectionImportEndpoint;
+            if (!string.IsNullOrWhiteSpace(settings.DevCollectionImportEndpoint))
+            {
+                _endpoint = settings.DevCollectionImportEndpoint;
+            }
 #endif
-		}
+        }
 
-		public async Task<ImportResponse> ImportGames(ImportRequest request, CancellationToken ct)
-		{
-			var content = PrepareContent(request);
+        public async Task<ImportResponse> ImportGames(ImportRequest request, CancellationToken ct)
+        {
+            var content = PrepareContent(request);
 
-			var response = await _httpClient.PostAsync(_endpoint, content, ct);
-			var responseString = await response.Content.ReadAsStringAsync();
-			Logger.Info($"Response from GG.Deals: Status: {response.StatusCode}; Body {responseString}");
-			if (response.StatusCode == HttpStatusCode.Unauthorized)
-			{
-				throw new AuthenticationException(responseString);
-			}
+            var response = await _httpClient.PostAsync(_endpoint, content, ct);
+            var responseString = await response.Content.ReadAsStringAsync();
+            Logger.Info($"Response from GG.Deals: Status: {response.StatusCode}; Body {responseString}");
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                throw new AuthenticationException(responseString);
+            }
 
-			response.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode();
 
-			return ParseResponse(responseString);
-		}
+            return ParseResponse(responseString);
+        }
 
-		private StringContent PrepareContent(ImportRequest request)
-		{
-			var requestJson = JsonConvert.SerializeObject(request, _jsonSerializerSettings);
-			LogRequest(requestJson);
+        private StringContent PrepareContent(ImportRequest request)
+        {
+            var requestJson = JsonConvert.SerializeObject(request, _jsonSerializerSettings);
+            LogRequest(requestJson);
 
-			var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
-			return content;
-		}
+            var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
+            return content;
+        }
 
-		private ImportResponse ParseResponse(string responseContent)
-		{
-			var importResponse = JsonConvert.DeserializeObject<ImportResponse>(responseContent, _jsonSerializerSettings);
-			return importResponse;
-		}
+        private ImportResponse ParseResponse(string responseContent)
+        {
+            var importResponse = JsonConvert.DeserializeObject<ImportResponse>(responseContent, _jsonSerializerSettings);
+            return importResponse;
+        }
 
-		private static void LogRequest(string requestJson)
-		{
-			var requestCopy = JsonConvert.DeserializeObject<ImportRequest>(requestJson);
-			requestCopy.Token = "***REDACTED***";
-			var jsonForLogging = JsonConvert.SerializeObject(requestCopy);
-			Logger.Debug($"Calling GG.Deals with body: {jsonForLogging}");
-		}
+        private static void LogRequest(string requestJson)
+        {
+            var requestCopy = JsonConvert.DeserializeObject<ImportRequest>(requestJson);
+            requestCopy.Token = "***REDACTED***";
+            var jsonForLogging = JsonConvert.SerializeObject(requestCopy);
+            Logger.Debug($"Calling GG.Deals with body: {jsonForLogging}");
+        }
 
-		public void Dispose()
-		{
-			_httpClient.Dispose();
-		}
-	}
+        public void Dispose()
+        {
+            _httpClient.Dispose();
+        }
+    }
 }

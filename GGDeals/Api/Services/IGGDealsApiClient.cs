@@ -1,11 +1,12 @@
-﻿using System.Threading;
+﻿using GGDeals.Api.Models;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
-using GGDeals.Api.Models;
 
 namespace GGDeals.Api.Services
 {
-	public interface IGGDealsApiClient
-	{
-		Task<ImportResponse> ImportGames(ImportRequest request, CancellationToken ct);
-	}
+    public interface IGGDealsApiClient : IDisposable
+    {
+        Task<ImportResponse> ImportGames(ImportRequest request, CancellationToken ct);
+    }
 }
