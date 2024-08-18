@@ -92,7 +92,16 @@ namespace GGDeals.Services
 						NotificationType.Info);
 				}
 
-				_addResultProcessor.Process(games, addResults);
+                if (addedGames.Count > 0
+					|| alreadyOwnedGames.Count > 0)
+                {
+                    _playniteApi.Notifications.Add(
+                        "gg-deals-added",
+                        string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationGamesAdded_Format"), addedGames.Count, alreadyOwnedGames.Count),
+                        NotificationType.Info);
+                }
+
+                _addResultProcessor.Process(games, addResults);
 			}
 			catch (AuthenticationException authEx)
 			{
