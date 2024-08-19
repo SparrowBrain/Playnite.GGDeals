@@ -4,6 +4,7 @@
 - Processing games only after metadata fetch
 - Using custom tags to keep track of sync status
 - Added text messages to failures window
+- Added sync success notification
 - Authentication error notification now opens extension settings when clicked
 - Add failure notification now opens add failure window when clicked
 - Adding GG.deals link to processed games
