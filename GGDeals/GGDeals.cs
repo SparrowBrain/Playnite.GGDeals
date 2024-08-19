@@ -191,7 +191,7 @@ namespace GGDeals
             ShowDialog(
                 new AddGamesView(addGamesViewModel),
                 250,
-                500,
+                800,
                 ResourceProvider.GetString("LOC_GGDeals_AddGamesTitle"),
                 false);
         }
