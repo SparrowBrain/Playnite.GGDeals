@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GGDeals.Models;
 using GGDeals.Services;
 
 namespace GGDeals.Menu.Failures
 {
     public interface IAddFailuresManager
     {
-        Task AddFailures(IDictionary<Guid, AddToCollectionResult> failures);
+        Task AddFailures(IDictionary<Guid, AddResult> failures);
         Task RemoveFailures(IReadOnlyCollection<Guid> gameIds);
-        Task<Dictionary<Guid, AddToCollectionResult>> GetFailures();
+        Task<Dictionary<Guid, AddResult>> GetFailures();
     }
 }

@@ -1,3 +1,15 @@
+v2.0.0
+- Calling official GG.deals API instead of scraping the website
+- Users now must provide authentication token generated on GG.deals website instead of logging in through the extension
+- Processing games only after metadata fetch
+- Using custom tags to keep track of sync status
+- Added text messages to failures window
+- Added sync success notification
+- Authentication error notification now opens extension settings when clicked
+- Add failure notification now opens add failure window when clicked
+- Adding GG.deals link to processed games
+- Improved handling for games hidden by Duplicate Hider
+
 v1.1.0
 - Added Lithuanian language
 - Added skipping of Playnite library (skipped by default)

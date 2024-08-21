@@ -11,6 +11,14 @@
             <Setter Property="Height" Value="27"></Setter>
         </Style>
         <Style  TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,5,0,0" />
+            <Setter Property="TextWrapping" Value="Wrap"></Setter>
+            <Setter Property="FontSize" Value="{DynamicResource FontSize}" />
+            <Setter Property="FontFamily" Value="{DynamicResource FontFamily}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+        </Style>
+        <Style  TargetType="CheckBox">
+            <Setter Property="Margin" Value="0,5,0,0" />
             <Setter Property="FontSize" Value="{DynamicResource FontSize}" />
             <Setter Property="FontFamily" Value="{DynamicResource FontFamily}" />
             <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
@@ -24,8 +32,18 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding IncludeHidden}" Content="{DynamicResource LOC_GGDeals_AddGamesIncludeHidden}"></CheckBox>
-        <Button Grid.Column="1" Grid.Row="1" Command="{Binding AddAllGames}" Content="{DynamicResource LOC_GGDeals_AddGamesAddAllGames}"></Button>
+        <TextBlock Grid.Column="0" Grid.Row="1" Text="{DynamicResource LOC_GGDeals_AddGamesStatusesToAdd}"></TextBlock>
+        <CheckBox Grid.Column="0" Grid.Row="2" IsChecked="{Binding AddNew}" Content="{DynamicResource LOC_GGDeals_AddGamesAddNew}"></CheckBox>
+        <CheckBox Grid.Column="0" Grid.Row="3" IsChecked="{Binding AddSynced}" Content="{DynamicResource LOC_GGDeals_AddGamesAddSynced}"></CheckBox>
+        <CheckBox Grid.Column="0" Grid.Row="4" IsChecked="{Binding AddNotFound}" Content="{DynamicResource LOC_GGDeals_AddGamesAddNotFound}"></CheckBox>
+        <CheckBox Grid.Column="0" Grid.Row="5" IsChecked="{Binding AddIgnored}" Content="{DynamicResource LOC_GGDeals_AddGamesAddIgnored}"></CheckBox>
+        <Button Grid.Column="1" Grid.Row="7" Command="{Binding AddAllGames}" Content="{DynamicResource LOC_GGDeals_AddGamesAddAllGames}"></Button>
     </Grid>
 </UserControl>

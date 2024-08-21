@@ -41,6 +41,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -51,26 +52,58 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\Models\GameWithLauncher.cs" />
+    <Compile Include="Api\Models\GGLauncher.cs" />
+    <Compile Include="Api\Models\ImportRequest.cs" />
+    <Compile Include="Api\Models\ImportResponse.cs" />
+    <Compile Include="Api\Models\ImportResult.cs" />
+    <Compile Include="Api\Models\ImportResultStatus.cs" />
+    <Compile Include="Api\Models\ResponseData.cs" />
+    <Compile Include="Api\Services\GameToGameWithLauncherConverter.cs" />
+    <Compile Include="Api\Services\GGDealsApiClient.cs" />
+    <Compile Include="Api\Services\IGameToGameWithLauncherConverter.cs" />
+    <Compile Include="Api\Services\IGGDealsApiClient.cs" />
+    <Compile Include="Api\Services\ILibraryToGGLauncherMap.cs" />
+    <Compile Include="Api\Services\IRequestDataBatcher.cs" />
+    <Compile Include="Api\Services\LibraryToGGLauncherMap.cs" />
+    <Compile Include="Api\Services\RequestDataBatcher.cs" />
     <Compile Include="Infrastructure\Converters\AddResultToLocalizedStringConverter.cs" />
     <Compile Include="Menu\AddGames\MVVM\AddGamesView.xaml.cs">
       <DependentUpon>AddGamesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Menu\AddGames\MVVM\AddGamesViewModel.cs" />
     <Compile Include="Menu\AddGames\MVVM\IViewModelForWindow.cs" />
-    <Compile Include="Menu\Failures\AddFailuresFileService.cs" />
+    <Compile Include="Models\SyncRunSettings.cs" />
+    <Compile Include="Menu\Failures\File\AddFailuresFileService.cs" />
     <Compile Include="Menu\Failures\AddFailuresManager.cs" />
-    <Compile Include="Menu\Failures\IAddFailuresFileService.cs" />
+    <Compile Include="Menu\Failures\File\FailuresFile.cs" />
+    <Compile Include="Menu\Failures\File\IAddFailuresFileService.cs" />
+    <Compile Include="Menu\Failures\File\IVersionedFailuresFile.cs" />
+    <Compile Include="Menu\Failures\File\VersionedFailuresFile.cs" />
     <Compile Include="Menu\Failures\IAddFailuresManager.cs" />
     <Compile Include="Menu\Failures\MVVM\FailureItem.cs" />
     <Compile Include="Menu\Failures\MVVM\ShowAddFailuresView.xaml.cs">
       <DependentUpon>ShowAddFailuresView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Menu\Failures\MVVM\ShowAddFailuresViewModel.cs" />
-    <Compile Include="AwaitableWebView.cs" />
     <Compile Include="GGDeals.cs" />
     <Compile Include="Infrastructure\Converters\BaseConverter.cs" />
     <Compile Include="Infrastructure\Converters\BooleanToCollapsedVisibilityConverter.cs" />
-    <Compile Include="Services\AuthenticationStatusService.cs" />
+    <Compile Include="Queue\QueueFile.cs" />
+    <Compile Include="Services\AddGamesService.cs" />
+    <Compile Include="Services\AddLinkService.cs" />
+    <Compile Include="Services\AddResultProcessor.cs" />
+    <Compile Include="Services\GameStatusService.cs" />
+    <Compile Include="Services\GameToAddFilter.cs" />
+    <Compile Include="Services\IAddGamesService.cs" />
+    <Compile Include="Services\IAddLinkService.cs" />
+    <Compile Include="Services\IAddResultProcessor.cs" />
+    <Compile Include="Services\IGameStatusService.cs" />
+    <Compile Include="Services\IGameToAddFilter.cs" />
+    <Compile Include="Models\AddResult.cs" />
+    <Compile Include="Queue\IQueuePersistence.cs" />
+    <Compile Include="Queue\PersistentProcessingQueue.cs" />
+    <Compile Include="Queue\QueuePersistence.cs" />
     <Compile Include="Settings\GGDealsSettings.cs" />
     <Compile Include="Settings\IMigratableSettings.cs" />
     <Compile Include="Settings\IPluginSettingsPersistence.cs" />
@@ -79,30 +112,15 @@
     <Compile Include="Settings\MVVM\GGDealsSettingsView.xaml.cs">
       <DependentUpon>GGDealsSettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IAwaitableWebView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\AddAGameService.cs" />
-    <Compile Include="Services\AddToCollectionResult.cs" />
+    <Compile Include="Models\AddToCollectionResult.cs" />
     <Compile Include="Services\GGDealsService.cs" />
-    <Compile Include="Services\IAddAGameService.cs" />
     <Compile Include="Settings\MVVM\GGDealsSettingsViewModel.cs" />
     <Compile Include="Settings\MVVM\LibraryItem.cs" />
     <Compile Include="Settings\PluginSettingsPersistence.cs" />
     <Compile Include="Settings\SettingsMigrator.cs" />
     <Compile Include="Settings\StartupSettingsValidator.cs" />
     <Compile Include="Settings\VersionedSettings.cs" />
-    <Compile Include="Website\GamePage.cs" />
-    <Compile Include="Website\GGWebsite.cs" />
-    <Compile Include="Website\HomePage.cs" />
-    <Compile Include="Website\IGamePage.cs" />
-    <Compile Include="Website\IGGWebsite.cs" />
-    <Compile Include="Website\IHomePage.cs" />
-    <Compile Include="Website\ILibraryNameMap.cs" />
-    <Compile Include="Website\LibraryNameMap.cs" />
-    <Compile Include="Website\Url\GamePageUrlGuesser.cs" />
-    <Compile Include="Website\Url\HomePageResolver.cs" />
-    <Compile Include="Website\Url\IGamePageUrlGuesser.cs" />
-    <Compile Include="Website\Url\IHomePageResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="extension.yaml">
@@ -116,158 +134,6 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Page Include="Localization\ar_SA.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\bg_BG.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\ca_ES.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\cs_CZ.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\da_DK.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\de_DE.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\el_GR.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\es_ES.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\et_EE.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\fa_IR.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\fi_FI.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\fr_FR.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\gl_ES.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\he_IL.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\hr_HR.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\hu_HU.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\id_ID.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\it_IT.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\ja_JP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\ko_KR.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\lt_LT.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\lv_LV.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\mr_IN.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\nl_NL.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\no_NO.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\pl_PL.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\pt_BR.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\pt_PT.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\ro_RO.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\ru_RU.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\sk_SK.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\sr_SP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\sv_SE.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\tr_TR.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\uk_UA.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\vi_VN.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\zh_CN.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Localization\zh_TW.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Menu\AddGames\MVVM\AddGamesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

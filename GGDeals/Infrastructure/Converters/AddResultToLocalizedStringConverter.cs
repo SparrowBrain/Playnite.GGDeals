@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using GGDeals.Models;
 using GGDeals.Services;
 using Playnite.SDK;
 
@@ -14,10 +15,10 @@ namespace GGDeals.Infrastructure.Converters
             {
                 switch (result)
                 {
-                    case AddToCollectionResult.PageNotFound:
+                    case AddToCollectionResult.NotFound:
                         return ResourceProvider.GetString("LOC_GGDeals_ShowAddFailuresReasonPageNotFound");
 
-                    case AddToCollectionResult.NotProcessed:
+                    case AddToCollectionResult.New:
                         return ResourceProvider.GetString("LOC_GGDeals_ShowAddFailuresReasonNotProcessed");
 
                     default:

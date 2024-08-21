@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:GGDeals.Infrastructure.Converters"
+             xmlns:debug="debug-mode"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="600">
     <UserControl.Resources>
@@ -28,8 +29,13 @@
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="{DynamicResource LOC_GGDeals_SettingsAuthenticate}"  Command="{Binding Authenticate}"></Button>
-                <TextBlock Grid.Column="1" Text="{Binding AuthenticationStatus}"></TextBlock>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource LOC_GGDeals_SettingsAuthenticationToken}"></TextBlock>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Settings.AuthenticationToken}"></TextBox>
+                <Button Grid.Row="1" Grid.Column="1" Content="{DynamicResource LOC_GGDeals_SettingsGenerateToken}" Command="{Binding GenerateToken}"></Button>
             </Grid>
         </GroupBox>
         <GroupBox Header="{DynamicResource LOC_GGDeals_SettingsLibrariesGroupTitle}">
@@ -44,5 +50,27 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </GroupBox>
+        <GroupBox Header="{DynamicResource LOC_GGDeals_SettingsOtherGroupTitle}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <CheckBox Grid.Column="0" Content="{DynamicResource LOC_GGDeals_SettingsAddGGDealsLinks}" IsChecked="{Binding Settings.AddLinksToGames}"></CheckBox>
+            </Grid>
+        </GroupBox>
+        <mc:AlternateContent>
+            <mc:Choice Requires="debug">
+                <GroupBox Header="Debug">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="API Endpoint"></TextBlock>
+                        <TextBox Grid.Column="1" Text="{Binding Settings.DevCollectionImportEndpoint}"></TextBox>
+                    </Grid>
+                </GroupBox>
+            </mc:Choice>
+        </mc:AlternateContent>
     </StackPanel>
 </UserControl>

@@ -1,139 +1,171 @@
-﻿using System;
+﻿using GGDeals.Menu.Failures;
+using GGDeals.Settings;
+using Playnite.SDK;
+using Playnite.SDK.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Authentication;
+using System.Threading;
 using System.Threading.Tasks;
-using GGDeals.Menu.Failures;
-using GGDeals.Website;
-using Playnite.SDK;
-using Playnite.SDK.Models;
+using GGDeals.Menu.AddGames.MVVM;
+using GGDeals.Models;
 
 namespace GGDeals.Services
 {
-    public class GGDealsService
-    {
-        private static readonly ILogger Logger = LogManager.GetLogger();
+	public class GGDealsService
+	{
+		private static readonly ILogger Logger = LogManager.GetLogger();
 
-        private readonly IPlayniteAPI _playniteApi;
-        private readonly IGGWebsite _ggWebsite;
-        private readonly IHomePage _homePage;
-        private readonly IAddAGameService _addAGameService;
-        private readonly IAddFailuresManager _addFailuresManager;
+		private readonly GGDealsSettings _settings;
+		private readonly Action _openFailureView;
+		private readonly IPlayniteAPI _playniteApi;
+		private readonly IAddGamesService _addGamesService;
+		private readonly IAddFailuresManager _addFailuresManager;
+		private readonly IAddResultProcessor _addResultProcessor;
 
-        public GGDealsService(
-            IPlayniteAPI playniteApi,
-            IGGWebsite ggWebsite,
-            IHomePage homePage,
-            IAddAGameService addAGameService,
-            IAddFailuresManager addFailuresManager)
-        {
-            _playniteApi = playniteApi;
-            _ggWebsite = ggWebsite;
-            _homePage = homePage;
-            _addAGameService = addAGameService;
-            _addFailuresManager = addFailuresManager;
-        }
+		public GGDealsService(
+			GGDealsSettings settings,
+			Action openFailureView,
+			IPlayniteAPI playniteApi,
+			IAddGamesService addGamesService,
+			IAddFailuresManager addFailuresManager,
+			IAddResultProcessor addResultProcessor)
+		{
+			_settings = settings;
+			_openFailureView = openFailureView;
+			_playniteApi = playniteApi;
+			_addGamesService = addGamesService;
+			_addFailuresManager = addFailuresManager;
+			_addResultProcessor = addResultProcessor;
+		}
 
-        public async Task AddGamesToLibrary(IReadOnlyCollection<Game> games)
-        {
-            var addedGames = new List<Guid>();
-            var gamesWithoutPage = new List<Guid>();
-            var alreadyOwnedGames = new List<Guid>();
-            var skippedDueToLibrary = new List<Guid>();
+		public async Task AddGamesToLibrary(IReadOnlyCollection<Game> games, CancellationToken ct)
+		{
+			var addedGames = new Dictionary<Guid, AddResult>();
+			var missedGames = new Dictionary<Guid, AddResult>();
+			var alreadyOwnedGames = new Dictionary<Guid, AddResult>();
+			var skippedDueToLibrary = new Dictionary<Guid, AddResult>();
+			var ignoredGames = new Dictionary<Guid, AddResult>();
+			var errorGames = new Dictionary<Guid, AddResult>();
 
-            try
-            {
-                await _ggWebsite.NavigateToHomePage();
-                if (!await _homePage.IsUserLoggedIn())
-                {
-                    throw new AuthenticationException("User is not logged in!");
-                }
+			try
+			{
+				if (string.IsNullOrWhiteSpace(_settings.AuthenticationToken))
+				{
+					throw new AuthenticationException("Authentication token is empty!");
+				}
 
-                foreach (var game in games)
-                {
-                    var addedResult = await _addAGameService.TryAddToCollection(game);
-                    switch (addedResult)
-                    {
-                        case AddToCollectionResult.Added:
-                            addedGames.Add(game.Id);
-                            break;
+				var addResults = await _addGamesService.TryAddToCollection(games, ct);
+				addedGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.Added).ToDictionary(x => x.Key, x => x.Value);
+				missedGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.NotFound).ToDictionary(x => x.Key, x => x.Value);
+				alreadyOwnedGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.Synced).ToDictionary(x => x.Key, x => x.Value);
+				skippedDueToLibrary = addResults.Where(r => r.Value.Result == AddToCollectionResult.SkippedDueToLibrary).ToDictionary(x => x.Key, x => x.Value);
+				errorGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.Error).ToDictionary(x => x.Key, x => x.Value);
+				ignoredGames = addResults.Where(r => r.Value.Result == AddToCollectionResult.Ignored).ToDictionary(x => x.Key, x => x.Value);
 
-                        case AddToCollectionResult.PageNotFound:
-                            gamesWithoutPage.Add(game.Id);
-                            break;
+				if (missedGames.Count > 0)
+				{
+					var message = new NotificationMessage(
+						"gg-deals-gamepagenotfound",
+						string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationGameMiss_Format"), missedGames.Count),
+						NotificationType.Info,
+						_openFailureView);
+					_playniteApi.Notifications.Add(message);
+				}
 
-                        case AddToCollectionResult.AlreadyOwned:
-                            alreadyOwnedGames.Add(game.Id);
-                            break;
+				if (errorGames.Count > 0)
+				{
+					var message = new NotificationMessage(
+						"gg-deals-api-error",
+						string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationApiError_Format"), errorGames.Count),
+						NotificationType.Info,
+						_openFailureView);
+					_playniteApi.Notifications.Add(message);
+				}
 
-                        case AddToCollectionResult.SkippedDueToLibrary:
-                            skippedDueToLibrary.Add(game.Id);
-                            break;
+				if (ignoredGames.Count > 0)
+				{
+					_playniteApi.Notifications.Add(
+						"gg-deals-ignored",
+						string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationGamesIgnored_Format"), ignoredGames.Count),
+						NotificationType.Info);
+				}
 
-                        default:
-                            throw new NotImplementedException("Unimplemented add to collection result processing!");
-                    }
-                }
-
-                if (gamesWithoutPage.Count > 0)
+                if (addedGames.Count > 0
+					|| alreadyOwnedGames.Count > 0)
                 {
                     _playniteApi.Notifications.Add(
-                        "gg-deals-gamepagenotfound",
-                        string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationGamePageNotFound_Format"), gamesWithoutPage.Count),
+                        "gg-deals-added",
+                        string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationGamesAdded_Format"), addedGames.Count, alreadyOwnedGames.Count),
                         NotificationType.Info);
                 }
-            }
-            catch (AuthenticationException authEx)
-            {
-                Logger.Info(authEx, "User is not authenticated.");
-                _playniteApi.Notifications.Add(
-                    "gg-deals-auth-error",
-                    ResourceProvider.GetString("LOC_GGDeals_NotificationUserNotAuthenticatedLoginInAddonSettings"),
-                    NotificationType.Info);
 
-                await AddUnprocessedGameFailures(games, addedGames, gamesWithoutPage);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Error while trying to add games to library.");
-                _playniteApi.Notifications.Add(
-                    "gg-deals-generic-error",
-                    ResourceProvider.GetString("LOC_GGDeals_NotificationFailedAddingGamesToLibrary"),
-                    NotificationType.Error);
+                _addResultProcessor.Process(games, addResults);
+			}
+			catch (AuthenticationException authEx)
+			{
+				Logger.Info(authEx, "User is not authenticated.");
+				var message = new NotificationMessage(
+					"gg-deals-auth-error",
+					ResourceProvider.GetString("LOC_GGDeals_NotificationUserNotAuthenticatedLoginInAddonSettings"),
+					NotificationType.Info,
+					() => _playniteApi.MainView.OpenPluginSettings(Guid.Parse(GGDeals.PluginId))
+				);
+				_playniteApi.Notifications.Add(message);
 
-                await AddUnprocessedGameFailures(games, addedGames, gamesWithoutPage);
-            }
+				await AddUnprocessedGameFailures(games, addedGames, missedGames, errorGames, ignoredGames, skippedDueToLibrary, alreadyOwnedGames);
+			}
+			catch (Exception ex)
+			{
+				Logger.Error(ex, "Error while trying to add games to library.");
+				_playniteApi.Notifications.Add(
+					"gg-deals-generic-error",
+					ResourceProvider.GetString("LOC_GGDeals_NotificationFailedAddingGamesToLibrary"),
+					NotificationType.Error
+				);
 
-            Logger.Info($"Finished adding games to GG.deals collection: Total: {games.Count}, PageNotFound: {gamesWithoutPage.Count}, AlreadyOwned: {alreadyOwnedGames.Count}, SkippedDueToLibrary: {skippedDueToLibrary.Count}, Added: {addedGames.Count}");
+				await AddUnprocessedGameFailures(games, addedGames, missedGames, errorGames, ignoredGames, skippedDueToLibrary, alreadyOwnedGames);
+			}
 
-            if (gamesWithoutPage.Count > 0)
-            {
-                await _addFailuresManager.AddFailures(gamesWithoutPage.ToDictionary(g => g, _ => AddToCollectionResult.PageNotFound));
-            }
+			Logger.Info($@"Finished adding games to GG.deals collection: Total: {games.Count},
+{nameof(AddToCollectionResult.NotFound)}: {missedGames.Count},
+AlreadyOwned: {alreadyOwnedGames.Count},
+SkippedDueToLibrary: {skippedDueToLibrary.Count},
+Ignored: {ignoredGames.Count},
+Added: {addedGames.Count}");
 
-            if (addedGames.Count > 0)
-            {
-                await _addFailuresManager.RemoveFailures(addedGames);
-            }
+			await HandleFailures(missedGames);
+			await HandleFailures(errorGames);
+			await HandleNonFailures(addedGames);
+			await HandleNonFailures(alreadyOwnedGames);
+			await HandleNonFailures(ignoredGames);
+			await HandleNonFailures(skippedDueToLibrary);
+		}
 
-            if (skippedDueToLibrary.Count > 0)
-            {
-                await _addFailuresManager.RemoveFailures(skippedDueToLibrary);
-            }
+		private async Task AddUnprocessedGameFailures(IReadOnlyCollection<Game> games, params IDictionary<Guid, AddResult>[] results)
+		{
+			var unprocessedGames = games
+				.Where(g => !results.SelectMany(r => r.Keys).Contains(g.Id))
+				.ToList();
+			await _addFailuresManager.AddFailures(unprocessedGames.ToDictionary(g => g.Id,
+				_ => new AddResult() { Result = AddToCollectionResult.New }));
+		}
 
-            if (alreadyOwnedGames.Count > 0)
-            {
-                await _addFailuresManager.RemoveFailures(alreadyOwnedGames);
-            }
-        }
+		private async Task HandleFailures(Dictionary<Guid, AddResult> results)
+		{
+			if (results.Count > 0)
+			{
+				await _addFailuresManager.AddFailures(results);
+			}
+		}
 
-        private async Task AddUnprocessedGameFailures(IReadOnlyCollection<Game> games, List<Guid> addedGames, List<Guid> gamesWithoutPage)
-        {
-            var unprocessedGames = games
-                .Where(g => !addedGames.Contains(g.Id))
-                .Where(g => !gamesWithoutPage.Contains(g.Id))
-                .ToList();
-            await _addFailuresManager.AddFailures(unprocessedGames.ToDictionary(g => g.Id, _ => AddToCollectionResult.NotProcessed));
-        }
-    }
+		private async Task HandleNonFailures(Dictionary<Guid, AddResult> results)
+		{
+			if (results.Count > 0)
+			{
+				await _addFailuresManager.RemoveFailures(results.Keys);
+			}
+		}
+	}
 }
