@@ -1,5 +1,20 @@
 AddonId: SparrowBrain_GGDeals
 Packages:
+  - Version: 2.0.0
+    RequiredApiVersion: 6.11.0
+    ReleaseDate: 2024-08-21
+    PackageUrl: https://github.com/SparrowBrain/Playnite.GGDeals/releases/download/v2.0.0/SparrowBrain_GGDeals_2_0_0.pext
+    Changelog:
+      - Calling official GG.deals API instead of scraping the website
+      - Users now must provide authentication token generated on GG.deals website instead of logging in through the extension
+      - Processing games only after metadata fetch
+      - Using custom tags to keep track of sync status
+      - Added text messages to failures window
+      - Added sync success notification
+      - Authentication error notification now opens extension settings when clicked
+      - Add failure notification now opens add failure window when clicked
+      - Adding GG.deals link to processed games
+      - Improved handling for games hidden by Duplicate Hider
   - Version: 1.1.0
     RequiredApiVersion: 6.11.0
     ReleaseDate: 2024-06-24
