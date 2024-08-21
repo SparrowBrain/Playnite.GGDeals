@@ -24,7 +24,7 @@ namespace ReleaseTools
             var testRunner = @"""C:\Users\Qwx\src\Playnite.GGDeals\packages\xunit.runner.console.2.4.2\tools\net462\xunit.console.exe""";
             var toolbox = @"""C:\Users\Qwx\AppData\Local\Playnite\Toolbox.exe""";
 
-            await EnsureGitHubAuthentication();
+            //await EnsureGitHubAuthentication();
 
             var extensionPackageNameGuesser = new ExtensionPackageNameGuesser();
 
@@ -49,24 +49,24 @@ namespace ReleaseTools
             CommitAndPush($@"v{changeEntry.Version} installer-manifest.yaml update");
         }
 
-        private static async Task EnsureGitHubAuthentication()
-        {
-            var authStatusParser = new AuthStatusParser();
-            var p = new Process();
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardError = true;
-            p.StartInfo.FileName = "gh";
-            p.StartInfo.Arguments = "auth status";
-            p.Start();
-            var output = await p.StandardError.ReadToEndAsync();
-            p.WaitForExit();
+        //private static async Task EnsureGitHubAuthentication()
+        //{
+        //    var authStatusParser = new AuthStatusParser();
+        //    var p = new Process();
+        //    p.StartInfo.UseShellExecute = false;
+        //    p.StartInfo.RedirectStandardError = true;
+        //    p.StartInfo.FileName = "gh";
+        //    p.StartInfo.Arguments = "auth status";
+        //    p.Start();
+        //    var output = await p.StandardError.ReadToEndAsync();
+        //    p.WaitForExit();
 
-            if (!authStatusParser.IsUserLoggedIn(output))
-            {
-                throw new AuthenticationException(
-                    "User not logged in to GitHub via CLI. Either run `gh auth login` or setup an environment variable `GITHUB_TOKEN`. More info: https://cli.github.com/manual/.");
-            }
-        }
+        //    if (!authStatusParser.IsUserLoggedIn(output))
+        //    {
+        //        throw new AuthenticationException(
+        //            "User not logged in to GitHub via CLI. Either run `gh auth login` or setup an environment variable `GITHUB_TOKEN`. More info: https://cli.github.com/manual/.");
+        //    }
+        //}
 
         private static string CleanUpReleaseArtifacts(string pathToSolution)
         {
