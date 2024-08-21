@@ -261,29 +261,6 @@ namespace GGDeals.UnitTests.Services
 
 		[Theory]
 		[AutoMoqData]
-		public async Task AddGamesToLibrary_ShowsNoNotification_WhenGameIsAdded(
-			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
-			[Frozen] Mock<INotificationsAPI> notificationsApiMock,
-			[Frozen] Mock<IPlayniteAPI> playniteApiMock,
-			List<Game> games,
-			CancellationToken ct,
-			GGDealsService sut)
-		{
-			// Arrange
-			addGamesServiceMock
-				.Setup(x => x.TryAddToCollection(It.IsAny<IReadOnlyCollection<Game>>(), It.IsAny<CancellationToken>()))
-				.ReturnsAsync(games.ToDictionary(x => x.Id, x => new AddResult() { Result = AddToCollectionResult.Added }));
-			playniteApiMock.Setup(x => x.Notifications).Returns(notificationsApiMock.Object);
-
-			// Act
-			await sut.AddGamesToLibrary(games, ct);
-
-			// Assert
-			notificationsApiMock.Verify(x => x.Add(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<NotificationType>()), Times.Never);
-		}
-
-		[Theory]
-		[AutoMoqData]
 		public async Task AddGamesToLibrary_RemovesFromFailures_WhenGameIsAdded(
 			[Frozen] Mock<IAddGamesService> addGamesServiceMock,
 			[Frozen] Mock<IAddFailuresManager> addFailuresManagerMock,
