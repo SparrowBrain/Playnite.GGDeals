@@ -22,23 +22,31 @@
             <Setter Property="Margin" Value="0,2.5,0,2.5"></Setter>
         </Style>
     </UserControl.Resources>
-    <StackPanel>
-        <GroupBox Header="{DynamicResource LOC_GGDeals_SettingsAuthenticationGroupTitle}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource LOC_GGDeals_SettingsAuthenticationToken}"></TextBlock>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Settings.AuthenticationToken}"></TextBox>
-                <Button Grid.Row="1" Grid.Column="1" Content="{DynamicResource LOC_GGDeals_SettingsGenerateToken}" Command="{Binding GenerateToken}"></Button>
-            </Grid>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <GroupBox Grid.Row="0" Header="{DynamicResource LOC_GGDeals_SettingsAuthenticationGroupTitle}">
+            <ScrollViewer>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource LOC_GGDeals_SettingsAuthenticationToken}"></TextBlock>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Settings.AuthenticationToken}"></TextBox>
+                    <Button Grid.Row="1" Grid.Column="1" Content="{DynamicResource LOC_GGDeals_SettingsGenerateToken}" Command="{Binding GenerateToken}"></Button>
+                </Grid>
+            </ScrollViewer>
         </GroupBox>
-        <GroupBox Header="{DynamicResource LOC_GGDeals_SettingsLibrariesGroupTitle}">
+        <GroupBox Grid.Row="1" Header="{DynamicResource LOC_GGDeals_SettingsLibrariesGroupTitle}">
             <ListBox ItemsSource="{Binding LibraryItems}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -50,17 +58,16 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </GroupBox>
-        <GroupBox Header="{DynamicResource LOC_GGDeals_SettingsOtherGroupTitle}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <CheckBox Grid.Column="0" Content="{DynamicResource LOC_GGDeals_SettingsAddGGDealsLinks}" IsChecked="{Binding Settings.AddLinksToGames}"></CheckBox>
-            </Grid>
+        <GroupBox Grid.Row="2" Header="{DynamicResource LOC_GGDeals_SettingsOtherGroupTitle}">
+            <StackPanel>
+                <CheckBox Content="{DynamicResource LOC_GGDeals_SettingsAddGGDealsLinks}" IsChecked="{Binding Settings.AddLinksToGames}"></CheckBox>
+                <CheckBox Content="{DynamicResource LOC_GGDeals_SettingsAddTagsToGames}" IsChecked="{Binding Settings.AddTagsToGames}"></CheckBox>
+                <CheckBox Content="{DynamicResource LOC_GGDeals_SettingsSyncNewlyAddedGames}" IsChecked="{Binding Settings.SyncNewlyAddedGames}"></CheckBox>
+            </StackPanel>
         </GroupBox>
         <mc:AlternateContent>
             <mc:Choice Requires="debug">
-                <GroupBox Header="Debug">
+                <GroupBox Header="Debug" Grid.Row="3">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition></ColumnDefinition>
@@ -72,5 +79,5 @@
                 </GroupBox>
             </mc:Choice>
         </mc:AlternateContent>
-    </StackPanel>
+    </Grid>
 </UserControl>

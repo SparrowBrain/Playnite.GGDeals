@@ -68,7 +68,11 @@ namespace GGDeals
 
             PlayniteApi.Database.Games.ItemCollectionChanged += async (_, gamesAddedArgs) =>
             {
-                await _persistentProcessingQueue.Enqueue(gamesAddedArgs.AddedItems.Select(x => x.Id).ToList());
+                var settings = LoadPluginSettings<GGDealsSettings>();
+                if (settings.SyncNewlyAddedGames)
+                {
+                    await _persistentProcessingQueue.Enqueue(gamesAddedArgs.AddedItems.Select(x => x.Id).ToList());
+                }
             };
 
             var pluginSettingsPersistence = new PluginSettingsPersistence(this);

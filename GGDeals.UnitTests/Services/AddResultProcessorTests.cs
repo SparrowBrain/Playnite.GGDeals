@@ -21,10 +21,12 @@ namespace GGDeals.UnitTests.Services
 		public void Process_ChangesGameStatus_WhenResultWarrantsStatusChange(
 			AddToCollectionResult addToCollectionResult,
 			[Frozen] Mock<IGameStatusService> gameStatusServiceMock,
+			[Frozen] GGDealsSettings settings,
 			List<Game> games,
 			AddResultProcessor sut)
 		{
 			// Arrange
+            settings.AddTagsToGames = true;
 			var addResults = games.ToDictionary(g => g.Id, g => new AddResult { Result = addToCollectionResult });
 
 			// Act
@@ -56,7 +58,33 @@ namespace GGDeals.UnitTests.Services
 			gameStatusServiceMock.Verify(s => s.UpdateStatus(It.IsAny<Game>(), It.IsAny<AddToCollectionResult>()), Times.Never);
 		}
 
-		[Theory]
+        [Theory]
+        [InlineAutoMoqData(AddToCollectionResult.Added)]
+        [InlineAutoMoqData(AddToCollectionResult.Synced)]
+        [InlineAutoMoqData(AddToCollectionResult.NotFound)]
+        [InlineAutoMoqData(AddToCollectionResult.Ignored)]
+        public void Process_DoesNotChangeGameStatus_WhenSettingsAreSetNotToAddTags(
+            AddToCollectionResult addToCollectionResult,
+            [Frozen] Mock<IGameStatusService> gameStatusServiceMock,
+			[Frozen] GGDealsSettings settings,
+            List<Game> games,
+            AddResultProcessor sut)
+        {
+            // Arrange
+            settings.AddTagsToGames = false;
+            var addResults = games.ToDictionary(g => g.Id, g => new AddResult { Result = addToCollectionResult });
+
+            // Act
+            sut.Process(games, addResults);
+
+            // Assert
+            foreach (var game in addResults.Select(addResult => games.Single(g => g.Id == addResult.Key)))
+            {
+                gameStatusServiceMock.Verify(s => s.UpdateStatus(game, addToCollectionResult), Times.Never);
+            }
+        }
+
+        [Theory]
 		[AutoMoqData]
 		public void Process_AddsLink_WhenResultContainsUrlAndSettingsAllowAddingLink(
 			[Frozen] Mock<IAddLinkService> addLinkServiceMock,

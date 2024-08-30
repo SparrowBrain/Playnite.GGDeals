@@ -36,6 +36,11 @@ namespace GGDeals.Services
 
 		private void UpdateStatus(Game game, AddToCollectionResult addToCollectionResult)
 		{
+            if (!_settings.AddTagsToGames)
+            {
+                return;
+            }
+
 			switch (addToCollectionResult)
 			{
 				case AddToCollectionResult.Error:

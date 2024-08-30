@@ -117,6 +117,7 @@
     <Compile Include="Services\GGDealsService.cs" />
     <Compile Include="Settings\MVVM\GGDealsSettingsViewModel.cs" />
     <Compile Include="Settings\MVVM\LibraryItem.cs" />
+    <Compile Include="Settings\Old\SettingsV0.cs" />
     <Compile Include="Settings\PluginSettingsPersistence.cs" />
     <Compile Include="Settings\SettingsMigrator.cs" />
     <Compile Include="Settings\StartupSettingsValidator.cs" />

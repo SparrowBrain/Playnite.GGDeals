@@ -1,4 +1,5 @@
 ﻿using System;
+using GGDeals.Settings.Old;
 
 namespace GGDeals.Settings
 {
@@ -16,9 +17,9 @@ namespace GGDeals.Settings
             IVersionedSettings versionedSettings;
             switch (version)
             {
-                //case 0:
-                //    versionedSettings = _pluginSettingsPersistence.LoadPluginSettings<SettingsV0>();
-                //    break;
+                case 0:
+                    versionedSettings = _pluginSettingsPersistence.LoadPluginSettings<SettingsV0>();
+                    break;
                 //case 1:
                 //    versionedSettings = _pluginSettingsPersistence.LoadPluginSettings<SettingsV1>();
                 //    break;

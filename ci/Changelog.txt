@@ -1,3 +1,9 @@
+------v2.1.0
+- Tags are now optional
+- Sync of newly added games is now optional
+- Added a scrollbar to the settings window
+------- Now sending platforms to GG.deals API
+
 v2.0.0
 - Calling official GG.deals API instead of scraping the website
 - Users now must provide authentication token generated on GG.deals website instead of logging in through the extension
