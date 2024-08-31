@@ -10,7 +10,7 @@ namespace ReleaseTools.UnitTests.GitHubTools
         public void IsUserLoggedIn_ReturnsTrue_When_UserIsLoggedIn(AuthStatusParser sut)
         {
             // Arrange
-            var output = "\u001b[0;1;39mgithub.com\u001b[0m\r\n  \u001b[0;32mŌ£ō\u001b[0m Logged in to github.com as \u001b[0;1;39mSparrowBrain\u001b[0m (keyring)\r\n  \u001b[0;32mŌ£ō\u001b[0m Git operations for github.com configured to use \u001b[0;1;39mhttps\u001b[0m protocol.\r\n  \u001b[0;32mŌ£ō\u001b[0m Token: gho_************************************\r\n  \u001b[0;32mŌ£ō\u001b[0m Token scopes: gist, read:org, repo\r\n\r\n";
+            var output = "\u001b[0;1;39mgithub.com\u001b[0m\r\n  \u001b[0;32mŌ£ō\u001b[0m Logged in to github.com account \u001b[0;1;39mSparrowBrain\u001b[0m (keyring)\r\n  \u001b[0;32mŌ£ō\u001b[0m Git operations for github.com configured to use \u001b[0;1;39mhttps\u001b[0m protocol.\r\n  \u001b[0;32mŌ£ō\u001b[0m Token: gho_************************************\r\n  \u001b[0;32mŌ£ō\u001b[0m Token scopes: gist, read:org, repo\r\n\r\n";
 
             // Act
             var result = sut.IsUserLoggedIn(output);

@@ -4,7 +4,7 @@
     {
         public bool IsUserLoggedIn(string output)
         {
-            return output.Contains("Logged in to github.com as");
+            return output.Contains("Logged in to github.com");
         }
     }
 }
