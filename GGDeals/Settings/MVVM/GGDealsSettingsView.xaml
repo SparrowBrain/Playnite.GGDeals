@@ -63,6 +63,7 @@
                 <CheckBox Content="{DynamicResource LOC_GGDeals_SettingsAddGGDealsLinks}" IsChecked="{Binding Settings.AddLinksToGames}"></CheckBox>
                 <CheckBox Content="{DynamicResource LOC_GGDeals_SettingsAddTagsToGames}" IsChecked="{Binding Settings.AddTagsToGames}"></CheckBox>
                 <CheckBox Content="{DynamicResource LOC_GGDeals_SettingsSyncNewlyAddedGames}" IsChecked="{Binding Settings.SyncNewlyAddedGames}"></CheckBox>
+                <CheckBox Content="{DynamicResource LOC_GGDeals_SettingsShowProgressBar}" IsChecked="{Binding Settings.ShowProgressBar}"></CheckBox>
             </StackPanel>
         </GroupBox>
         <mc:AlternateContent>

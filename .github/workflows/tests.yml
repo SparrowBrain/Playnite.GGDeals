@@ -9,7 +9,7 @@ on:
 
 env:
   SOLUTION_NAME: GGDeals.sln
-  XUNIT_PATH: packages\xunit.runner.console.2.4.2\tools\net462\xunit.console.exe
+  XUNIT_PATH: packages\xunit.runner.console.2.9.0\tools\net462\xunit.console.exe
 
 jobs:
   test:

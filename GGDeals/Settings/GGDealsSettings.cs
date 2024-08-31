@@ -12,6 +12,7 @@ namespace GGDeals.Settings
         private bool _addLinksToGames;
         private bool _addTagsToGames;
         private bool _syncNewlyAddedGames;
+        private bool _showProgressBar;
 
         public GGDealsSettings()
         {
@@ -30,6 +31,7 @@ namespace GGDeals.Settings
             AddLinksToGames = false,
             AddTagsToGames = true,
             SyncNewlyAddedGames = true,
+            ShowProgressBar = true,
         };
 
         public int Version { get; set; }
@@ -66,6 +68,12 @@ namespace GGDeals.Settings
         {
             get => _syncNewlyAddedGames;
             set => SetValue(ref _syncNewlyAddedGames, value);
+        }
+
+        public bool ShowProgressBar
+        {
+            get => _showProgressBar;
+            set => SetValue(ref _showProgressBar, value);
         }
     }
 }

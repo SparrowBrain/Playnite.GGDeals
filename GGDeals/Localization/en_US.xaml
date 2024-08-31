@@ -18,6 +18,9 @@
     <sys:String x:Key="LOC_GGDeals_NotificationGamesAdded_Format">GG.deals sync finished. {0} games were added. {1} games are already in the collection.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationGameMiss_Format">Could not match {0} games. Click here for mode detailed info.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationGamesIgnored_Format">{0} games ignored by API. They're either demo versions or other items not handled by GG.deals.</sys:String>
+    <sys:String x:Key="LOC_GGDeals_ProgressCancel">Cancel</sys:String>
+    <sys:String x:Key="LOC_GGDeals_ProgressHide">Hide</sys:String>
+    <sys:String x:Key="LOC_GGDeals_ProgressTitle">Progress</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsAuthenticationGroupTitle">Authentication</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsAuthenticationToken">Authentication Token</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsGenerateToken">Generate Token</sys:String>
@@ -27,6 +30,7 @@
     <sys:String x:Key="LOC_GGDeals_SettingsAddGGDealsLinks">Add GG.deals link to processed games</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsAddTagsToGames">Add custom tags to processed games</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsSyncNewlyAddedGames">Sync newly added games</sys:String>
+    <sys:String x:Key="LOC_GGDeals_SettingsShowProgressBar">Show progress bar</sys:String>
     <sys:String x:Key="LOC_GGDeals_ShowAddFailuresTitle">Failures</sys:String>
     <sys:String x:Key="LOC_GGDeals_ShowAddFailuresGameName">Name</sys:String>
     <sys:String x:Key="LOC_GGDeals_ShowAddFailuresLibraryName">Library</sys:String>

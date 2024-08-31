@@ -2,6 +2,7 @@
 - Tags are now optional
 - Sync of newly added games is now optional
 - Added a scrollbar to the settings window
+- Added optional progress bar (on by default)
 ------- Now sending platforms to GG.deals API
 
 v2.0.0

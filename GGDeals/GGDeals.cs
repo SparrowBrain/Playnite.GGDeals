@@ -4,6 +4,7 @@ using GGDeals.Menu.Failures;
 using GGDeals.Menu.Failures.File;
 using GGDeals.Menu.Failures.MVVM;
 using GGDeals.Models;
+using GGDeals.Progress.MVVM;
 using GGDeals.Queue;
 using GGDeals.Services;
 using GGDeals.Settings;
@@ -85,6 +86,7 @@ namespace GGDeals
                     768,
                     768,
                     ResourceProvider.GetString("LOC_GGDeals_ShowAddFailuresTitle"),
+                    true,
                     true);
             };
             _gameStatusService = new GameStatusService(_api);
@@ -179,14 +181,45 @@ namespace GGDeals
                     var addResultProcessor = new AddResultProcessor(settings, _gameStatusService, addLinkService);
 
                     var ggDealsService = new GGDealsService(settings, _openFailuresView, PlayniteApi, addGamesService, _addFailuresManager, addResultProcessor);
-                    // TODO: Implement cancellation token source
-                    await ggDealsService.AddGamesToLibrary(games, CancellationToken.None);
+
+                    using (var cancellationTokenSource = new CancellationTokenSource())
+                    using (var progressViewModel = ShowProgressDialog(cancellationTokenSource, settings.ShowProgressBar))
+                    {
+                        Action<float> reportProgress = progress =>
+                        {
+                            _api.MainView.UIDispatcher.Invoke(() => progressViewModel.ProgressValue = progress);
+                        };
+                        await ggDealsService.AddGamesToLibrary(games, reportProgress, cancellationTokenSource.Token);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, "Failed to add games to GG.deals collection.");
             }
+        }
+
+        private ProgressViewModel ShowProgressDialog(CancellationTokenSource cts, bool showProgressBar)
+        {
+            var progressViewModel = new ProgressViewModel(_api, cts);
+            if (showProgressBar)
+            {
+                _api.MainView.UIDispatcher.Invoke(() =>
+                    {
+                        var window = ShowDialog(
+                            new ProgressView(progressViewModel),
+                            100,
+                            250,
+                            ResourceProvider.GetString("LOC_GGDeals_ProgressTitle"),
+                            false,
+                            false);
+
+                        progressViewModel.SetWindow(window);
+                    }
+                );
+            }
+
+            return progressViewModel;
         }
 
         private void ShowAddGamesDialog(List<Game> games)
@@ -197,10 +230,11 @@ namespace GGDeals
                 250,
                 500,
                 ResourceProvider.GetString("LOC_GGDeals_AddGamesTitle"),
+                false,
                 false);
         }
 
-        private void ShowDialog(UserControl view, double height, double width, string title, bool showMaximizeButton)
+        private Window ShowDialog(UserControl view, double height, double width, string title, bool showMaximizeButton, bool waitToClose)
         {
             var window = _api.Dialogs.CreateWindow(new WindowCreationOptions()
             {
@@ -222,7 +256,16 @@ namespace GGDeals
             window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
-            window.ShowDialog();
+            if (waitToClose)
+            {
+                window.ShowDialog();
+            }
+            else
+            {
+                window.Show();
+            }
+
+            return window;
         }
     }
 }

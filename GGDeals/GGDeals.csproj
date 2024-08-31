@@ -89,6 +89,10 @@
     <Compile Include="GGDeals.cs" />
     <Compile Include="Infrastructure\Converters\BaseConverter.cs" />
     <Compile Include="Infrastructure\Converters\BooleanToCollapsedVisibilityConverter.cs" />
+    <Compile Include="Progress\MVVM\ProgressView.xaml.cs">
+      <DependentUpon>ProgressView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Progress\MVVM\ProgressViewModel.cs" />
     <Compile Include="Queue\QueueFile.cs" />
     <Compile Include="Services\AddGamesService.cs" />
     <Compile Include="Services\AddLinkService.cs" />
@@ -146,6 +150,10 @@
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Progress\MVVM\ProgressView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Settings\MVVM\GGDealsSettingsView.xaml">
       <SubType>Designer</SubType>

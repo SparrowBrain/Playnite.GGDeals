@@ -40,6 +40,7 @@ namespace GGDeals.UnitTests.Settings.Old
             Assert.NotNull(result);
             result.AddTagsToGames = true;
             result.SyncNewlyAddedGames = true;
+            result.ShowProgressBar = true;
         }
     }
 }
