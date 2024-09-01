@@ -3,6 +3,7 @@ v2.1.0
 - Sync of newly added games is now optional
 - Added optional progress bar (on by default)
 - Added a scrollbar to the settings window
+- Added tooltips to add games window selections
 - Improved failures layout
 - Fixed a bug where user could issue multiple calls to the API in parallel
 
