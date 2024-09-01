@@ -12,11 +12,17 @@
     <sys:String x:Key="LOC_GGDeals_MainMenuItemAddToGGDealsCollection">Pridėti žaidimus prie GG.deals kolekcijos...</sys:String>
     <sys:String x:Key="LOC_GGDeals_MainMenuItemShowFailures">Rodyti nepavykusius...</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationApiError_Format">Could not add {0} games due to an error. Click here for mode detailed info.</sys:String>
+    <sys:String x:Key="LOC_GGDeals_NotificationApiErrorMessage_Format">Could not add games due to an error. API returned: {0}.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationUserNotAuthenticatedLoginInAddonSettings">Vartotojas neprisijungęs. Prisijunkite GG.deals įskiepio nustatymuose.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationFailedAddingGamesToLibrary">Pridedant žaidimus prie GG.deals bibliotekos įvyko klaida. Jei klaida kartojasi, sukurkite nusiskundimą https://github.com/SparrowBrain/Playnite.GGDeals puslapyje.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationGamesAdded_Format">GG.deals sync finished. {0} games were added. {1} games are already in the collection.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationGameMiss_Format">Could not match {0} games. Click here for mode detailed info.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationGamesIgnored_Format">{0} games ignored by API. They're either demo versions or other items not handled by GG.deals.</sys:String>
+    <sys:String x:Key="LOC_GGDeals_ProgressCancel">Cancel</sys:String>
+    <sys:String x:Key="LOC_GGDeals_ProgressHide">Hide</sys:String>
+    <sys:String x:Key="LOC_GGDeals_ProgressTitle">GG.deals Sync</sys:String>
+    <sys:String x:Key="LOC_GGDeals_ReasonCancelled">Cancelled</sys:String>
+    <sys:String x:Key="LOC_GGDeals_ReasonNotAuthenticated">Not Authenticated</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsAuthenticationGroupTitle">Tapatumo nustatymas</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsAuthenticationToken">Authentication Token</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsGenerateToken">Generate Token</sys:String>
@@ -24,6 +30,9 @@
     <sys:String x:Key="LOC_GGDeals_SettingsLibraryDisabledByDefault">Nerekomenduojama. Naudokite kolekcijos sinchronizaciją esančią GG.deals svetainėje.</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsOtherGroupTitle">Other</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsAddGGDealsLinks">Add GG.deals link to processed games</sys:String>
+    <sys:String x:Key="LOC_GGDeals_SettingsAddTagsToGames">Add custom tags to processed games</sys:String>
+    <sys:String x:Key="LOC_GGDeals_SettingsSyncNewlyAddedGames">Sync newly added games</sys:String>
+    <sys:String x:Key="LOC_GGDeals_SettingsShowProgressBar">Show progress bar</sys:String>
     <sys:String x:Key="LOC_GGDeals_ShowAddFailuresTitle">Klaidos</sys:String>
     <sys:String x:Key="LOC_GGDeals_ShowAddFailuresGameName">Pavadinimas</sys:String>
     <sys:String x:Key="LOC_GGDeals_ShowAddFailuresLibraryName">Biblioteka</sys:String>
