@@ -1,4 +1,6 @@
-﻿using GGDeals.Menu.Failures;
+﻿using GGDeals.Api.Models;
+using GGDeals.Menu.Failures;
+using GGDeals.Models;
 using GGDeals.Settings;
 using Playnite.SDK;
 using Playnite.SDK.Models;
@@ -8,49 +10,46 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
-using GGDeals.Menu.AddGames.MVVM;
-using GGDeals.Models;
-using GGDeals.Progress.MVVM;
 
 namespace GGDeals.Services
 {
-	public class GGDealsService
-	{
-		private static readonly ILogger Logger = LogManager.GetLogger();
+    public class GGDealsService
+    {
+        private static readonly ILogger Logger = LogManager.GetLogger();
 
-		private readonly GGDealsSettings _settings;
-		private readonly Action _openFailureView;
-		private readonly IPlayniteAPI _playniteApi;
-		private readonly IAddGamesService _addGamesService;
-		private readonly IAddFailuresManager _addFailuresManager;
-		private readonly IAddResultProcessor _addResultProcessor;
+        private readonly GGDealsSettings _settings;
+        private readonly Action _openFailureView;
+        private readonly IPlayniteAPI _playniteApi;
+        private readonly IAddGamesService _addGamesService;
+        private readonly IAddFailuresManager _addFailuresManager;
+        private readonly IAddResultProcessor _addResultProcessor;
 
-		public GGDealsService(
-			GGDealsSettings settings,
-			Action openFailureView,
-			IPlayniteAPI playniteApi,
-			IAddGamesService addGamesService,
-			IAddFailuresManager addFailuresManager,
-			IAddResultProcessor addResultProcessor)
-		{
-			_settings = settings;
-			_openFailureView = openFailureView;
-			_playniteApi = playniteApi;
-			_addGamesService = addGamesService;
-			_addFailuresManager = addFailuresManager;
-			_addResultProcessor = addResultProcessor;
-		}
+        public GGDealsService(
+            GGDealsSettings settings,
+            Action openFailureView,
+            IPlayniteAPI playniteApi,
+            IAddGamesService addGamesService,
+            IAddFailuresManager addFailuresManager,
+            IAddResultProcessor addResultProcessor)
+        {
+            _settings = settings;
+            _openFailureView = openFailureView;
+            _playniteApi = playniteApi;
+            _addGamesService = addGamesService;
+            _addFailuresManager = addFailuresManager;
+            _addResultProcessor = addResultProcessor;
+        }
 
-		public async Task AddGamesToLibrary(IReadOnlyCollection<Game> games,
+        public async Task AddGamesToLibrary(IReadOnlyCollection<Game> games,
             Action<float> reportProgress,
             CancellationToken ct)
-		{
-			var addedGames = new Dictionary<Guid, AddResult>();
-			var missedGames = new Dictionary<Guid, AddResult>();
-			var alreadyOwnedGames = new Dictionary<Guid, AddResult>();
-			var skippedDueToLibrary = new Dictionary<Guid, AddResult>();
-			var ignoredGames = new Dictionary<Guid, AddResult>();
-			var errorGames = new Dictionary<Guid, AddResult>();
+        {
+            var addedGames = new Dictionary<Guid, AddResult>();
+            var missedGames = new Dictionary<Guid, AddResult>();
+            var alreadyOwnedGames = new Dictionary<Guid, AddResult>();
+            var skippedDueToLibrary = new Dictionary<Guid, AddResult>();
+            var ignoredGames = new Dictionary<Guid, AddResult>();
+            var errorGames = new Dictionary<Guid, AddResult>();
 
             try
             {
@@ -127,63 +126,75 @@ namespace GGDeals.Services
                 );
                 _playniteApi.Notifications.Add(message);
 
-                await AddUnprocessedGameFailures(games, addedGames, missedGames, errorGames, ignoredGames,
+                await AddUnprocessedGameFailures(games, ResourceProvider.GetString("LOC_GGDeals_ReasonNotAuthenticated"), addedGames, missedGames, errorGames, ignoredGames,
+                    skippedDueToLibrary, alreadyOwnedGames);
+            }
+            catch (ApiException apiEx)
+            {
+                Logger.Error(apiEx, "Error while trying to add games to library.");
+                _playniteApi.Notifications.Add(
+                    "gg-deals-api-error-message",
+                    string.Format(ResourceProvider.GetString("LOC_GGDeals_NotificationApiErrorMessage_Format"), apiEx.Message),
+                    NotificationType.Error
+                );
+
+                await AddUnprocessedGameFailures(games, apiEx.Message, addedGames, missedGames, errorGames, ignoredGames,
                     skippedDueToLibrary, alreadyOwnedGames);
             }
             catch (OperationCanceledException)
             {
-                await AddUnprocessedGameFailures(games, addedGames, missedGames, errorGames, ignoredGames, skippedDueToLibrary, alreadyOwnedGames);
+                await AddUnprocessedGameFailures(games, ResourceProvider.GetString("LOC_GGDeals_ReasonCancelled"), addedGames, missedGames, errorGames, ignoredGames, skippedDueToLibrary, alreadyOwnedGames);
             }
-			catch (Exception ex)
-			{
-				Logger.Error(ex, "Error while trying to add games to library.");
-				_playniteApi.Notifications.Add(
-					"gg-deals-generic-error",
-					ResourceProvider.GetString("LOC_GGDeals_NotificationFailedAddingGamesToLibrary"),
-					NotificationType.Error
-				);
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Error while trying to add games to library.");
+                _playniteApi.Notifications.Add(
+                    "gg-deals-generic-error",
+                    ResourceProvider.GetString("LOC_GGDeals_NotificationFailedAddingGamesToLibrary"),
+                    NotificationType.Error
+                );
 
-				await AddUnprocessedGameFailures(games, addedGames, missedGames, errorGames, ignoredGames, skippedDueToLibrary, alreadyOwnedGames);
-			}
+                await AddUnprocessedGameFailures(games, ex.Message, addedGames, missedGames, errorGames, ignoredGames, skippedDueToLibrary, alreadyOwnedGames);
+            }
 
-			Logger.Info($@"Finished adding games to GG.deals collection: Total: {games.Count},
+            Logger.Info($@"Finished adding games to GG.deals collection: Total: {games.Count},
 {nameof(AddToCollectionResult.NotFound)}: {missedGames.Count},
 AlreadyOwned: {alreadyOwnedGames.Count},
 SkippedDueToLibrary: {skippedDueToLibrary.Count},
 Ignored: {ignoredGames.Count},
 Added: {addedGames.Count}");
 
-			await HandleFailures(missedGames);
-			await HandleFailures(errorGames);
-			await HandleNonFailures(addedGames);
-			await HandleNonFailures(alreadyOwnedGames);
-			await HandleNonFailures(ignoredGames);
-			await HandleNonFailures(skippedDueToLibrary);
-		}
+            await HandleFailures(missedGames);
+            await HandleFailures(errorGames);
+            await HandleNonFailures(addedGames);
+            await HandleNonFailures(alreadyOwnedGames);
+            await HandleNonFailures(ignoredGames);
+            await HandleNonFailures(skippedDueToLibrary);
+        }
 
-		private async Task AddUnprocessedGameFailures(IReadOnlyCollection<Game> games, params IDictionary<Guid, AddResult>[] results)
-		{
-			var unprocessedGames = games
-				.Where(g => !results.SelectMany(r => r.Keys).Contains(g.Id))
-				.ToList();
-			await _addFailuresManager.AddFailures(unprocessedGames.ToDictionary(g => g.Id,
-				_ => new AddResult() { Result = AddToCollectionResult.New }));
-		}
+        private async Task AddUnprocessedGameFailures(IReadOnlyCollection<Game> games, string message, params IDictionary<Guid, AddResult>[] results)
+        {
+            var unprocessedGames = games
+                .Where(g => !results.SelectMany(r => r.Keys).Contains(g.Id))
+                .ToList();
+            await _addFailuresManager.AddFailures(unprocessedGames.ToDictionary(g => g.Id,
+                _ => new AddResult() { Result = AddToCollectionResult.New, Message = message}));
+        }
 
-		private async Task HandleFailures(Dictionary<Guid, AddResult> results)
-		{
-			if (results.Count > 0)
-			{
-				await _addFailuresManager.AddFailures(results);
-			}
-		}
+        private async Task HandleFailures(Dictionary<Guid, AddResult> results)
+        {
+            if (results.Count > 0)
+            {
+                await _addFailuresManager.AddFailures(results);
+            }
+        }
 
-		private async Task HandleNonFailures(Dictionary<Guid, AddResult> results)
-		{
-			if (results.Count > 0)
-			{
-				await _addFailuresManager.RemoveFailures(results.Keys);
-			}
-		}
-	}
+        private async Task HandleNonFailures(Dictionary<Guid, AddResult> results)
+        {
+            if (results.Count > 0)
+            {
+                await _addFailuresManager.RemoveFailures(results.Keys);
+            }
+        }
+    }
 }

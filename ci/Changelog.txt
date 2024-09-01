@@ -1,10 +1,10 @@
-------v2.1.0
+v2.1.0
 - Tags are now optional
 - Sync of newly added games is now optional
 - Added a scrollbar to the settings window
 - Added optional progress bar (on by default)
 - Improved failures layout
-------- Now sending platforms to GG.deals API
+- Fixed a bug where user could issue multiple calls to the API in parallel
 
 v2.0.0
 - Calling official GG.deals API instead of scraping the website

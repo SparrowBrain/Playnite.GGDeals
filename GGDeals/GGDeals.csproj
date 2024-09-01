@@ -52,6 +52,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\Models\ApiException.cs" />
+    <Compile Include="Api\Models\FailedImportData.cs" />
+    <Compile Include="Api\Models\FailedImportResponse.cs" />
     <Compile Include="Api\Models\GameWithLauncher.cs" />
     <Compile Include="Api\Models\GGLauncher.cs" />
     <Compile Include="Api\Models\ImportRequest.cs" />

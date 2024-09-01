@@ -62,6 +62,12 @@ namespace GGDeals.Api.Services
         private ImportResponse ParseResponse(string responseContent)
         {
             var importResponse = JsonConvert.DeserializeObject<ImportResponse>(responseContent, _jsonSerializerSettings);
+            if (!importResponse.Success)
+            {
+                var failedResponse = JsonConvert.DeserializeObject<FailedImportResponse>(responseContent, _jsonSerializerSettings);
+                throw new ApiException(failedResponse.Data.Message);
+            }
+
             return importResponse;
         }
 

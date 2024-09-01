@@ -33,12 +33,6 @@ namespace GGDeals
         private const string QueueFileName = "queue.json";
         private static readonly ILogger Logger = LogManager.GetLogger();
 
-        private readonly IPlayniteAPI _api;
-        private readonly StartupSettingsValidator _startupSettingsValidator;
-        private readonly AddFailuresManager _addFailuresManager;
-        private readonly GameStatusService _gameStatusService;
-        private readonly PersistentProcessingQueue _persistentProcessingQueue;
-
         private readonly JsonSerializerSettings _apiJsonSerializerSettings = new JsonSerializerSettings
         {
             ContractResolver = new DefaultContractResolver
@@ -47,8 +41,16 @@ namespace GGDeals
             },
         };
 
-        private GGDealsSettingsViewModel _settings;
+        private readonly SemaphoreSlim _syncSemaphore = new SemaphoreSlim(1, 1);
+
+        private readonly IPlayniteAPI _api;
+        private readonly StartupSettingsValidator _startupSettingsValidator;
+        private readonly AddFailuresManager _addFailuresManager;
+        private readonly GameStatusService _gameStatusService;
+        private readonly PersistentProcessingQueue _persistentProcessingQueue;
         private readonly Action _openFailuresView;
+
+        private GGDealsSettingsViewModel _settings;
 
         public override Guid Id { get; } = Guid.Parse(PluginId);
 
@@ -168,6 +170,7 @@ namespace GGDeals
 
             try
             {
+                await _syncSemaphore.WaitAsync();
                 var games = _api.Database.Games.Where(x => gameIds.Contains(x.Id)).ToList();
                 var settings = LoadPluginSettings<GGDealsSettings>();
                 using (var ggDealsApiClient = new GGDealsApiClient(settings, _apiJsonSerializerSettings))
@@ -196,6 +199,10 @@ namespace GGDeals
             catch (Exception ex)
             {
                 Logger.Error(ex, "Failed to add games to GG.deals collection.");
+            }
+            finally
+            {
+                _syncSemaphore.Release();
             }
         }
 
