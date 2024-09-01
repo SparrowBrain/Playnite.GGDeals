@@ -55,10 +55,11 @@ namespace ReleaseTools
             var p = new Process();
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.RedirectStandardError = true;
+            p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.FileName = "gh";
             p.StartInfo.Arguments = "auth status";
             p.Start();
-            var output = await p.StandardError.ReadToEndAsync();
+            var output = await p.StandardOutput.ReadToEndAsync();
             p.WaitForExit();
 
             if (!authStatusParser.IsUserLoggedIn(output))
