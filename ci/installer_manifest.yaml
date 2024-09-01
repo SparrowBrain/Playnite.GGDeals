@@ -1,5 +1,17 @@
 AddonId: SparrowBrain_GGDeals
 Packages:
+  - Version: 2.1.0
+    RequiredApiVersion: 6.11.0
+    ReleaseDate: 2024-09-01
+    PackageUrl: https://github.com/SparrowBrain/Playnite.GGDeals/releases/download/v2.1.0/SparrowBrain_GGDeals_2_1_0.pext
+    Changelog:
+      - Tags are now optional
+      - Sync of newly added games is now optional
+      - Added optional progress bar (on by default)
+      - Added a scrollbar to the settings window
+      - Added tooltips to add games window selections
+      - Improved failures layout
+      - Fixed a bug where user could issue multiple calls to the API in parallel
   - Version: 2.0.0
     RequiredApiVersion: 6.11.0
     ReleaseDate: 2024-08-21
