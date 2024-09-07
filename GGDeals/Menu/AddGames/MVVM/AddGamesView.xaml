@@ -33,17 +33,30 @@
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock Grid.Column="0" Grid.Row="1" Text="{DynamicResource LOC_GGDeals_AddGamesStatusesToAdd}"></TextBlock>
-        <CheckBox Grid.Column="0" Grid.Row="2" IsChecked="{Binding AddNew}" Content="{DynamicResource LOC_GGDeals_AddGamesAddNew}" ToolTip="{DynamicResource LOC_GGDeals_AddGamesAddNewToolTip}"></CheckBox>
-        <CheckBox Grid.Column="0" Grid.Row="3" IsChecked="{Binding AddSynced}" Content="{DynamicResource LOC_GGDeals_AddGamesAddSynced}" ToolTip="{DynamicResource LOC_GGDeals_AddGamesAddSyncedToolTip}"></CheckBox>
-        <CheckBox Grid.Column="0" Grid.Row="4" IsChecked="{Binding AddNotFound}" Content="{DynamicResource LOC_GGDeals_AddGamesAddNotFound}" ToolTip="{DynamicResource LOC_GGDeals_AddGamesAddNotFoundToolTip}"></CheckBox>
-        <CheckBox Grid.Column="0" Grid.Row="5" IsChecked="{Binding AddIgnored}" Content="{DynamicResource LOC_GGDeals_AddGamesAddIgnored}" ToolTip="{DynamicResource LOC_GGDeals_AddGamesAddIgnoredToolTip}"></CheckBox>
-        <Button Grid.Column="1" Grid.Row="7" Command="{Binding AddAllGames}" Content="{DynamicResource LOC_GGDeals_AddGamesAddAllGames}"></Button>
+        <Grid Grid.Column="0" Grid.Row="2" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding AddNew}" Content="{DynamicResource LOC_GGDeals_AddGamesAddNew}"></CheckBox>
+            <TextBlock Grid.Column="1" Grid.Row="0" Text="ℹ" ToolTip="{DynamicResource LOC_GGDeals_AddGamesAddNewToolTip}" Margin="5,5,0,0"></TextBlock>
+            <CheckBox Grid.Column="0" Grid.Row="1" IsChecked="{Binding AddSynced}" Content="{DynamicResource LOC_GGDeals_AddGamesAddSynced}"></CheckBox>
+            <TextBlock Grid.Column="1" Grid.Row="1" Text="ℹ" ToolTip="{DynamicResource LOC_GGDeals_AddGamesAddSyncedToolTip}" Margin="5,5,0,0"></TextBlock>
+            <CheckBox Grid.Column="0" Grid.Row="2" IsChecked="{Binding AddNotFound}" Content="{DynamicResource LOC_GGDeals_AddGamesAddNotFound}"></CheckBox>
+            <TextBlock Grid.Column="1" Grid.Row="2" Text="ℹ" ToolTip="{DynamicResource LOC_GGDeals_AddGamesAddNotFoundToolTip}" Margin="5,5,0,0"></TextBlock>
+            <CheckBox Grid.Column="0" Grid.Row="3" IsChecked="{Binding AddIgnored}" Content="{DynamicResource LOC_GGDeals_AddGamesAddIgnored}"></CheckBox>
+            <TextBlock Grid.Column="1" Grid.Row="3" Text="ℹ" ToolTip="{DynamicResource LOC_GGDeals_AddGamesAddIgnoredToolTip}" Margin="5,5,0,0"></TextBlock>
+        </Grid>
+        <Button Grid.Column="1" Grid.Row="4" Command="{Binding AddAllGames}" Content="{DynamicResource LOC_GGDeals_AddGamesAddAllGames}"></Button>
     </Grid>
 </UserControl>
