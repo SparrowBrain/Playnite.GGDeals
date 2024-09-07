@@ -30,7 +30,7 @@ namespace GGDeals.Settings
             SyncPlayniteLibrary = false,
             AddLinksToGames = false,
             AddTagsToGames = true,
-            SyncNewlyAddedGames = true,
+            SyncNewlyAddedGames = false,
             ShowProgressBar = true,
         };
 
