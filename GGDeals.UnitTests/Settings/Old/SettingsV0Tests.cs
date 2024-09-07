@@ -38,9 +38,9 @@ namespace GGDeals.UnitTests.Settings.Old
 
             // Assert
             Assert.NotNull(result);
-            result.AddTagsToGames = true;
-            result.SyncNewlyAddedGames = false;
-            result.ShowProgressBar = true;
+            Assert.Equal(true, result.AddTagsToGames);
+            Assert.Equal(false, result.SyncNewlyAddedGames);
+            Assert.Equal(true, result.ShowProgressBar);
         }
     }
 }
