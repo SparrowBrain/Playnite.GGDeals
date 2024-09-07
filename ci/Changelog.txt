@@ -1,3 +1,7 @@
+v2.1.1
+- Sync of newly added games is now off by default
+- Clearer tooltips in add games window
+
 v2.1.0
 - Tags are now optional
 - Sync of newly added games is now optional
