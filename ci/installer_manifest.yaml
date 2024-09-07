@@ -1,5 +1,12 @@
 AddonId: SparrowBrain_GGDeals
 Packages:
+  - Version: 2.1.1
+    RequiredApiVersion: 6.11.0
+    ReleaseDate: 2024-09-07
+    PackageUrl: https://github.com/SparrowBrain/Playnite.GGDeals/releases/download/v2.1.1/SparrowBrain_GGDeals_2_1_1.pext
+    Changelog:
+      - Sync of newly added games is now off by default
+      - Clearer tooltips in add games window
   - Version: 2.1.0
     RequiredApiVersion: 6.11.0
     ReleaseDate: 2024-09-01
