@@ -3,9 +3,13 @@
     <sys:String x:Key="LOC_GGDeals_AddGamesAddAllGames">Add Games</sys:String>
     <sys:String x:Key="LOC_GGDeals_AddGamesStatusesToAdd">Only add games with these GG.deals sync statuses:</sys:String>
     <sys:String x:Key="LOC_GGDeals_AddGamesAddNew">New</sys:String>
+    <sys:String x:Key="LOC_GGDeals_AddGamesAddNewToolTip">Games that haven't been sent to your GG.deals collection yet</sys:String>
     <sys:String x:Key="LOC_GGDeals_AddGamesAddSynced">Synced</sys:String>
+    <sys:String x:Key="LOC_GGDeals_AddGamesAddSyncedToolTip">Games previously sent to your GG.deals collection</sys:String>
     <sys:String x:Key="LOC_GGDeals_AddGamesAddNotFound">Not found</sys:String>
+    <sys:String x:Key="LOC_GGDeals_AddGamesAddNotFoundToolTip">Games that haven't been matched with GG.deals database. They may be added at a later date</sys:String>
     <sys:String x:Key="LOC_GGDeals_AddGamesAddIgnored">Ignored</sys:String>
+    <sys:String x:Key="LOC_GGDeals_AddGamesAddIgnoredToolTip">Games ignored by API - they're either demo versions or other items not handled by GG.deals</sys:String>
     <sys:String x:Key="LOC_GGDeals_AddGamesTitle">Add Games</sys:String>
     <sys:String x:Key="LOC_GGDeals_GameMenuItemAddToGGDealsCollection">Add to GG.deals collection</sys:String>
     <sys:String x:Key="LOC_GGDeals_GameMenuItemAddToGGDealsCollectionCustom">Add with custom rules...</sys:String>
