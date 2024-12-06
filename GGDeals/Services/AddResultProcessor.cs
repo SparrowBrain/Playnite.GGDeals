@@ -25,12 +25,15 @@ namespace GGDeals.Services
 
 		public void Process(IReadOnlyCollection<Game> games, IDictionary<Guid, AddResult> results)
 		{
-			foreach (var addResult in results)
+			using (_gameStatusService.BufferedUpdate())
 			{
-				var game = games.Single(g => g.Id == addResult.Key);
+				foreach (var addResult in results)
+				{
+					var game = games.Single(g => g.Id == addResult.Key);
 
-				UpdateStatus(game, addResult.Value.Result);
-				AddLink(game, addResult.Value.Url);
+					UpdateStatus(game, addResult.Value.Result);
+					AddLink(game, addResult.Value.Url);
+				}
 			}
 		}
 
