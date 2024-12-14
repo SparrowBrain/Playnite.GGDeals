@@ -68,6 +68,11 @@ namespace GGDeals.Services
             _playniteApi.Database.Games.Update(game);
         }
 
+        public IDisposable BufferedUpdate()
+        {
+            return _playniteApi.Database.BufferedUpdate();
+        }
+
         private Tag EnsureTagExists(AddToCollectionResult status)
         {
             var tagName = _statusToTagMap[status];
