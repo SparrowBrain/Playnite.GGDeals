@@ -19,7 +19,8 @@
     <sys:String x:Key="LOC_GGDeals_NotificationApiErrorMessage_Format">Nepavyko pridėti žaidimų dėl klaidos. API grąžino: {0}.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationUserNotAuthenticatedLoginInAddonSettings">Vartotojas neprisijungęs. Prisijunkite GG.deals įskiepio nustatymuose.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationFailedAddingGamesToLibrary">Pridedant žaidimus prie GG.deals bibliotekos įvyko klaida. Jei klaida kartojasi, sukurkite nusiskundimą https://github.com/SparrowBrain/Playnite.GGDeals puslapyje.</sys:String>
-    <sys:String x:Key="LOC_GGDeals_NotificationGamesAdded_Format">GG.deals sinchronizacija baigta. Pridėta {0} žaidimų. {1} žaidimų jau buvo kolekcijoje.</sys:String>
+    <sys:String x:Key="LOC_GGDeals_NotificationGamesAdded_Format">GG.deals sinchronizacija baigta. Pridėta {0} žaidimų.</sys:String>
+    <sys:String x:Key="LOC_GGDeals_NotificationGamesAlreadyInCollection_Format">{0} žaidimų jau buvo kolekcijoje.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationGameMiss_Format">Nepavyko rasti {0} žaidimų. Norėdami sužinoti daugiau, spauskite čia.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationGamesIgnored_Format">{0} žaidimai, ignoruojami API. Tai arba demo versijos, arba kiti, GG.deals nekuruojami, produktai.</sys:String>
     <sys:String x:Key="LOC_GGDeals_ProgressCancel">Atšaukti</sys:String>

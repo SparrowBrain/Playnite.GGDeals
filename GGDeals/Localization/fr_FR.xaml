@@ -19,7 +19,8 @@
     <sys:String x:Key="LOC_GGDeals_NotificationApiErrorMessage_Format">Could not add games due to an error. API returned: {0}.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationUserNotAuthenticatedLoginInAddonSettings">L'utilisateur n'est pas authentifié. Connectez-vous dans les paramètres d'extension GG.deals.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationFailedAddingGamesToLibrary">Une erreur s'est produite lors de l'ajout de jeux à la bibliothèque GG.deals. Si l'erreur persiste, créez un problème dans le dépôt https://github.com/SparrowBrain/Playnite.GDeals</sys:String>
-    <sys:String x:Key="LOC_GGDeals_NotificationGamesAdded_Format">La synchronisation GG.deals est terminée. {0} jeux ont été ajoutés. {1} jeux sont déjà dans la collection.</sys:String>
+    <sys:String x:Key="LOC_GGDeals_NotificationGamesAdded_Format">La synchronisation GG.deals est terminée. {0} jeux ont été ajoutés.</sys:String>
+    <sys:String x:Key="LOC_GGDeals_NotificationGamesAlreadyInCollection_Format">{0} jeux sont déjà dans la collection.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationGameMiss_Format">Impossible de faire correspondre {0} jeux. Cliquez ici pour plus d'informations détaillées.</sys:String>
     <sys:String x:Key="LOC_GGDeals_NotificationGamesIgnored_Format">{0} jeux sont ignorés par l'API. Ce sont soit des versions de démonstration ou d'autres éléments qui ne sont pas gérés par GG.deals.</sys:String>
     <sys:String x:Key="LOC_GGDeals_ProgressCancel">Cancel</sys:String>
