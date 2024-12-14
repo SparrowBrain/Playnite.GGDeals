@@ -1,5 +1,12 @@
 AddonId: SparrowBrain_GGDeals
 Packages:
+  - Version: 2.2.0
+    RequiredApiVersion: 6.11.0
+    ReleaseDate: 2024-12-14
+    PackageUrl: https://github.com/SparrowBrain/Playnite.GGDeals/releases/download/v2.2.0/SparrowBrain_GGDeals_2_2_0.pext
+    Changelog:
+      - Added buffered update (thanks Jeshibu!)
+      - Improved success notification readability
   - Version: 2.1.1
     RequiredApiVersion: 6.11.0
     ReleaseDate: 2024-09-07
