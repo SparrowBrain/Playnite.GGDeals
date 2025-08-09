@@ -112,11 +112,13 @@ namespace GGDeals.Services
 						alreadyOwnedGames.Count);
 
 					_playniteApi.Notifications.Add(
-						"gg-deals-added",
-						alreadyOwnedGames.Count == 0
-						? addedGamesMessage
-						: $"{addedGamesMessage} {alreadyOwnedMessage}",
-						NotificationType.Info);
+						new NotificationMessage(
+							"gg-deals-added",
+							alreadyOwnedGames.Count == 0
+								? addedGamesMessage
+								: $"{addedGamesMessage} {alreadyOwnedMessage}",
+							NotificationType.Info,
+							() => System.Diagnostics.Process.Start("https://gg.deals/collection")));
 				}
 
 				_addResultProcessor.Process(games, addResults);
