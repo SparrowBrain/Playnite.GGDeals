@@ -1,7 +1,7 @@
 ----v2.3.0
 --- Added an ability to assign GG.deals library to a Playnite plugin
 - Clicking on 'games added' notification now opens the website
---- API failures are not propogated to the user
+- API failures are now propagated to the user
 
 v2.2.0
 - Added buffered update (thanks Jeshibu!)
