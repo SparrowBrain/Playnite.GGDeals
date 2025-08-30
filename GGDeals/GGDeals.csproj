@@ -124,6 +124,7 @@
     <Compile Include="Services\GGDealsService.cs" />
     <Compile Include="Settings\MVVM\GGDealsSettingsViewModel.cs" />
     <Compile Include="Settings\MVVM\LibraryItem.cs" />
+    <Compile Include="Settings\Old\SettingsV1.cs" />
     <Compile Include="Settings\Old\SettingsV0.cs" />
     <Compile Include="Settings\PluginSettingsPersistence.cs" />
     <Compile Include="Settings\SettingsMigrator.cs" />
@@ -168,6 +169,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Settings\Old\versions.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

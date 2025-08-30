@@ -52,6 +52,10 @@
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding Name}" />
+                            <ComboBox ItemsSource="{Binding Path=GGLauncherOptions}"
+                                      DisplayMemberPath="Value"
+                                      SelectedValuePath="Key"
+                                      SelectedValue="{Binding Path=GGLauncher, Mode=TwoWay}" />
                             <TextBlock Margin="5,0" Text="ℹ" Visibility="{Binding IsOffByDefault,  Converter={converters:BooleanToCollapsedVisibilityConverter}}" ToolTip="{DynamicResource LOC_GGDeals_SettingsLibraryDisabledByDefault}"></TextBlock>
                         </StackPanel>
                     </DataTemplate>

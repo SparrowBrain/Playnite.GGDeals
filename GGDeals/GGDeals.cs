@@ -51,6 +51,7 @@ namespace GGDeals
         private readonly Action _openFailuresView;
 
         private GGDealsSettingsViewModel _settings;
+        private LibraryToGGLauncherMap _libraryToGGLauncherMap = new LibraryToGGLauncherMap();
 
         public override Guid Id { get; } = Guid.Parse(PluginId);
 
@@ -140,7 +141,7 @@ namespace GGDeals
 
         public override ISettings GetSettings(bool firstRunSettings)
         {
-            return _settings ?? (_settings = new GGDealsSettingsViewModel(this));
+            return _settings ?? (_settings = new GGDealsSettingsViewModel(this, _libraryToGGLauncherMap));
         }
 
         public override UserControl GetSettingsView(bool firstRunSettings)
@@ -176,7 +177,7 @@ namespace GGDeals
                 using (var ggDealsApiClient = new GGDealsApiClient(settings, _apiJsonSerializerSettings))
                 {
                     var gameToAddFilter = new GameToAddFilter(settings, _gameStatusService, syncRunSettings);
-                    var libraryToGGLauncherMap = new LibraryToGGLauncherMap();
+                    var libraryToGGLauncherMap = _libraryToGGLauncherMap;
                     var gameToGameWithLauncherConverter = new GameToGameWithLauncherConverter(libraryToGGLauncherMap);
                     var requestDataBatcher = new RequestDataBatcher(_apiJsonSerializerSettings);
                     var addGamesService = new AddGamesService(settings, gameToAddFilter, gameToGameWithLauncherConverter, requestDataBatcher, ggDealsApiClient);

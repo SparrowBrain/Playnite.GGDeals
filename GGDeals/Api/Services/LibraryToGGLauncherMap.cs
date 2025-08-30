@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using GGDeals.Api.Models;
+﻿using GGDeals.Api.Models;
 using Playnite.SDK.Models;
+using System;
+using System.Collections.Generic;
 
 namespace GGDeals.Api.Services
 {
@@ -26,7 +26,12 @@ namespace GGDeals.Api.Services
 		public GGLauncher GetGGLauncher(Game game)
 		{
 			var playniteLibraryId = game.PluginId;
-			if (_libraryIdMapping.TryGetValue(playniteLibraryId, out var ggLauncher))
+			return GetGGLauncher(playniteLibraryId);
+		}
+
+		public GGLauncher GetGGLauncher(Guid pluginId)
+		{
+			if (_libraryIdMapping.TryGetValue(pluginId, out var ggLauncher))
 			{
 				return ggLauncher;
 			}

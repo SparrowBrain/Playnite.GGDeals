@@ -1,0 +1,14 @@
+﻿v2
+LibraryMapOverride
+
+v1
+AddTagsToGames
+SyncNewlyAddedGames
+ShowProgressBar
+
+v0
+AuthenticationToken 
+LibrariesToSkip 
+SyncPlayniteLibrary 
+DevCollectionImportEndpoint 
+AddLinksToGames 
