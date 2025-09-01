@@ -32,11 +32,14 @@ namespace GGDeals.UnitTests.Api.Services
 			{ "85DD7072-2F20-4E76-A007-41035E390724", GGLauncher.EA },
 			{ "C2F038E5-8B92-4877-91F1-DA9094155FC5", GGLauncher.Ubisoft },
 			{ "AEBE8B7C-6DC3-4A66-AF31-E7375C6B5E9E", GGLauncher.GOG },
+			{ "03689811-3F33-4DFB-A121-2EE168FB9A5C", GGLauncher.GOG }, // GOG OSS
 			{ "00000002-DBD1-46C6-B5D0-B1BA559D10E4", GGLauncher.Epic },
+			{ "EAD65C3B-2F8F-4E37-B4E6-B3DE6BE540C6", GGLauncher.Epic }, // Legendary (Epic)
 			{ "7e4fbb5e-2ae3-48d4-8ba0-6b30e7a4e287", GGLauncher.Microsoft },
 			{ "E3C26A3D-D695-4CB7-A769-5FF7612C7EDD", GGLauncher.BattleNet },
 			{ "88409022-088a-4de8-805a-fdbac291f00a", GGLauncher.Rockstar },
 			{ "402674cd-4af6-4886-b6ec-0e695bfa0688", GGLauncher.PrimeGaming },
+			{ "5901B4B4-774D-411A-9CCE-807C5CA49D88", GGLauncher.PrimeGaming }, // Nile (Amazon)
 			{ "e4ac81cb-1b1a-4ec9-8639-9a9633989a71", GGLauncher.Playstation },
 			{ "e4ac81cb-1b1a-4ec9-8639-9a9633989a72", GGLauncher.Nintendo },
 			{ "00000001-EBB2-4EEC-ABCB-7C89937A42BB", GGLauncher.Itch },

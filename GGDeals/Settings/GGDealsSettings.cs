@@ -27,6 +27,7 @@ namespace GGDeals.Settings
 			{
 					Guid.Parse("CB91DFC9-B977-43BF-8E70-55F46E410FAB"), // Steam
                     Guid.Parse("AEBE8B7C-6DC3-4A66-AF31-E7375C6B5E9E"), // GOG
+                    Guid.Parse("03689811-3F33-4DFB-A121-2EE168FB9A5C"), // GOG OSS
 			},
 			SyncPlayniteLibrary = false,
 			AddLinksToGames = false,
