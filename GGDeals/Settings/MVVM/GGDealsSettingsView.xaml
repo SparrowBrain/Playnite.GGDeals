@@ -47,20 +47,45 @@
             </ScrollViewer>
         </GroupBox>
         <GroupBox Grid.Row="1" Header="{DynamicResource LOC_GGDeals_SettingsLibrariesGroupTitle}">
-            <ListBox ItemsSource="{Binding LibraryItems}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding Name}" />
-                            <ComboBox ItemsSource="{Binding Path=GGLauncherOptions}"
-                                      DisplayMemberPath="Value"
-                                      SelectedValuePath="Key"
-                                      SelectedValue="{Binding Path=GGLauncher, Mode=TwoWay}" />
-                            <TextBlock Margin="5,0" Text="ℹ" Visibility="{Binding IsOffByDefault,  Converter={converters:BooleanToCollapsedVisibilityConverter}}" ToolTip="{DynamicResource LOC_GGDeals_SettingsLibraryDisabledByDefault}"></TextBlock>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <ListView 
+                 ItemsSource="{Binding LibraryItems}"
+                 HorizontalContentAlignment="Stretch"
+                 VerticalContentAlignment="Stretch">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn>
+                            <GridViewColumnHeader>
+                                <TextBlock Text="{DynamicResource LOC_GGDeals_SettingsLibrariesPlaynite}" />
+                            </GridViewColumnHeader>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding Name}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn>
+                            <GridViewColumnHeader>
+                                <TextBlock Text="{DynamicResource LOC_GGDeals_SettingsLibrariesGGDeals}" />
+                            </GridViewColumnHeader>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox ItemsSource="{Binding Path=GGLauncherOptions}"
+                                              DisplayMemberPath="Value"
+                                              SelectedValuePath="Key"
+                                              SelectedValue="{Binding Path=GGLauncher, Mode=TwoWay}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="5,0" Text="ℹ" Visibility="{Binding IsOffByDefault,  Converter={converters:BooleanToCollapsedVisibilityConverter}}" ToolTip="{DynamicResource LOC_GGDeals_SettingsLibraryDisabledByDefault}"></TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
         </GroupBox>
         <GroupBox Grid.Row="2" Header="{DynamicResource LOC_GGDeals_SettingsOtherGroupTitle}">
             <StackPanel>

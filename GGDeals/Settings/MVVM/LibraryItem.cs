@@ -1,7 +1,11 @@
 ﻿using GGDeals.Api.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
+using GGDeals.Infrastructure.Helpers;
+using Playnite.SDK;
 
 namespace GGDeals.Settings.MVVM
 {
@@ -59,6 +63,9 @@ namespace GGDeals.Settings.MVVM
 		public Dictionary<GGLauncher, string> GGLauncherOptions { get; } =
 			Enum.GetValues(typeof(GGLauncher))
 				.Cast<GGLauncher>()
-				.ToDictionary(x => x, x => x.ToString());
+				.ToDictionary(
+					x => x,
+					EnumHelpers.GetEnumDescription
+				);
 	}
 }

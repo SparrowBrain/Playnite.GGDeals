@@ -116,6 +116,7 @@
     <Compile Include="Settings\IPluginSettingsPersistence.cs" />
     <Compile Include="Settings\ISettingsMigrator.cs" />
     <Compile Include="Settings\IVersionedSettings.cs" />
+    <Compile Include="Infrastructure\Helpers\EnumHelpers.cs" />
     <Compile Include="Settings\MVVM\GGDealsSettingsView.xaml.cs">
       <DependentUpon>GGDealsSettingsView.xaml</DependentUpon>
     </Compile>
@@ -172,5 +173,6 @@
   <ItemGroup>
     <Content Include="Settings\Old\versions.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
