@@ -6,59 +6,59 @@ namespace GGDeals.Api.Models
 	public enum GGLauncher
 	{
 		[EnumMember(Value = "other")]
-		[Description("LOC_GGDeals_GGDealsLauncher_Other")]
+		[Description("Other")]
 		Other = 0,
 
 		[EnumMember(Value = "steam")]
-		[Description("LOC_GGDeals_GGDealsLauncher_Steam")]
+		[Description("Steam")]
 		Steam = 1,
 
 		[EnumMember(Value = "ea")]
-		[Description("LOC_GGDeals_GGDealsLauncher_EA")]
+		[Description("EA App")]
 		EA = 2,
 
 		[EnumMember(Value = "ubisoft")]
-		[Description("LOC_GGDeals_GGDealsLauncher_Ubisoft")]
+		[Description("Ubisoft Connect")]
 		Ubisoft = 3,
 
 		[EnumMember(Value = "gog")]
-		[Description("LOC_GGDeals_GGDealsLauncher_Gog")]
+		[Description("GOG")]
 		GOG = 4,
 
 		[EnumMember(Value = "epic")]
-		[Description("LOC_GGDeals_GGDealsLauncher_Epic")]
+		[Description("Epic Games Launcher")]
 		Epic = 5,
 
 		[EnumMember(Value = "microsoft")]
-		[Description("LOC_GGDeals_GGDealsLauncher_Microsoft")]
+		[Description("Microsoft Store")]
 		Microsoft = 6,
 
 		[EnumMember(Value = "battle-net")]
-		[Description("LOC_GGDeals_GGDealsLauncher_BattleNet")]
+		[Description("Battle.net")]
 		BattleNet = 7,
 
 		[EnumMember(Value = "rockstar")]
-		[Description("LOC_GGDeals_GGDealsLauncher_Rockstar")]
+		[Description("Rockstar Games Launcher")]
 		Rockstar = 8,
 
 		[EnumMember(Value = "prime-gaming")]
-		[Description("LOC_GGDeals_GGDealsLauncher_PrimeGaming")]
+		[Description("Prime Gaming")]
 		PrimeGaming = 9,
 
 		[EnumMember(Value = "playstation")]
-		[Description("LOC_GGDeals_GGDealsLauncher_PlayStation")]
+		[Description("PlayStation")]
 		Playstation = 10,
 
 		[EnumMember(Value = "nintendo")]
-		[Description("LOC_GGDeals_GGDealsLauncher_Nintendo")]
+		[Description("Nintendo")]
 		Nintendo = 11,
 
 		[EnumMember(Value = "itch")]
-		[Description("LOC_GGDeals_GGDealsLauncher_Itch")]
+		[Description("Itch.io")]
 		Itch = 12,
 
 		[EnumMember(Value = "drm-free")]
-		[Description("LOC_GGDeals_GGDealsLauncher_DrmFree")]
+		[Description("DRM free")]
 		DrmFree = 13,
 	}
 }

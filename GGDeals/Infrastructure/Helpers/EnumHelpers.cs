@@ -1,7 +1,6 @@
-﻿using System.ComponentModel;
+﻿using GGDeals.Api.Models;
+using System.ComponentModel;
 using System.Reflection;
-using GGDeals.Api.Models;
-using Playnite.SDK;
 
 namespace GGDeals.Infrastructure.Helpers
 {
@@ -11,7 +10,7 @@ namespace GGDeals.Infrastructure.Helpers
 		{
 			var field = typeof(GGLauncher).GetField(value.ToString());
 			var attr = field.GetCustomAttribute<DescriptionAttribute>();
-			return attr != null ? ResourceProvider.GetString(attr.Description) : value.ToString();
+			return attr != null ? attr.Description : value.ToString();
 		}
 	}
 }

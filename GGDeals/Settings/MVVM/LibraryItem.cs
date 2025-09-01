@@ -1,11 +1,8 @@
 ﻿using GGDeals.Api.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using GGDeals.Infrastructure.Helpers;
-using Playnite.SDK;
 
 namespace GGDeals.Settings.MVVM
 {
