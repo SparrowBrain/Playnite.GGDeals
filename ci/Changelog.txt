@@ -1,5 +1,7 @@
 ----v2.3.0
---- Added an ability to assign GG.deals library to a Playnite plugin
+- Added an ability to assign GG.deals library to a Playnite plugin
+- Added hawkeye's library plugins for GOG, Legendary (Epic) and Nile (Prime Gaming) to defaults
+- Added Portuguese, Brazilian translations (thanks, TheNutellas!)
 - Clicking on 'games added' notification now opens the website
 - API failures are now propagated to the user
 
