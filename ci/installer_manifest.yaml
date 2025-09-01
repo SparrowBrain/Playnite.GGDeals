@@ -1,5 +1,15 @@
 AddonId: SparrowBrain_GGDeals
 Packages:
+  - Version: 2.3.0
+    RequiredApiVersion: 6.11.0
+    ReleaseDate: 2025-09-01
+    PackageUrl: https://github.com/SparrowBrain/Playnite.GGDeals/releases/download/v2.3.0/SparrowBrain_GGDeals_2_3_0.pext
+    Changelog:
+      - Added an ability to assign GG.deals library to a Playnite plugin
+      - Added hawkeye's library plugins for GOG, Legendary (Epic) and Nile (Prime Gaming) to defaults
+      - Added Portuguese, Brazilian translations (thanks, TheNutellas!)
+      - Clicking on 'games added' notification now opens the website
+      - API failures are now propagated to the user
   - Version: 2.2.0
     RequiredApiVersion: 6.11.0
     ReleaseDate: 2024-12-14
