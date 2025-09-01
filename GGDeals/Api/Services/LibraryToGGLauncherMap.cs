@@ -1,5 +1,4 @@
 ﻿using GGDeals.Api.Models;
-using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 
@@ -22,12 +21,6 @@ namespace GGDeals.Api.Services
 			{ Guid.Parse("e4ac81cb-1b1a-4ec9-8639-9a9633989a72"), GGLauncher.Nintendo },
 			{ Guid.Parse("00000001-EBB2-4EEC-ABCB-7C89937A42BB"), GGLauncher.Itch },
 		};
-
-		public GGLauncher GetGGLauncher(Game game)
-		{
-			var playniteLibraryId = game.PluginId;
-			return GetGGLauncher(playniteLibraryId);
-		}
 
 		public GGLauncher GetGGLauncher(Guid pluginId)
 		{

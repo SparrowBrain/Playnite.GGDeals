@@ -340,8 +340,9 @@ namespace GGDeals.UnitTests.Services
 
             // Assert
             notificationsApiMock.Verify(
-                x => x.Add("gg-deals-added", It.IsAny<string>(),
-                    It.Is<NotificationType>(n => n == NotificationType.Info)), Times.Once);
+	            x => x.Add(
+		            It.Is<NotificationMessage>(m => m.Id == "gg-deals-added" && m.Type == NotificationType.Info)),
+	            Times.Once);
         }
 
         [Theory]

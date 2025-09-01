@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GGDeals.Settings;
-using GGDeals.Settings.Old;
+﻿using GGDeals.Settings.Old;
 using TestTools.Shared;
 using Xunit;
 
@@ -22,7 +16,7 @@ namespace GGDeals.UnitTests.Settings.Old
             sut.Version = 1;
 
             // Act
-            var result = sut.Migrate() as GGDealsSettings;
+            var result = sut.Migrate() as SettingsV1;
 
             // Assert
             Assert.Equivalent(sut, result);
@@ -34,7 +28,7 @@ namespace GGDeals.UnitTests.Settings.Old
             SettingsV0 sut)
         {
             // Act
-            var result = sut.Migrate() as GGDealsSettings;
+            var result = sut.Migrate() as SettingsV1;
 
             // Assert
             Assert.NotNull(result);

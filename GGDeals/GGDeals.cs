@@ -178,7 +178,7 @@ namespace GGDeals
                 {
                     var gameToAddFilter = new GameToAddFilter(settings, _gameStatusService, syncRunSettings);
                     var libraryToGGLauncherMap = _libraryToGGLauncherMap;
-                    var gameToGameWithLauncherConverter = new GameToGameWithLauncherConverter(libraryToGGLauncherMap);
+                    var gameToGameWithLauncherConverter = new GameToGameWithLauncherConverter(libraryToGGLauncherMap, settings);
                     var requestDataBatcher = new RequestDataBatcher(_apiJsonSerializerSettings);
                     var addGamesService = new AddGamesService(settings, gameToAddFilter, gameToGameWithLauncherConverter, requestDataBatcher, ggDealsApiClient);
                     var addLinkService = new AddLinkService(_api);

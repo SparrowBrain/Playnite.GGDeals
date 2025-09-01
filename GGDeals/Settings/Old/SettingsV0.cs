@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace GGDeals.Settings.Old
 {
     public class SettingsV0 : IMigratableSettings
-    {
+	{
         public SettingsV0()
         {
             Version = 0;
@@ -26,7 +26,7 @@ namespace GGDeals.Settings.Old
 
         public virtual IVersionedSettings Migrate()
         {
-            var newSettings = GGDealsSettings.Default;
+            var newSettings = SettingsV1.Default;
             newSettings.AddLinksToGames = AddLinksToGames;
             newSettings.AuthenticationToken = AuthenticationToken;
             newSettings.DevCollectionImportEndpoint = DevCollectionImportEndpoint;

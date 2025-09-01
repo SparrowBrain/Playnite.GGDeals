@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GGDeals.Settings.Old
 {
-	public class SettingsV1 : IVersionedSettings
+	public class SettingsV1 : IMigratableSettings
 	{
 		public SettingsV1()
 		{
@@ -26,6 +26,21 @@ namespace GGDeals.Settings.Old
 		};
 
 		public int Version { get; set; }
+
+		public IVersionedSettings Migrate()
+		{
+			var newSettings = GGDealsSettings.Default;
+			newSettings.AddLinksToGames = AddLinksToGames;
+			newSettings.AuthenticationToken = AuthenticationToken;
+			newSettings.DevCollectionImportEndpoint = DevCollectionImportEndpoint;
+			newSettings.LibrariesToSkip = LibrariesToSkip;
+			newSettings.SyncPlayniteLibrary = SyncPlayniteLibrary;
+			newSettings.AddTagsToGames = AddTagsToGames;
+			newSettings.SyncNewlyAddedGames = SyncNewlyAddedGames;
+			newSettings.ShowProgressBar = ShowProgressBar;
+
+			return newSettings;
+		}
 
 		public string AuthenticationToken { get; set; }
 
