@@ -55,7 +55,7 @@
                     <GridView>
                         <GridViewColumn>
                             <GridViewColumnHeader>
-                                <TextBlock Text="{DynamicResource LOC_GGDeals_SettingsLibrariesPlaynite}" />
+                                <TextBlock Text="Playnite" />
                             </GridViewColumnHeader>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
@@ -65,7 +65,7 @@
                         </GridViewColumn>
                         <GridViewColumn>
                             <GridViewColumnHeader>
-                                <TextBlock Text="{DynamicResource LOC_GGDeals_SettingsLibrariesGGDeals}" />
+                                <TextBlock Text="GG.deals" />
                             </GridViewColumnHeader>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>

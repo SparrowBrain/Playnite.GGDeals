@@ -33,8 +33,6 @@
     <sys:String x:Key="LOC_GGDeals_SettingsAuthenticationToken">Authentication Token</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsGenerateToken">Generate Token</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsLibrariesGroupTitle">Libraries</sys:String>
-    <sys:String x:Key="LOC_GGDeals_SettingsLibrariesPlaynite">Playnite</sys:String>
-    <sys:String x:Key="LOC_GGDeals_SettingsLibrariesGGDeals">GG.deals</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsLibraryDisabledByDefault">Not recommended. Please use collection sync available on GG.deals website.</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsOtherGroupTitle">Other</sys:String>
     <sys:String x:Key="LOC_GGDeals_SettingsAddGGDealsLinks">Add GG.deals link to processed games</sys:String>
