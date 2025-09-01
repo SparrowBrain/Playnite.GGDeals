@@ -49,9 +49,9 @@ namespace GGDeals
         private readonly GameStatusService _gameStatusService;
         private readonly PersistentProcessingQueue _persistentProcessingQueue;
         private readonly Action _openFailuresView;
+        private readonly LibraryToGGLauncherMap _libraryToGGLauncherMap = new LibraryToGGLauncherMap();
 
         private GGDealsSettingsViewModel _settings;
-        private LibraryToGGLauncherMap _libraryToGGLauncherMap = new LibraryToGGLauncherMap();
 
         public override Guid Id { get; } = Guid.Parse(PluginId);
 
