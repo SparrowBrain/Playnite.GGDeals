@@ -124,7 +124,6 @@
     <Compile Include="Services\GameToAddFilterTests.cs" />
     <Compile Include="Services\GameStatusServiceTests.cs" />
     <Compile Include="Services\PersistentProcessingQueueTests.cs" />
-    <Compile Include="Settings\Old\SettingsV1Tests.cs" />
     <Compile Include="Settings\Old\SettingsV0Tests.cs" />
     <Compile Include="TestableItemCollection.cs" />
     <Compile Include="Settings\SettingsMigratorTests.cs" />

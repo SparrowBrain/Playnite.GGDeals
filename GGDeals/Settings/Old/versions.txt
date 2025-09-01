@@ -1,10 +1,8 @@
-﻿v2
-LibraryMapOverride
-
-v1
+﻿v1
 AddTagsToGames
 SyncNewlyAddedGames
 ShowProgressBar
+LibraryMapOverride
 
 v0
 AuthenticationToken 

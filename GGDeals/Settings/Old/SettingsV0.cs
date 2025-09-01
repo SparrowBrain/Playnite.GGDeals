@@ -26,7 +26,7 @@ namespace GGDeals.Settings.Old
 
         public virtual IVersionedSettings Migrate()
         {
-            var newSettings = SettingsV1.Default;
+            var newSettings = GGDealsSettings.Default;
             newSettings.AddLinksToGames = AddLinksToGames;
             newSettings.AuthenticationToken = AuthenticationToken;
             newSettings.DevCollectionImportEndpoint = DevCollectionImportEndpoint;

@@ -6,7 +6,7 @@ namespace GGDeals.Settings
 {
 	public class GGDealsSettings : ObservableObject, IVersionedSettings
 	{
-		public const int CurrentVersion = 2;
+		public const int CurrentVersion = 1;
 
 		private string _authenticationToken;
 		private string _devCollectionImportEndpoint;
