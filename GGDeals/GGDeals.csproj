@@ -71,6 +71,7 @@
     <Compile Include="Api\Services\LibraryToGGLauncherMap.cs" />
     <Compile Include="Api\Services\RequestDataBatcher.cs" />
     <Compile Include="Infrastructure\Converters\AddResultToLocalizedStringConverter.cs" />
+    <Compile Include="Infrastructure\Helpers\PasswordBoxAssistant.cs" />
     <Compile Include="Menu\AddGames\MVVM\AddGamesView.xaml.cs">
       <DependentUpon>AddGamesView.xaml</DependentUpon>
     </Compile>
